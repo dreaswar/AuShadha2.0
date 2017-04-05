@@ -1,0 +1,37 @@
+{
+  "name": "dojo-themes",
+  "licenses": [
+    "BSD-3-Clause",
+    "AFL-2.1"
+  ],
+  "ignore": [
+    ".*"
+  ],
+  "keywords": [
+    "JavaScript",
+    "Dojo",
+    "Toolkit",
+    "Themes"
+  ],
+  "authors": [],
+  "homepage": "http://dojotoolkit.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dojo/themes.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "stylus": "0.53.0",
+    "nib": "1.1.0"
+  },
+  "version": "1.11.2",
+  "_release": "1.11.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.11.2",
+    "commit": "680dafce4d1805ae4913ad0cc14a891400b0d6a3"
+  },
+  "_source": "https://github.com/dojo/themes.git",
+  "_target": "1.11.2",
+  "_originalSource": "dojo-themes"
+}

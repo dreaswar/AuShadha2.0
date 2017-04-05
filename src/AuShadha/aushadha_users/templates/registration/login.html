@@ -1,0 +1,88 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+	<head>
+		<meta name    = "generator" 
+		      content = "HTML Tidy for Linux (vers 6 November 2007), see www.w3.org"
+		>
+		{% block title %} 
+		  <title> AuShadha </title> 
+		{% endblock title %} 
+
+		<!--The global non template tagged style sheet and Dojo specific Style sheets from here-->
+		  {% block media %} 
+		    {% include 'aushadha_ui/style_links.html' %} 
+		  {% endblock media %} 
+
+		  {% block style_bits %} 
+		    <style  type="text/css">
+		      {%include "aushadha_ui/style_templates/style.css" %}
+		    </style>
+		  {% endblock style_bits %} 
+
+		  {% block js %} 
+		    {% include 'aushadha_ui/script_links.html' %} 
+		  {% endblock js %} 
+
+		  <script type="text/javascript">
+			  require([ 
+				  "dojo/parser", 
+				  "dojo/_base/connect",
+				  "dojo/on",
+				  "dijit/form/Form",
+				  "dijit/form/Button",
+				  "dijit/form/TextBox",
+				  "dijit/form/ValidationTextBox", 
+				  "dijit/form/Textarea",
+				  "dojox/form/Manager", 
+				  "dojox/validate/web",
+				  "dijit/Dialog",
+				  "dijit/layout/ContentPane",
+				  "dijit/layout/TabContainer",
+				  "dijit/layout/BorderContainer",
+				  "dojox/layout/ContentPane"
+			  ]);
+		  </script>
+
+	</head>
+
+	<body class="claro" 
+	      style="height: 100%; width: 100%; margin: 0px; padding: 0px;">
+
+		<div id="loginBorderContainer" 
+		     data-dojo-type="dijit/layout/BorderContainer"
+		     data-dojo-type="design: 'headline'"
+		     style="height:100%; width:100%; margin:0px; padding:0px;"> 
+
+		  <div data-dojo-type="dojox/layout/ContentPane" 
+                       id="loginFormContainerCP"
+		       data-dojo-props="region: 'center', splitter:false"
+		     >
+			  {% include 'registration/login_form.html' %}
+  	                 
+            <div id="loginErrorDialog" 
+               data-dojo-type="dijit/Dialog"> 
+            </div>
+
+		  </div>
+
+		  <div id = "loginFooterCP" 
+		       data-dojo-type="dojox/layout/ContentPane"
+		       data-dojo-props="region: 'bottom',splitter:false"
+		       style = "font-size: 10px;
+				        color: RoyalBlue; 
+				        text-align:center; 
+			               "
+		     >
+		     {%include 'registration/footer.html' %}
+		  </div>
+
+		</div>
+
+	</body>
+</html>
+

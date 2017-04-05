@@ -1,0 +1,11 @@
+- role: PatientRegistration
+  app: patient
+  module: models
+  class_name: PatientDetail
+
+- role: Clinic
+  app: clinic
+  module: models
+  class_name: Clinic
+ 
+ 

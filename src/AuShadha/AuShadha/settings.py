@@ -10,11 +10,30 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
+from __future__ import absolute_import
+import sys
 import os
+import yaml
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR           = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_PATH          = os.path.dirname(__file__)
+PARENT_ROOT        = os.path.abspath(os.path.join(ROOT_PATH, os.pardir))
+APP_ROOT_URL       = u"/AuShadha/"
+LOGIN_URL          = APP_ROOT_URL + u"authenticate/login/"
+LOGIN_REDIRECT_URL = APP_ROOT_URL
 
+SERIALIZATION_MODULES = {
+    'yml': "django.core.serializers.pyyaml"
+}
+
+ADMINS = (
+    ('Dr.Easwar T.R', 'dreaswar@gmail.com'),
+)
+
+MANAGERS = ADMINS
+
+#AUTH_USER_MODEL = 'aushadha_users.AuShadhaUser'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -28,6 +47,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'clinic.apps.ClinicConfig',
+    'patient.apps.PatientConfig',
+    'aushadha_base_models.apps.AushadhaBaseModelsConfig',
+    'aushadha_users.apps.AushadhaUsersConfig',
+    'aushadha_ui.apps.AushadhaUiConfig',
 ]
 
 MIDDLEWARE = [
@@ -51,10 +78,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'AuShadha.urls'
 
+SITE_ID = 1
+
 TEMPLATES = [
+
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'static'),
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,3 +160,36 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIR = [
+    os.path.join(BASE_DIR, 'static'),
+]
+print(STATICFILES_DIR)
+INSTALLED_APPS = (
+
+# Core Django Apps used 
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+
+# Core AuShadha Apps, base_models, custom_users:
+    'aushadha_ui',
+    'aushadha_base_models',
+    'aushadha_users',
+    'clinic',
+    'search',
+    'patient'
+)
+
+try:
+  ENABLED_APPS = yaml.load( open('AuShadha/configure.yaml').read() ) # This settings doesnt do anything now. 
+except(IOError):
+  ENABLED_APPS = list(INSTALLED_APPS)
+  pass # Stupid hack just to let sphinx-apidoc pass this
+
+UI_INITIALIZED = False
