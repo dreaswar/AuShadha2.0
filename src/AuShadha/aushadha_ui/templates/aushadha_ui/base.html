@@ -106,30 +106,30 @@
     */
 
     /* Declares several CONSTANTS useful in AuShadha */
-    {% include 'js/constants.js' %}
+    {% include 'aushadha_ui/js/constants.js' %}
 
     /* Several URLS are useful as JS variables. 
        These require Django template substitutions. 
        Hence put here 
     */
-    {% include 'js/urls.js' %}
+    {% include 'aushadha_ui/js/urls.js' %}
 
     /* These are ICON paths mainly for CRUD needs. 
        These paths are using Django template substitutions. 
     */
-    {% include 'js/resources.js' %}
+    {% include 'aushadha_ui/js/resources.js' %}
 
     /* Forms do add, edit / delete function. 
        Their AJAX calls updates Grids. 
        These are common functions for AJAX POST calls
     */
-    {% include 'js/crud.js' %}
+    {% include 'aushadha_ui/js/crud.js' %}
 
     /*Notifications are important. 
       Dojox/Toaster class provides a excellent tool for the same. 
       Site wide notification funcions are here 
     */
-    {% include 'js/notification_dialog.js' %}
+    {% include 'aushadha_ui/js/notification_dialog.js' %}
 
     /* 
        Aim
@@ -157,7 +157,7 @@
         This development will be reactivated once the core API of AuShadha is settled. 
     */
 
-    {% include 'js/key_bindings.js' %}
+    {% include 'aushadha_ui/js/key_bindings.js' %}
 
   </script>
   

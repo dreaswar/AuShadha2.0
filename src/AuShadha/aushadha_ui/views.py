@@ -55,13 +55,6 @@ import six
 
 
 
-# Create your views here.
-
-
-#def home(request):
-#    "renders the home page"
-#    return render(request,'home.html')
-
 # Views start here -----------------------------------------
 
 
@@ -99,7 +92,7 @@ def home(request):
           installed_apps.append(label)
     installed_apps = json.dumps(installed_apps)
     variable = RequestContext(request, {'user':user,'installed_apps':installed_apps})
-    return render_to_response('ui/base.html',variable)
+    return render_to_response('aushadha_ui/base.html',variable)
 
   else:
     raise Http404("Bad Request Method")
@@ -122,7 +115,7 @@ def get_reference_apps(request):
                                     'app_objs': app_objs
                                    })
 
-        return render_to_response('header_pane/reference_apps.html', variable)
+        return render_to_response('aushadha_ui/header_pane/reference_apps.html', variable)
         #print("Reference Apps are: ")
         #print(apps)
         #return HttpResponse(jsondata,content_type='application/json')

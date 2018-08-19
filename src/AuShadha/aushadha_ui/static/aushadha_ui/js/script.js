@@ -114,14 +114,18 @@
 
               then(
                 function( json ){
-
+                  console.log("Got the URLS:");
                   var jsondata = JSON.parse(json);
-
+                  console.log(jsondata);
+		    
                   if ( jsondata.success == true ){
 
                     window.INSTALLED_APPS = jsondata.installed_apps; // window.INSTALLED_APPS global is set
                     window.UI = jsondata.UI;                         // window.UI global is set
-
+                      console.log("Set the window.UI var");
+		      console.log(window.UI);
+		      console.log("Staring the create panes with auCreatePane");
+		      
                     auCreatePane();                                  // This module loads the UI with Search functionality
                                                                      // This module was initially created for loading many applications at once
                                                                      // Now this only loads the Search module.
@@ -198,7 +202,7 @@
               ready(
 
               function(){
-
+                  console.log("About to call the function to create Pane");
                   request( URL_render_aushadha_ui_pane /* Variable from urls.js */).
                   then(
                     function(json){

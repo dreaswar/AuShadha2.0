@@ -3,7 +3,8 @@
   # This can be parsed and values changed before its outputted on XHR
   # Render this as a Django template with {{'clinic_id' : <clinic_id> }} before loading yaml
 {% endverbatim %}
- 
+
+{% load static %}
 
 # YAML
 
@@ -62,7 +63,7 @@ panes:
                       - id: AuShadhaHeaderIcon
                         type: dom
                         domType: img
-                        src:  {{STATIC_URL}}images/AuShadha_logo/AuShadha_logo_text.svg
+                        src:  {% static "aushadha_ui/images/AuShadha_logo/AuShadha_logo_text.svg" %}
                         alt: AuShadha
                         widgets: []
                         panes: []
@@ -90,7 +91,7 @@ panes:
                   - id: headerPaneSearchWidgetIcon
                     type: dom
                     domType: img
-                    src: {{MEDIA_URL}}images/patient/search_small.svg
+                    src: {% static "aushadha_ui/images/patient/search_small.svg" %}
                     style:
                       width: 16px
                       height: 16px
@@ -141,7 +142,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/dashboard_indicator.png
+                    src: {% static "aushadha_ui/images/dashboard_indicator.png" %}
                     alt: Reference Apps
                     title: Reference Apps
                     style:
@@ -153,7 +154,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/dashboard_home.png
+                    src: {% static "aushadha_ui/images/dashboard_home.png" %}
                     alt: Dashboard
                     title: Dashboard
                     style:
@@ -165,7 +166,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/generic/notes/note.png
+                    src: {% static "aushadha_ui/images/generic/notes/note.png" %}
                     alt: Notes
                     title: Notes
                     style:
@@ -178,7 +179,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/generic/notes/view_pim_tasks.png
+                    src: {% static "aushadha_ui/images/generic/notes/view_pim_tasks.png" %}
                     alt: Tasks
                     title: Tasks
                     style:
@@ -190,7 +191,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/generic/notifications/info_128.png
+                    src: {% static "aushadha_ui/images/generic/notifications/info_128.png" %}
                     alt: Notifications
                     title: Notifications
                     style:
@@ -230,7 +231,7 @@ panes:
                     type: dom
                     domType: img
                     class: login_area_img
-                    src: {{STATIC_URL}}images/generic/auth/user_16.png
+                    src: {% static "aushadha_ui/images/generic/auth/user_16.png" %}
                     alt: {{user.username}}
                     title: {{user.username}}
                     widgets: []
@@ -253,7 +254,7 @@ panes:
                         type: dom
                         domType: img
                         class: login_area_img
-                        src: {{STATIC_URL}}images/generic/dashboard_and_settings/settings_16.png
+                        src: {% static "aushadha_ui/images/generic/dashboard_and_settings/settings_16.png" %}
                         alt: Admin
                         onclick: /AuShadha/admin/
                         alt: Admin
@@ -266,7 +267,7 @@ panes:
                   - id: logoutHref
                     type: dom
                     domType: a
-                    onclick: /AuShadha/logout/
+                    onclick: /AuShadha/authenticate/logout/
                     alt: Logout
                     title: Logout
                     widgets: []
@@ -275,8 +276,8 @@ panes:
                       - id: logOutImg
                         type: dom
                         domType: img
-                        src: {{STATIC_URL}}images/generic/auth/system-shutdown-panel-restart.svg
-                        onclick: /AuShadha/logout/
+                        src: {% static "aushadha_ui/images/generic/auth/system-shutdown-panel-restart.svg" %}
+                        onclick: /AuShadha/authenticate/logout/
                         alt: Logout
                         title: Logout
                         class: login_area_img
@@ -286,7 +287,7 @@ panes:
                   - id: loginHref
                     type: dom
                     domType: a
-                    onclick: /AuShadha/login/
+                    onclick: /AuShadha/authenticate/login/
                     alt: Login
                     title: Login
                     widgets: []
@@ -295,8 +296,8 @@ panes:
                       - id: loginImg
                         type: dom
                         domType: img
-                        src: {{STATIC_URL}}images/generic/auth/login_128.png
-                        onclick: /AuShadha/login/
+                        src: {% static "images/generic/auth/login_128.png" %}
+                        onclick: /AuShadha/authenticate/login/
                         alt: Login
                         title: Login
                         class: login_area_img

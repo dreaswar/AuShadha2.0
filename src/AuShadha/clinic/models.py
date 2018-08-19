@@ -63,14 +63,6 @@ class Clinic(AuShadhaBaseModel):
 
     -- nature_of_clinic      --> Whether its primary center / referral centre
 
-    -- _can_add_list_or_json --> A Zope like way to set what can be contained inside this.
-                                 Objects explicitly named here will be used while setting
-                                 CRUD Urls through the generate_urls() method of super.
-                                 | #FIXME: A better method  / atleast name can be evolved to
-                                 |        indicate this. :)
-
-    -- _extra_url_actions    --> Other actions that are specific to this model and that can be used
-                                 to generate_urls().
 
   """
 
@@ -83,7 +75,7 @@ class Clinic(AuShadhaBaseModel):
   name_of_clinic = models.CharField(max_length=200)
   nature_of_clinic = models.CharField(max_length=200, choices = CLINIC_NATURE_CHOICES)
 
-  def __unicode__(self):
+  def __str__(self):
       return '%s (%s)' %(self.name_of_clinic, self.nature_of_clinic)
 
 

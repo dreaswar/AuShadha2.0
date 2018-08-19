@@ -35,6 +35,13 @@ AUSHADHA_USER_ROLES = (('audhadha_admin', 'AuShadha Admin'),
                        ('aushadha_developer', 'AuShadha Developer'),
                        )
 
+#CLINIC_ROLES = (('doctor', "Doctor"),
+#                ('secretary', "Secretary"),
+#                ('paramedical', "Paramedical"),
+#                ('clinic_admin', "Clinic Administrator"),
+#                ('nursing_staff', "Nursing Staff"),
+#                ('physician_assistant', "Physician Assistant")
+#                )
 
 
 class AuShadhaUser(models.Model):
@@ -56,8 +63,25 @@ class AuShadhaUser(models.Model):
                           choices=AUSHADHA_USER_ROLES,
                           default="aushadha_user"
                           )
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    
+#    clinic_role = models.CharField("Clinic Role",
+#                          help_text=""" Users Role in Clinic.
+#                               This is different from the role in the Clinic
+#                               """,
+#                          max_length=30,
+#                          choices= CLINIC_ROLES,
+#                          default="secretary"
+#                          )
 
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='profile')
+
+    def __str__(self):
+        return '{}: {}'.format(self.user.username, self.user.first_name or '')
+    
+    class Meta:
+        verbose_name = "AuShadha User"
+        verbose_name_plural = "AuShadha User"
+        
 @receiver(post_save, sender=User)
 def create_user_profile(sender,instance, created, **kwargs):
     if created:
@@ -77,7 +101,7 @@ class AuShadhaUserForm(AuthenticationForm):
     """
     
     def confirm_login_allowed(self, user):
-        if not user.is_active or not user.is_validated:
+        if not user.is_active:
             raise forms.ValidationError(
                 'There was a problem with your login.', 
                 code='invalid_login')

@@ -135,7 +135,7 @@ class AuShadhaBaseModel(models.Model):
     def save(self, *args, **kwargs):
         """ Saves a model and sets the urls attribute"""
         super(AuShadhaBaseModel, self).save(*args, **kwargs)
-        self.generate_urls()
+        #self.generate_urls()
 
     def __unicode__(self):
         """ Returns the unicode representation of the Model as the __model_label__ Attribute"""

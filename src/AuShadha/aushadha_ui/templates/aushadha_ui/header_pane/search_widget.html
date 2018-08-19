@@ -1,3 +1,5 @@
+{% load static %}
+
 <!-- 
   This is the search widget that appears on the Header pane   
   Only the DOM has been created here. 
@@ -13,7 +15,7 @@
 
     <!--{%if perms.patient.add_patientdetail %}
         <img id             = "addPatientButtonSmall"
-              src            = "{{MEDIA_URL}}images/patient/patient_add.svg"
+              src            = "{% static "aushadha_ui/images/patient/patient_add.svg" %}"
               style          = " position     : relative;
                                   width        : 16px;
                                   height       : 16px;
@@ -24,7 +26,7 @@
      {% endif %}-->
 
       <img id            = "headerPaneSearchWidgetIcon"
-          src            = "{{MEDIA_URL}}images/patient/search_small.svg"
+          src            = "{% static "aushadha_ui/images/patient/search_small.svg" %}"
           style          = " position    : relative;
                              width       : 16px; 
                              height      : 16px;

@@ -65,7 +65,7 @@ def login_view(request, template_name='registration/login.html',
         form = authentication_form(data=request.POST)
 
         if form.is_valid():
-            netloc = urlparse.urlparse(redirect_to)[1]
+            netloc = urlparse(redirect_to)[1]
 
             # Use default setting if redirect_to is empty
             if not redirect_to:

@@ -46,7 +46,7 @@ def render_aushadha_ui_pane(request):
           clinic_obj[0].save()
 
         try:
-          pane_template = Template( open('AuShadha/apps/ui/dijit_widgets/pane.yaml','r').read() )
+          pane_template = Template( open('aushadha_ui/dijit_widgets/pane.yaml','r').read() )
 
         except( IOError ):
           raise Http404("No template file to render the pane ! ")
