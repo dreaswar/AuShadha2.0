@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 import AuShadha.settings
 
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import login, logout
 
 from .views import login_view, logout_view
 from .models import AuShadhaUserForm
@@ -18,12 +18,12 @@ urlpatterns = [
   url(r'^logout/$',logout_view),
 
 #  url(r'^login/$' ,
-#     auth_views.login,
+#     login,
 #     {'template_name':'registration/login.html',
 #      'authentication_form': AuShadhaUserForm
 #     },
 #     name="login"
 #  ),
-  url(r'^logout/$',auth_views.logout, name="logout"),
+  url(r'^logout/$',logout, name="logout"),
 
 ]

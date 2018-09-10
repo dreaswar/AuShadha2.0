@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'AuShadha.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'aushadha',
+        'NAME': 'aushadha2',
         'USER': 'aushadha',
         'PASSWORD': 'aushadha',
         'HOST': 'localhost',
