@@ -77,7 +77,15 @@ panes:
       width: 200px
       height: 1.8em
     
-    panes: 
+    panes:
+      #- id: DUMMY_TEXT
+      #  type: dom
+      #  domType: p
+      #  html: Dummy Text
+      #  panes: []
+      #  widgets: []
+      #  returns: html
+        
       - id: PATIENT_DETAIL_EDIT_ICON
         type: dom
         domType: img

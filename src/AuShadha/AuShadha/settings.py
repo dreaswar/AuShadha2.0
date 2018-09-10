@@ -185,7 +185,18 @@ INSTALLED_APPS = (
     'aushadha_users',
     'clinic',
     'search',
-    'patient'
+    'patient',
+
+  # Core AuShadha Registry for ICD 10 codes, ICD 10 PCS codes, Drug Database
+#   and Vaccine Registry
+    'registry.icd10',
+    'registry.icd10pcs',
+    'registry.drug_db',
+    'registry.drug_db.drugbankca',
+    'registry.inv_and_imaging',
+    'registry.vaccine_registry',
+  
+  
 )
 
 try:

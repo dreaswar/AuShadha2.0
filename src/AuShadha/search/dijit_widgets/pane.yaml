@@ -16,12 +16,12 @@ VARS:
 URLS:
 
   pane: &SEARCH_PANE_URL
-          !!python/object/apply:django.core.urlresolvers.reverse
+          !!python/object/apply:django.urls.reverse
               args: [ render_aushadha_search_pane ]
               kwds: {}
   
 #   search_form: &RENDER_SEARCH_FORM
-#           !!python/object/apply:django.core.urlresolvers.reverse
+#           !!python/object/apply:django.urls.reverse
 #               args: [ render_aushadha_search_form ]
 #               kwds: {}
 
