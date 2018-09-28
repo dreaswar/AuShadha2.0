@@ -19,6 +19,10 @@ from aushadha_base_models.models import AuShadhaBaseModel, \
                                         AuShadhaBaseModelForm
 from clinic.models import Clinic
 
+from .dijit_fields_constants import PATIENT_DETAIL_FORM_CONSTANTS
+from AuShadha.settings import APP_ROOT_URL
+
+DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES=('parent_clinic',)
 
 class PatientDetail(AuShadhaBaseModel):
 
@@ -220,6 +224,10 @@ class PatientDetailForm(AuShadhaBaseModelForm):
         ModelForm for Patient Basic Data
     """
 
+    __form_name__ = "Patient Detail Form"
+
+    dijit_fields = PATIENT_DETAIL_FORM_CONSTANTS
+
     class Meta:
         model = PatientDetail
-        exclude = ['parent_clinic',]
+        exclude = DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES

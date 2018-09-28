@@ -44,12 +44,14 @@ from clinic.models import Clinic
 import six
 
 # Relative imports with UI.get_module()
-PatientDetail = UI.get_module("PatientRegistration")
-Demographics = UI.get_module("Demographics")
-Contact = UI.get_module("Contact")
-Phone = UI.get_module("Phone")
-EmailAndFax = UI.get_module("EmailAndFax")
-Guardian = UI.get_module("Guardian")
+from patient.models import PatientDetail
+
+#PatientDetail = UI.get_module("PatientRegistration")
+#Demographics = UI.get_module("Demographics")
+#Contact = UI.get_module("Contact")
+#Phone = UI.get_module("Phone")
+#EmailAndFax = UI.get_module("EmailAndFax")
+#Guardian = UI.get_module("Guardian")
 
 
 @login_required

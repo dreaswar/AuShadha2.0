@@ -1,0 +1,205 @@
+{% if user and user.is_authenticated %}
+
+<div data-dojo-type = "dijit/form/Form" 
+     id             = "newPatientEditForm" 
+     data-dojo-id   = "newPatientEditForm"
+     encType        = "multipart/form-data" 
+     action 	    =  "" 
+     method         =  ""
+   >
+
+
+      <script type="dojo/method" data-dojo-event="onSubmit">
+
+      if( this.validate() ){
+
+        require(
+
+          ["dojo/_base/xhr", 
+            "dojo/dom", 
+            "dojo/dom-attr",
+            "dojo/json", 
+            "dojo/_base/fx",
+            "dijit/Dialog",
+            "dijit/form/Form",
+            "dijit/form/Button",
+            "dijit/form/ValidationTextBox", 
+            "dijit/form/Select",
+            "dijit/registry",
+            "dojo/query",
+            "dojo/NodeList-traverse",
+            "dojo/NodeList-data"
+          ],
+
+        function(xhr, dom, domAttr, JSON,
+                 fx, Dialog, Form, 
+                 Button, TextBox, 
+                 Select, registry, query){
+
+        // {% if perms.patient.change_patientdetail %}
+
+            xhr.post({
+
+                    url  : "{{patient_detail_obj.urls.edit}}",
+
+                    form : dom.byId("newPatientEditForm"),
+
+                    load : function(json) {
+
+                            var jsondata = JSON.parse(json)
+
+                            var allTopPanes = query(".topContentPane.selected");
+
+                            if ( jsondata.success == true ) {
+
+                                allTopPanes.forEach(
+
+                                  function ( node ) {
+                                    var domId  = domAttr.get( node, 'id' );
+                                    var widget = registry.byId( domId );
+                                    widget.set( 'href', "{{patient_detail_obj.urls.info}}" );
+                                  }
+
+                                );
+
+                                registry.byId("PATIENT").set('href', "{{patient_detail_obj.urls.pane}}" );
+
+                                publishInfo(jsondata.error_message);
+                                registry.byId("editPatientDialog").hide();
+
+                            }
+                            else{
+                                publishError(jsondata.error_message);
+                            }
+                    },
+                    error: function(response) {
+                                publishError(response);
+                    }
+            });
+
+          //{% else %}
+
+            registry.byId("permissionDeniedErrorDialog").show();
+
+          //{%endif %}
+
+      });
+
+      return false;
+
+      }
+
+      else{
+
+      registry.byId("invalidFormSubmissionErrorDialog").show();
+      return false;
+
+      }
+
+    </script>
+
+    <table id		=	"patient_detail_edit_form_table"> 
+                {{patient_detail_edit_form}} 
+    </table>
+
+    {% if perms.patient.change_patientdetail %}
+
+      <button data-dojo-type = "dijit/form/Button" 
+            data-dojo-props="iconClass: 'dijitEditorIcon dijitEditorIconSave'"
+            type           = "submit" 
+            name           = "editButton" 
+            value          = "Edit">
+      Edit
+     </button>
+
+    {%endif%}
+
+
+    {% if perms.patient.delete_patientdetail %}
+
+    <button data-dojo-type  = "dijit/form/Button" 
+						data-dojo-props="iconClass: 'dijitEditorIcon dijitEditorIconDelete'"    
+            type            = "button"
+            name            = "delPatient"
+            id              = "delPatientBtn">
+       Delete
+
+   <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">
+
+			  require(
+
+			    ["dojo/dom", 
+			     "dojo/_base/xhr",
+			     "dojo/json",
+			     "dijit/registry",
+			     "dijit/Dialog"
+			    ],
+
+			  function(dom, xhr, JSON, registry, Dialog){
+
+					var _c  = confirm("This will Delete the Patient and all related Data. Proceed ? " );
+
+					if ( _c ) {
+
+                        xhr.get({
+
+                          url: "{{patient_detail_obj.urls.del}}",
+
+                          load: function(json){
+
+                                  var jsondata = JSON.parse(json)
+
+                                  if (jsondata.success == true){
+
+                                      var cTopTabPane = registry.byId("centerTopTabPane")
+                                      var children = cTopTabPane.getChildren();
+
+                                      children.forEach(
+
+                                        function ( tab ) {
+                                          if ( children.indexOf(tab) > 0 ){
+                                              cTopTabPane.removeChild(tab);
+                                              tab.destroyRecursive();
+                                          }
+                                        }
+
+                                      );
+
+                                      registry.byId("editPatientDialog").hide();
+                                      publishInfo(jsondata.error_message);
+
+                                  }
+
+                                  else{
+                                      publishError(jsondata.error_message);
+                                  }
+
+                                }
+
+                        });
+                  }
+
+                  else {
+
+                    registry.byId("editPatientDialog").hide();                  
+                    return false;
+
+                  }
+
+			  });
+    </script>
+
+    </button>
+
+  {% endif %}
+
+
+</div>
+
+{% else %}
+
+<p class="suggestion_text"> Please Login </p>
+
+{% endif %}
+
+

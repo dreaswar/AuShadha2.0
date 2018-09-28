@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class DrugDBConfig(AppConfig):
-    name = 'drug_db'
+    name = 'registry.drug_db'

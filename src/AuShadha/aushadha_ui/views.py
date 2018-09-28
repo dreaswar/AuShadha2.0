@@ -171,7 +171,7 @@ def installed_apps(request):
 
       #Hack to avoid core modules. This way the UI atleast starts with core modules
       #as dependencies
-      if  main_module not in ['django','AuShadha'] or app_name in ['search']:
+      if  main_module not in ['django','AuShadha']:
         x = importlib.import_module(app)
         label = getattr(x,'MODULE_LABEL',None)
         ui_sections = getattr(x,'ui_sections',None)
@@ -193,6 +193,8 @@ def installed_apps(request):
             'UI': serialise_ui(UI)
             }
     print(( dir(json)))
+    print("INSTALLED APPS IS : ")
+    print(installed_apps)
     jsondata = json.dumps(data)
     return HttpResponse(jsondata, content_type='application/json')
 

@@ -762,6 +762,7 @@ function(
                         }
                         else if ( widgetQ.widget.type == 'search' ){
                             var widgetStore = new JsonRest({target: widgetQ.widget.url});
+			    console.log(widgetStore);
                             var searchBox = new FilteringSelect({regExp        : '[a-zA-Z0-9 -]+'  ,
                                                                 required       : true              ,
                                                                 invalidMessage : 'No Results'      ,
@@ -773,7 +774,22 @@ function(
                                                                 placeHolder    : widgetQ.widget.placeHolder ,
                                                                 hasDownArrow   : widgetQ.widget.hasDownArrow,
                                                                 onChange       : function(e){
-                                                                                    //widgetQ.widget.onchange
+                                                                    //widgetQ.widget.onchange
+								    console.log("EVENT IS : ");
+								    console.log(registry.byId(widgetQ.widget.id));
+								    if (widgetQ.widget.onChange){
+									console.log("WIDGET ON CHANGE EVENT IS FIRING!");
+									_e = widgetQ.widget.onChange;
+									_m = _e.js_module ;
+									_a = _e.js_alias ;
+									_f = _e.function_name ;
+									
+									require([_m],
+										function(fController){
+										    console.log(registry.byId(widgetQ.widget.id));
+										    fController.onFilteringSelectChoice(registry.byId(widgetQ.widget.id));
+									})
+								    }
                                                                                   },
                                                                 style: widgetQ.widget.style? widgetQ.widget.style: "position:relative;top: 0.1em;width: 96%;height:15%;left: 2%;"
                                                                 },

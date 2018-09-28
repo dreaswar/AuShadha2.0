@@ -4,8 +4,8 @@ from django.contrib import admin
 import AuShadha.settings
 admin.autodiscover()
 
-from dijit_widgets.pane import render_drugbankcadrugs_pane
-from dijit_widgets.tree import render_drugbankcadrugs_tree
+from .dijit_widgets.pane import render_drugbankcadrugs_pane
+from .dijit_widgets.tree import render_drugbankcadrugs_tree
 from .views import drugbankcadrugs_json_for_a_drug,\
                    drugbankcadrugs_summary_by_drug_id,\
                    drugbankcadrugs_summary_by_drug_name,\
@@ -14,7 +14,7 @@ from .views import drugbankcadrugs_json_for_a_drug,\
                    get_drugbankca_publications
 
 
-urlpatterns = patterns('',
+urlpatterns = [
 
 	url(r'get/publications/$', 
             get_drugbankca_publications, 
@@ -56,6 +56,6 @@ urlpatterns = patterns('',
             name = 'drugbankcadrugs_search_by_drug_name'
           ),
 
-)
+]
 
 

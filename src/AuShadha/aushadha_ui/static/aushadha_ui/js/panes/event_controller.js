@@ -108,18 +108,31 @@ define(["dijit/registry",
                             
       },
 
-      onPatientChoice:function (e/* on widget obj */){
-//                                 console.log(e.store);
+      onFilteringSelectChoice:function (e/* on widget obj */, value /*New Value*/){
+                                console.log(e.store);
                                 e.store.get( e.get('value') ).
                                 then(
                                   function(item /*returned item*/){
-//                                         console.log(item);
+                                         console.log(item);
                                         // This will update all Panes;
                                         paneEventController._reInitAllPanes(item);
                                         console.log("Called _reInitAllPanes");
                                   }
                                 );
       },
+      
+      onPatientChoice:function (e/* on widget obj */){
+                                console.log(e.store);
+                                e.store.get( e.get('value') ).
+                                then(
+                                  function(item /*returned item*/){
+                                         console.log(item);
+                                        // This will update all Panes;
+                                        paneEventController._reInitAllPanes(item);
+                                        console.log("Called _reInitAllPanes");
+                                  }
+                                );
+      }, 
 
       onPatientGridSelect:function (item/* on widget obj */){
 //                                         console.log(item);

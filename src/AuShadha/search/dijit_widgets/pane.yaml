@@ -1,3 +1,4 @@
+{% load static %}
 {% verbatim %}
   # YAML to describe the Visit pane and the contained widgets. 
   # This can be parsed and values changed before its outputted on XHR
@@ -11,7 +12,7 @@ VARS:
   clinic_id: &CLINIC_ID
             !!int {{clinic_id}}
   
-  logo_url: &LOGO_URL {{STATIC_URL}}images/AuShadha_logo/AuShadha_logo.svg
+  logo_url: &LOGO_URL {% static "aushadha_ui/images/AuShadha_logo/AuShadha_logo.svg" %}
 
 URLS:
 
@@ -40,20 +41,20 @@ closable : !!bool False
 
 widgets: []
 
-#   - type: grid
-#     id  : PATIENT_MAIN_GRID
-#     url:  *SEARCH_PANE_URL
-# 
-#   - type: search
-#     id  : PATIENT_MAIN_SEARCH
-#     url : *SEARCH_PANE_URL
+   #- type: grid
+   #  id  : PATIENT_MAIN_GRID
+   #  url:  *SEARCH_PANE_URL
+ 
+   #- type: search
+   #  id  : PATIENT_MAIN_SEARCH
+   #  url : *SEARCH_PANE_URL
 
 panes:
 
   - id: PATIENT_ADD_ICON
     type: dom
     domType: img
-    src: {{MEDIA_URL}}images/patient/patient_detail_add_128.png
+    src: {% static "aushadha_ui/images/patient/patient_detail_add_128.png" %}
     onclick: {%url 'patient_detail_add_without_id' %}
     placeAt: headerPaneActionIconsBox
     position: !!int 0
@@ -146,10 +147,31 @@ panes:
               - id: search_form
                 type: dom
                 domType: div
+                url : {%url 'aushadha_patient_search' %}
+                widgets:
+                  - id              : AUSHADHA_PATIENT_SEARCH_WIDGET
+                    type            : search
+                    url             : &PATIENT_SEARCH_URL {%url 'aushadha_patient_search' %} 
+                    labelAttr       : 'label'
+                    searchAttr      : 'name'
+                    autoComplete    : false
+                    store           : *PATIENT_SEARCH_URL
+                    placeHolder     : 'Type a Patient Name for searching ...'
+                    hasDownArrow    : false
+                    invalidMessage  : "No Results"
+                    regExp          : '[a-zA-Z0-9 -]+'
+                    required        : true
+                    onChange:
+                      js_module : 'aushadha/panes/event_controller'
+                      js_alias  : eventController
+                      function  : onFilteringSelctChoice
+                      args      : e
+                      
+                    
 
-#       - id: SEARCH_CENTER_TC_CP_SEARCH_GRID
-#         type: cp
-#         widgets: []
-#         title: Grid
-#         closable: False
-#         url: null
+      #- id: SEARCH_CENTER_TC_CP_SEARCH_GRID
+      #  type: cp
+      #  widgets: []
+      #  title: Grid
+      #  closable: False
+      #  url: null

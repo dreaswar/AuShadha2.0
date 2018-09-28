@@ -70,7 +70,7 @@ def render_aushadha_search_pane(request):
           print("No Attribute of URLS on Clinic. Saving to generate the same")
           clinic_obj[0].save()
         try:
-          pane_template = Template( open('AuShadha/apps/search/dijit_widgets/pane.yaml','r').read() )
+          pane_template = Template( open('search/dijit_widgets/pane.yaml','r').read() )
         except( IOError ):
           raise Http404("No template file to render the pane ! ")
         rendered_pane = pane_template.render(context)

@@ -112,7 +112,8 @@ define(['dojo/dom',
       }
 
       function appPaneCreator( appObj ) {
-
+          console.log(appObj);
+	  
         var title = appObj.app;
         var url = appObj.url;
         var domId = appObj.app.replace(' ','_').toLowerCase();
@@ -132,35 +133,42 @@ define(['dojo/dom',
         var d = dom.byId(domId);
         var p = registry.byId(domId);
 
-        console.log("Creating pane with domId: " + domId);
+          console.log("Creating pane with domId: " + domId);
+	  console.log("Is App a main module ? : " + appType);
+	  console.log("Is App going to load first ? : " + loadFirst);
+	  
 
         // This Basically parses the json.pane from the AuShadha/apps/search/views's render_search_pane and creates a search UI with 
         // search forms, widgets etc..
         function runMainModulePaneCreator(){
 
-          if ( loadFirst == true ){
+          if ( loadFirst ){
 
-              if (title == 'Search' ){
+             //if (title == 'Search' ){
 
                 if ( uiSections.widgets.pane ){
 
                   request(uiSections.widgets.pane).then(
                     function(json){
                       var jsondata  = JSON.parse(json);
-                      paneAndWidgetCreator.constructor(jsondata.pane);
-                      auMain.auEventBinders.headerPaneSearchWidget( searchEnabled,'Search for:  '+ title);
+			paneAndWidgetCreator.constructor(jsondata.pane);
+			console.log("CALLING PANE CONSTRUCTOR WITH JSON: ");
+			console.log(jsondata);
+			/*
+			auMain.auEventBinders.headerPaneSearchWidget( jsondata.pane.url,'Search for:  '+ title);
                       if ( dom.byId('search_form') ){
-                        auMain.auEventBinders.searchWidget( searchEnabled,'Search for:  '+ title);
+                          auMain.auEventBinders.searchWidget( jsondata.pane.url,'Search for:  '+ title);
                       }
                       else{
                         alert("Dom is not ready for searching");
                       }
+*/
                     }
                   );
 
                 }
 
-              }
+              //}
 
           }
 

@@ -8,6 +8,12 @@
   module: models
   class_name: Clinic
 
+- role: Search
+  app: search
+  module: models
+  class_name: Search
+
+
 ######################################################
 - role: RegistryApp
   app: registry.icd10

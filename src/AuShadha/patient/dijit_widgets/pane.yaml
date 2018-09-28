@@ -17,26 +17,26 @@ VARS:
 URLS:
 
   pane: &PATIENT_PANE_URL
-          !!python/object/apply:django.core.urlresolvers.reverse
+          !!python/object/apply:django.urls.reverse
               args: [ render_patient_pane_with_id ]
               kwds: { kwargs : { patient_id: *PATIENT_ID } }
 
   patient_info: &PATIENT_INFO_URL
-                  !!python/object/apply:django.core.urlresolvers.reverse
+                  !!python/object/apply:django.urls.reverse
                       args: [ render_patient_info ]
                       kwds: { kwargs: { patient_id: *PATIENT_ID }  }
 
   json: &PATIENT_JSON_URL
-          !!python/object/apply:django.core.urlresolvers.reverse
+          !!python/object/apply:django.urls.reverse
             args: [ render_patient_json ]
 
   tree: &PATIENT_TREE_URL
-          !!python/object/apply:django.core.urlresolvers.reverse
+          !!python/object/apply:django.urls.reverse
               args: [ render_patient_tree_with_id ]
               kwds: { kwargs : { patient_id: *PATIENT_ID }  }
 
   summary: &PATIENT_SUMMARY_URL
-            !!python/object/apply:django.core.urlresolvers.reverse
+            !!python/object/apply:django.urls.reverse
                 args: [ render_patient_summary_with_id ]
                 kwds: { kwargs: { patient_id: *PATIENT_ID } }
 

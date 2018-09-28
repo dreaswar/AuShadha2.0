@@ -205,4 +205,6 @@ except(IOError):
   ENABLED_APPS = list(INSTALLED_APPS)
   pass # Stupid hack just to let sphinx-apidoc pass this
 
+print("ENABLED APPS")
+print(ENABLED_APPS)
 UI_INITIALIZED = False

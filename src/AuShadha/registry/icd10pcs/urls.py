@@ -11,7 +11,7 @@ from .views import icd10pcs_code_search
 from .dijit_widgets.pane import render_icd10pcs_pane
 from .dijit_widgets.tree import render_axis_tree
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'render/pane/$', 
         render_icd10pcs_pane, 
         name = 'render_icd10_pcs_pane'),
@@ -24,6 +24,6 @@ urlpatterns = patterns('',
     url(r'code/search/$', 
         icd10pcs_code_search, 
         name = 'icd10pcs_code_search'),
-)
+]
 
 

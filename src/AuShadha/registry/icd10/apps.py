@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ICD10Config(AppConfig):
-    name = 'icd10'
+    name = 'registry.icd10'

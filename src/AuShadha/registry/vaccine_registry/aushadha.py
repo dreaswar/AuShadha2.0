@@ -10,7 +10,7 @@
 ################################################################################
 
 from .models import VaccineDetail 
-from AuShadha.apps.ui.ui import ui as UI
+from aushadha_ui.ui import ui as UI
 
 #UI.register('ReferenceApp', VaccineDetail)
 #UI.register('RegistryApp',VaccineDetail)

@@ -90,7 +90,7 @@ class Diagnosis(AuShadhaBaseModel):
         'Diagnosis Name', max_length=100, null=True, blank=True)
     diag_code = models.TextField(
         'Diagnosis Code', max_length=200, null=True, blank=True)
-    section_fk = models.ForeignKey('Section', on_delete = models.CASCADE)
+    section_fk = models.ForeignKey('Section', on_delete=models.CASCADE)
 
 # Define the Unicode method ::
     def __unicode__(self):

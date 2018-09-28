@@ -10,6 +10,6 @@
 ################################################################################
 
 from .models import PatientDetail
-from AuShadha.apps.ui.ui import ui as UI
+from aushadha_ui.ui import ui as UI
 
 UI.register('PatientRegistration', PatientDetail)
