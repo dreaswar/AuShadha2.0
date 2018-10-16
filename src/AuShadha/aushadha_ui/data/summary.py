@@ -89,10 +89,18 @@ class ModelInstanceSummary(object):
     return unicode( self.__call__() )
 
 
+  def get_all_related_objects(self):
+    ''' Retrieves all related objects to a model'''
+    return [
+      f for f in self.instance._meta.get_fields()
+      if (f.one_to_many or f.one_to_one)
+      and f.auto_created and not f.concrete 
+      ]
+
   def build_module_path_map(self):
       ''' Creates a dictionary with module_path and field_name which can be used for imports '''
 
-      for x in self.instance._meta.get_all_related_objects():
+      for x in self.get_all_related_objects():
 
         d = { 'module_path' : [x.model.__module__, x.model.__name__], 
              'field_name' : x.field.name 

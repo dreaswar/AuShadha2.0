@@ -32,11 +32,26 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
+##################### Application Specific Model Imports #######################
+
+#import AuShadha.settings as settings
+from AuShadha.settings import APP_ROOT_URL
+
+from AuShadha.core.serializers.data_grid import generate_json_for_datagrid
+from AuShadha.core.views.dijit_tree import DijitTreeNode, DijitTree
+from AuShadha.utilities.forms import aumodelformerrorformatter_factory
+
+from aushadha_ui.data.json import ModelInstanceJson
+from aushadha_ui.data.summary import ModelInstanceSummary
+from aushadha_ui.ui import ui as UI
+
+
 
 ######################### Views start here ######################################
 
 from clinic.models import Clinic
 from patient.models import PatientDetail, PatientDetailForm
+from .dijit_widgets.tree import PatientTree
 
 
 @login_required
@@ -69,17 +84,17 @@ def render_patient_summary(request, patient_id=None):
         else:
             patient_id = int(request.GET.get('patient_id'))
 
-        try:
-            pat_obj = PatientDetail.objects.get(pk=patient_id)
-            var = ModelInstanceSummary(pat_obj).variable
-            var['user'] = user
-            return render(request, 'patient_detail/summary.html', var)
+      #  try:
+        pat_obj = PatientDetail.objects.get(pk=patient_id)
+        var = ModelInstanceSummary(pat_obj).variable
+        var['user'] = user
+        return render(request, 'patient_detail/summary.html', var)
 
-        except(AttributeError, NameError, KeyError, TypeError, ValueError):
-            raise Http404("ERROR! Bad Request Parameters")
+        #except(AttributeError, NameError, KeyError, TypeError, ValueError):
+         #   raise Http404("ERROR! Bad Request Parameters")
 
-        except(AttributeError, NameError, KeyError, TypeError, ValueError):
-            raise Http404("ERROR! Requested Patient Data Does not exist")
+        #except(AttributeError, NameError, KeyError, TypeError, ValueError):
+         #   raise Http404("ERROR! Requested Patient Data Does not exist")
     else:
         raise Http404("Bad Request")
 
