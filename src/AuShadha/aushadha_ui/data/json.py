@@ -90,6 +90,7 @@ class ModelInstanceJson(object):
       ''' Returns the data as a serialized JSON '''
       return json.dumps(self.exportable_fields)
 
+<<<<<<< HEAD
     def get_fields_with_model(self):
         ''' Returns list of fields in the Model'''
         return [
@@ -101,13 +102,19 @@ class ModelInstanceJson(object):
         ]
     
 
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
     def get_all_json_exportable_fields(self):
       """ 
         Gets the JSON exportable fields and its values as key, value pair
         This skips AutoField, OneToOneField type of field
       """
 
+<<<<<<< HEAD
       for item in self.get_fields_with_model():
+=======
+      for item in self.instance._meta.get_fields_with_model():
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
         if item[0].serialize:
 
@@ -136,6 +143,7 @@ class ModelInstanceJson(object):
         This should be useful later in URL creation automagically
       """
 
+<<<<<<< HEAD
       self.related_object_list = [
           f for f in self.instance._meta.get_fields()
           if (f.one_to_many or f.one_to_one)
@@ -145,6 +153,11 @@ class ModelInstanceJson(object):
       #for item in self.instance._meta.get_all_related_objects():
       #    i  = '.'.join(item.name.split(':'))
       #    self.related_object_list.append(i)
+=======
+      for item in self.instance._meta.get_all_related_objects():
+          i  = '.'.join(item.name.split(':'))
+          self.related_object_list.append(i)
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
       for item in self.related_field_list:
         if item not in self.instance._can_add_list_or_json:

@@ -19,7 +19,11 @@ import json
 
 # Django Imports
 from django.http import Http404, HttpResponse
+<<<<<<< HEAD
 from django.urls import reverse
+=======
+from django.core.urlresolvers import reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.template import Template, Context
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
@@ -70,7 +74,11 @@ def render_aushadha_search_pane(request):
           print("No Attribute of URLS on Clinic. Saving to generate the same")
           clinic_obj[0].save()
         try:
+<<<<<<< HEAD
           pane_template = Template( open('search/dijit_widgets/pane.yaml','r').read() )
+=======
+          pane_template = Template( open('AuShadha/apps/search/dijit_widgets/pane.yaml','r').read() )
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         except( IOError ):
           raise Http404("No template file to render the pane ! ")
         rendered_pane = pane_template.render(context)

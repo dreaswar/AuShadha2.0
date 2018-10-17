@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 {% load static %}
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 {% verbatim %}
   # YAML to describe the Visit pane and the contained widgets. 
   # This can be parsed and values changed before its outputted on XHR
@@ -12,17 +15,29 @@ VARS:
   clinic_id: &CLINIC_ID
             !!int {{clinic_id}}
   
+<<<<<<< HEAD
   logo_url: &LOGO_URL {% static "aushadha_ui/images/AuShadha_logo/AuShadha_logo.svg" %}
+=======
+  logo_url: &LOGO_URL {{STATIC_URL}}images/AuShadha_logo/AuShadha_logo.svg
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 URLS:
 
   pane: &SEARCH_PANE_URL
+<<<<<<< HEAD
           !!python/object/apply:django.urls.reverse
+=======
+          !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
               args: [ render_aushadha_search_pane ]
               kwds: {}
   
 #   search_form: &RENDER_SEARCH_FORM
+<<<<<<< HEAD
 #           !!python/object/apply:django.urls.reverse
+=======
+#           !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 #               args: [ render_aushadha_search_form ]
 #               kwds: {}
 
@@ -41,6 +56,7 @@ closable : !!bool False
 
 widgets: []
 
+<<<<<<< HEAD
    #- type: grid
    #  id  : PATIENT_MAIN_GRID
    #  url:  *SEARCH_PANE_URL
@@ -48,13 +64,26 @@ widgets: []
    #- type: search
    #  id  : PATIENT_MAIN_SEARCH
    #  url : *SEARCH_PANE_URL
+=======
+#   - type: grid
+#     id  : PATIENT_MAIN_GRID
+#     url:  *SEARCH_PANE_URL
+# 
+#   - type: search
+#     id  : PATIENT_MAIN_SEARCH
+#     url : *SEARCH_PANE_URL
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 panes:
 
   - id: PATIENT_ADD_ICON
     type: dom
     domType: img
+<<<<<<< HEAD
     src: {% static "aushadha_ui/images/patient/patient_detail_add_128.png" %}
+=======
+    src: {{MEDIA_URL}}images/patient/patient_detail_add_128.png
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
     onclick: {%url 'patient_detail_add_without_id' %}
     placeAt: headerPaneActionIconsBox
     position: !!int 0
@@ -147,6 +176,7 @@ panes:
               - id: search_form
                 type: dom
                 domType: div
+<<<<<<< HEAD
                 url : {%url 'aushadha_patient_search' %}
                 widgets:
                   - id              : AUSHADHA_PATIENT_SEARCH_WIDGET
@@ -175,3 +205,12 @@ panes:
       #  title: Grid
       #  closable: False
       #  url: null
+=======
+
+#       - id: SEARCH_CENTER_TC_CP_SEARCH_GRID
+#         type: cp
+#         widgets: []
+#         title: Grid
+#         closable: False
+#         url: null
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0

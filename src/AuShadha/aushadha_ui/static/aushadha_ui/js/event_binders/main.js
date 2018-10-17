@@ -118,8 +118,13 @@ define([
                                                             hasDownArrow   : false             ,
                                                             onChange       : function(e){
                                                                                 try{
+<<<<<<< HEAD
                                                                                   console.log(e);
                                                                                   auPaneEventController.onPatientChoice(e);
+=======
+                                                                                  console.log(this);
+                                                                                  auPaneEventController.onPatientChoice(this);
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                                                                                 }catch(err){
                                                                                   console.error(err.message);
                                                                                 }

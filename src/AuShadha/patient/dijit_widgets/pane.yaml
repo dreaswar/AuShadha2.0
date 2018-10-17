@@ -17,26 +17,46 @@ VARS:
 URLS:
 
   pane: &PATIENT_PANE_URL
+<<<<<<< HEAD
           !!python/object/apply:django.urls.reverse
+=======
+          !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
               args: [ render_patient_pane_with_id ]
               kwds: { kwargs : { patient_id: *PATIENT_ID } }
 
   patient_info: &PATIENT_INFO_URL
+<<<<<<< HEAD
                   !!python/object/apply:django.urls.reverse
+=======
+                  !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                       args: [ render_patient_info ]
                       kwds: { kwargs: { patient_id: *PATIENT_ID }  }
 
   json: &PATIENT_JSON_URL
+<<<<<<< HEAD
           !!python/object/apply:django.urls.reverse
             args: [ render_patient_json ]
 
   tree: &PATIENT_TREE_URL
           !!python/object/apply:django.urls.reverse
+=======
+          !!python/object/apply:django.core.urlresolvers.reverse
+            args: [ render_patient_json ]
+
+  tree: &PATIENT_TREE_URL
+          !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
               args: [ render_patient_tree_with_id ]
               kwds: { kwargs : { patient_id: *PATIENT_ID }  }
 
   summary: &PATIENT_SUMMARY_URL
+<<<<<<< HEAD
             !!python/object/apply:django.urls.reverse
+=======
+            !!python/object/apply:django.core.urlresolvers.reverse
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                 args: [ render_patient_summary_with_id ]
                 kwds: { kwargs: { patient_id: *PATIENT_ID } }
 
@@ -77,6 +97,7 @@ panes:
       width: 200px
       height: 1.8em
     
+<<<<<<< HEAD
     panes:
       #- id: DUMMY_TEXT
       #  type: dom
@@ -86,6 +107,9 @@ panes:
       #  widgets: []
       #  returns: html
         
+=======
+    panes: 
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
       - id: PATIENT_DETAIL_EDIT_ICON
         type: dom
         domType: img
@@ -205,4 +229,8 @@ panes:
             type: cp
             title: Summary
             closable: False
+<<<<<<< HEAD
             url: *PATIENT_SUMMARY_URL
+=======
+            url: *PATIENT_SUMMARY_URL
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0

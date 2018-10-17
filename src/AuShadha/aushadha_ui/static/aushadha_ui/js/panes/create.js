@@ -62,7 +62,11 @@ define(['dojo/dom',
 
               var appObj = window.INSTALLED_APPS ? window.INSTALLED_APPS: [];
 
+<<<<<<< HEAD
               console.log( appObj );
+=======
+//               console.log( appObj );
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
               var centerMainPane = registry.byId('centerMainPane');
               var centerTopTabPane= registry.byId("centerTopTabPane");
@@ -112,8 +116,12 @@ define(['dojo/dom',
       }
 
       function appPaneCreator( appObj ) {
+<<<<<<< HEAD
           console.log(appObj);
 	  
+=======
+
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         var title = appObj.app;
         var url = appObj.url;
         var domId = appObj.app.replace(' ','_').toLowerCase();
@@ -133,24 +141,35 @@ define(['dojo/dom',
         var d = dom.byId(domId);
         var p = registry.byId(domId);
 
+<<<<<<< HEAD
           console.log("Creating pane with domId: " + domId);
 	  console.log("Is App a main module ? : " + appType);
 	  console.log("Is App going to load first ? : " + loadFirst);
 	  
+=======
+        console.log("Creating pane with domId: " + domId);
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
         // This Basically parses the json.pane from the AuShadha/apps/search/views's render_search_pane and creates a search UI with 
         // search forms, widgets etc..
         function runMainModulePaneCreator(){
 
+<<<<<<< HEAD
           if ( loadFirst ){
 
              //if (title == 'Search' ){
+=======
+          if ( loadFirst == true ){
+
+              if (title == 'Search' ){
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
                 if ( uiSections.widgets.pane ){
 
                   request(uiSections.widgets.pane).then(
                     function(json){
                       var jsondata  = JSON.parse(json);
+<<<<<<< HEAD
 			paneAndWidgetCreator.constructor(jsondata.pane);
 			console.log("CALLING PANE CONSTRUCTOR WITH JSON: ");
 			console.log(jsondata);
@@ -158,17 +177,30 @@ define(['dojo/dom',
 			auMain.auEventBinders.headerPaneSearchWidget( jsondata.pane.url,'Search for:  '+ title);
                       if ( dom.byId('search_form') ){
                           auMain.auEventBinders.searchWidget( jsondata.pane.url,'Search for:  '+ title);
+=======
+                      paneAndWidgetCreator.constructor(jsondata.pane);
+                      auMain.auEventBinders.headerPaneSearchWidget( searchEnabled,'Search for:  '+ title);
+                      if ( dom.byId('search_form') ){
+                        auMain.auEventBinders.searchWidget( searchEnabled,'Search for:  '+ title);
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                       }
                       else{
                         alert("Dom is not ready for searching");
                       }
+<<<<<<< HEAD
 */
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                     }
                   );
 
                 }
 
+<<<<<<< HEAD
               //}
+=======
+              }
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
           }
 

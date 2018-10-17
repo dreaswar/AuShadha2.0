@@ -19,10 +19,13 @@ from aushadha_base_models.models import AuShadhaBaseModel, \
                                         AuShadhaBaseModelForm
 from clinic.models import Clinic
 
+<<<<<<< HEAD
 from .dijit_fields_constants import PATIENT_DETAIL_FORM_CONSTANTS
 from AuShadha.settings import APP_ROOT_URL
 
 DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES=('parent_clinic',)
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 class PatientDetail(AuShadhaBaseModel):
 
@@ -64,7 +67,11 @@ class PatientDetail(AuShadhaBaseModel):
                                     ("Others", "Others")
                                     ),
                            default = "Male")
+<<<<<<< HEAD
     parent_clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE )
+=======
+    parent_clinic = models.ForeignKey(Clinic)
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 
     class Meta:
@@ -224,6 +231,7 @@ class PatientDetailForm(AuShadhaBaseModelForm):
         ModelForm for Patient Basic Data
     """
 
+<<<<<<< HEAD
     __form_name__ = "Patient Detail Form"
 
     dijit_fields = PATIENT_DETAIL_FORM_CONSTANTS
@@ -231,3 +239,8 @@ class PatientDetailForm(AuShadhaBaseModelForm):
     class Meta:
         model = PatientDetail
         exclude = DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES
+=======
+    class Meta:
+        model = PatientDetail
+        exclude = ['parent_clinic',]
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0

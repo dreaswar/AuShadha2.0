@@ -2,9 +2,12 @@ src/AuShadha/AuShadha/media/plugins/
 src/AuShadha/registry/drugbank/
 src/AuShadha/registry/icd10_pcs/fixtures/t/
 
+<<<<<<< HEAD
 *.bak
 *.pyc
 
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 venv
 
 *.py[co]

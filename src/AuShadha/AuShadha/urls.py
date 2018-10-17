@@ -25,8 +25,11 @@ from django.contrib.auth import views as auth_views
 from AuShadha import settings
 from aushadha_users.views import login_view, logout_view
 
+<<<<<<< HEAD
 from .startup import run
 
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
@@ -41,11 +44,19 @@ urlpatterns = [
 
     #    url(r'^AuShadha/logout/$', include('aushadha_users.urls')),
 
+<<<<<<< HEAD
   url(r'^AuShadha/icd10/'  , include('registry.icd10.urls') ),
   url(r'^AuShadha/icd10pcs/' , include('registry.icd10pcs.urls') ),
   url(r'^AuShadha/drug_db/'  , include('registry.drug_db.urls') ),
   url(r'^AuShadha/fda_drug_db/', include('registry.drug_db.urls') ),
   url(r'^AuShadha/drugbankcadrugs/', include('registry.drug_db.drugbankca.urls') ),
+=======
+#  url(r'^AuShadha/icd10/'  , include('registry.icd10.urls') ),
+#  url(r'^AuShadha/icd10pcs/' , include('registry.icd10pcs.urls') ),
+#  url(r'^AuShadha/drug_db/'  , include('registry.drug_db.urls') ),
+#  url(r'^AuShadha/fda_drug_db/', include('registry.drug_db.urls') ),
+#  url(r'^AuShadha/drugbankcadrugs/', include('registry.drug_db.drugbankca.urls') ),
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
   url(r'^AuShadha/pat/'    , include('patient.urls') ),
   url(r'^AuShadha/patient/', include('patient.urls') ),
@@ -116,6 +127,7 @@ if settings.DEBUG == True:
     urlpatterns += staticfiles_urlpatterns()
 
 #print(urlpatterns)
+<<<<<<< HEAD
 
 
 
@@ -123,3 +135,5 @@ if settings.DEBUG == True:
 # So if we want to run code after AppRgistry.ready<Bool> this is the safe
 # place 
 run() 
+=======
+>>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
