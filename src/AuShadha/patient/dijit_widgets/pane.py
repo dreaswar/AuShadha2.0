@@ -14,11 +14,7 @@ import json
 
 # General Django Imports----------------------------------
 from django.http import Http404, HttpResponse
-<<<<<<< HEAD
 from django.urls import reverse
-=======
-from django.core.urlresolvers import reverse
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.template import Template, Context, RequestContext
 from django.contrib.auth.decorators import login_required
 

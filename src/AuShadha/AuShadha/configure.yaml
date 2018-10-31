@@ -7,7 +7,6 @@
   app: clinic
   module: models
   class_name: Clinic
-<<<<<<< HEAD
 
 - role: Search
   app: search
@@ -43,8 +42,3 @@
 
 #######################################################
 
-
-=======
- 
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
- 

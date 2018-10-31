@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # -*- coding: utf-8 -*-
 
 ########################################################
@@ -9,9 +8,6 @@
 # Date    : 13-09-2018
 ########################################################
 
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
-
 ########################### General Module imports #############################
 
 from __future__ import absolute_import
@@ -21,13 +17,7 @@ import json
 
 ########################### General Django Imports #############################
 
-<<<<<<< HEAD
 from django.shortcuts import render
-=======
-from django.shortcuts import render_to_response
-from django.shortcuts import render
-
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 #from django.core.context_processors import csrf
@@ -38,7 +28,6 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
-<<<<<<< HEAD
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -54,28 +43,22 @@ from AuShadha.utilities.forms import aumodelformerrorformatter_factory
 from aushadha_ui.data.json import ModelInstanceJson
 from aushadha_ui.data.summary import ModelInstanceSummary
 from aushadha_ui.ui import ui as UI
-=======
-from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
 
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 
 
 ######################### Views start here ######################################
 
-<<<<<<< HEAD
+
 from clinic.models import Clinic
 from patient.models import PatientDetail, PatientDetailForm
 from .dijit_widgets.tree import PatientTree
 
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 @login_required
 def render_patient_json(request):
 
-<<<<<<< HEAD
+
     if request.method == 'GET':
         all_p = PatientDetail.objects.all()
         if all_p is not None:
@@ -92,23 +75,6 @@ def render_patient_json(request):
     else:
         raise Http404("Bad Request Method")
 
-=======
-    if request.method =='GET':
-      all_p = PatientDetail.objects.all()
-      if all_p is not None:
-          data = []
-          for patient in all_p:
-              print("Evaluating Patient: ")
-              print(patient)
-              jsondata = ModelInstanceJson(patient).return_data()
-              data.append(jsondata)
-      else:
-        data = {}
-      jsondata = json.dumps(data)
-      return HttpResponse(jsondata, content_type="application/json")
-    else:
-      raise Http404("Bad Request Method")
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 @login_required
 def render_patient_summary(request, patient_id=None):
@@ -120,7 +86,7 @@ def render_patient_summary(request, patient_id=None):
         else:
             patient_id = int(request.GET.get('patient_id'))
 
-<<<<<<< HEAD
+
       #  try:
         pat_obj = PatientDetail.objects.get(pk=patient_id)
         var = ModelInstanceSummary(pat_obj).variable
@@ -162,56 +128,11 @@ def render_patient_info(request, patient_id=None):
 
 @login_required
 def patient_detail_add(request, clinic_id=None):
-=======
-        try:
-            pat_obj = PatientDetail.objects.get(pk=patient_id)
-            var = ModelInstanceSummary(pat_obj).variable
-            var['user']  = user
-            variable = RequestContext(request, var)
-            return render_to_response('patient_detail/summary.html', variable)
-
-        except(AttributeError, NameError, KeyError, TypeError, ValueError):
-            raise Http404("ERROR! Bad Request Parameters")
-
-        except(AttributeError, NameError, KeyError, TypeError, ValueError):
-            raise Http404("ERROR! Requested Patient Data Does not exist")
-    else:
-        raise Http404("Bad Request")
-
-@login_required
-def render_patient_info(request,patient_id = None):
-  if request.user and request.method == 'GET':
-    if patient_id:
-      try:
-        patient_id = int( patient_id )
-        patient_detail_obj = PatientDetail.objects.get(pk = patient_id )
-      except (NameError,ValueError,TypeError,AttributeError):
-        raise Http404("Bad Request Parameters")
-      except(PatientDetail.DoesNotExist):
-        raise Http404("Requested Patient Does Not Exist")
-      #data = {'success': True,
-              #'error_message': 'Successfully retrieved patient info',
-              #'info': patient_detail_obj.__unicode__()
-              #}
-      #jsondata = json.dumps(data)
-      #return HttpResponse(jsondata, content_type='application/json')
-      variable = RequestContext(request,
-                                {'info': patient_detail_obj}
-                                )
-      return render_to_response( 'patient_detail/info.html', variable )
-  else:
-    return HttpResponseRedirect('login')
-
-
-@login_required
-def patient_detail_add(request, clinic_id = None):
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     user = request.user
     print("Received a request to add a New Patient....")
 
     try:
-<<<<<<< HEAD
         if clinic_id:
             clinic_id = int(clinic_id)
         else:
@@ -256,75 +177,20 @@ def patient_detail_add(request, clinic_id = None):
 
         else:
             raise Http404('Bad Request:: Unsupported Request Method.')
-=======
-      if clinic_id :
-        clinic_id = int(clinic_id)
-      else:
-        clinic_id = int(request.GET.get('clinic_id'))
-    except (KeyError,NameError,AttributeError,ValueError,TypeError):
-        clinic_id = 1
-
-    try:
-      clinic = Clinic.objects.get(pk = clinic_id)
-      patient_detail_obj = PatientDetail(parent_clinic = clinic)
-      if request.method == "GET" and request.is_ajax():
-          patient_detail_form = PatientDetailForm(
-              instance=patient_detail_obj)
-          variable = RequestContext(request,
-                                    {"user": user,
-                                    "patient_detail_obj": patient_detail_obj,
-                                    "patient_detail_form": patient_detail_form
-                                    }
-                                    )
-          return render_to_response('patient_detail/add.html', variable)
-
-      elif request.method == "POST"  and request.is_ajax():
-          patient_detail_form = PatientDetailForm(request.POST,
-                                                  instance = patient_detail_obj)
-          if patient_detail_form.is_valid():
-              saved_patient = patient_detail_form.save(commit = False)
-              saved_patient.parent_clinic = clinic
-              saved_patient.save()
-              success = True
-              error_message = "Patient Saved Successfully"
-              form_errors = None
-              #jsondata = return_patient_json(saved_patient,success)
-          else:
-              form_errors = aumodelformerrorformatter_factory(patient_detail_form)
-              saved_patient = None
-              success = False
-          data = {'success':success,
-                  'error_message':form_errors,
-                  'form_errors': form_errors
-                  }
-          jsondata = json.dumps(data)
-
-      else:
-          raise Http404('Bad Request:: Unsupported Request Method.')
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     except(Clinic.DoesNotExist):
         saved_patient = None
         success = False
-<<<<<<< HEAD
+
         data = {'success': success,
                 'error_message': "No Clinic by the specified id"}
-=======
-        data = {'success':success,'error_message':"No Clinic by the specified id"}
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         jsondata = json.dumps(data)
 
     return HttpResponse(jsondata, content_type='application/json')
 
 
-<<<<<<< HEAD
-@login_required
-=======
-
 
 @login_required
-
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 def patient_detail_edit(request, id):
 
     if request.user:
@@ -332,13 +198,8 @@ def patient_detail_edit(request, id):
         try:
             id = int(id)
             patient_detail_obj = PatientDetail.objects.get(pk=id)
-<<<<<<< HEAD
             if not getattr(patient_detail_obj, 'urls', None):
                 patient_detail_obj.save()
-=======
-            if not getattr(patient_detail_obj,'urls',None):
-              patient_detail_obj.save()
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
         except TypeError or ValueError or AttributeError:
             raise Http404("BadRequest")
@@ -347,7 +208,6 @@ def patient_detail_edit(request, id):
             raise Http404("BadRequest: Patient detail Data Does Not Exist")
 
         if request.method == "GET" and request.is_ajax():
-<<<<<<< HEAD
             patient_detail_edit_form = PatientDetailForm(
                 auto_id=False, instance=patient_detail_obj)
             variable = {"user": user,
@@ -360,19 +220,6 @@ def patient_detail_edit(request, id):
         elif request.method == 'POST' and request.is_ajax():
             patient_detail_edit_form = PatientDetailForm(
                 request.POST, instance=patient_detail_obj)
-=======
-            patient_detail_edit_form = PatientDetailForm(auto_id = False, instance=patient_detail_obj)
-            variable = RequestContext(request,
-                                      {"user"   : user,
-                                        "patient_detail_obj" : patient_detail_obj,
-                                        "patient_detail_edit_form"   : patient_detail_edit_form
-                                        }
-                                      )
-            return render_to_response('patient_detail/edit.html', variable)
-
-        elif request.method == 'POST' and request.is_ajax():
-            patient_detail_edit_form = PatientDetailForm(request.POST, instance=patient_detail_obj)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
             if patient_detail_edit_form.is_valid():
                 detail_object = patient_detail_edit_form.save()
                 success = True
@@ -386,15 +233,10 @@ def patient_detail_edit(request, id):
                 for error in patient_detail_edit_form.errors:
                     form_errors += '<p>' + error + '</p>'
                 #jsondata = return_patient_json(detail_object=None, success=False)
-<<<<<<< HEAD
+
             data = {'success': success,
                     'error_message': error_message,
                     'form_errors': form_errors
-=======
-            data  = {'success': success,
-                     'error_message': error_message,
-                     'form_errors': form_errors
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                     }
             jsondata = json.dumps(data)
             return HttpResponse(jsondata, content_type='application/json')

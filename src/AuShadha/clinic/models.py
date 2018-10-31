@@ -99,11 +99,8 @@ class Address(AuShadhaBaseModel):
     state = models.CharField(max_length=200, default= 'Tamil Nadu')
     country = models.CharField(max_length=200, default = 'India')
     postal_code = models.CharField("Postal Code", max_length=200)
-<<<<<<< HEAD
+
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     def __unicode__(self):
         return '%s - %s, %s\n %s,%s, %s -%s' %(self.building_no,
@@ -133,11 +130,8 @@ class Phone(AuShadhaBaseModel):
     country_code    = models.PositiveIntegerField( default = 91)
     area_code    = models.PositiveIntegerField(default = 422)
     phone_number = models.PositiveIntegerField()
-<<<<<<< HEAD
+
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
 
     def __unicode__(self):
@@ -157,12 +151,8 @@ class Fax(AuShadhaBaseModel):
 
 
     fax_number = models.CharField(max_length=200)
-<<<<<<< HEAD
-    clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE)
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
+    clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE)
 
     def __unicode__(self):
         return '%s' % self.fax_number
@@ -181,11 +171,7 @@ class Email(AuShadhaBaseModel):
 
 
     email_address = models.CharField(max_length=200)
-<<<<<<< HEAD
     clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE )
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     def __unicode__(self):
         return '%s' % self.email_address
@@ -205,11 +191,7 @@ class Website(AuShadhaBaseModel):
 
 
     website_address = models.CharField(max_length=200)
-<<<<<<< HEAD
     clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE )
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     def __unicode__(self):
         return '%s' % self.website_address
@@ -228,11 +210,7 @@ class Department(AuShadhaBaseModel):
 
 
     name_of_department = models.CharField(max_length=100, unique=True)
-<<<<<<< HEAD
     clinic = models.ForeignKey(Clinic, on_delete = models.CASCADE )
-=======
-    clinic = models.ForeignKey(Clinic)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
     def __unicode__(self):
         return "%s" % self.name_of_department
@@ -261,16 +239,9 @@ class Staff(AuShadhaBaseModel):
                                           choices=AUSHADHA_USER_ROLES,
                                           default="aushadha_user"
                                           )
-<<<<<<< HEAD
     user = models.OneToOneField(User, on_delete = models.CASCADE )
     is_staff_hod = models.BooleanField("Is Staff Head of the Department",default=None)
     department    = models.ForeignKey(Department, on_delete = models.CASCADE )
-=======
-    user = models.OneToOneField(User)
-    is_staff_hod = models.BooleanField("Is Staff Head of the Department",default=None)
-    department    = models.ForeignKey(Department)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
-
 
     def __unicode__(self):
         return "%s" % self.user.username

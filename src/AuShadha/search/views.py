@@ -29,11 +29,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
-<<<<<<< HEAD
+
 from django.urls import reverse
-=======
-from django.core.urlresolvers import reverse
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.contrib.auth.decorators import login_required
 
 
@@ -48,7 +45,7 @@ from clinic.models import Clinic
 import six
 
 # Relative imports with UI.get_module()
-<<<<<<< HEAD
+
 from patient.models import PatientDetail
 
 #PatientDetail = UI.get_module("PatientRegistration")
@@ -57,15 +54,6 @@ from patient.models import PatientDetail
 #Phone = UI.get_module("Phone")
 #EmailAndFax = UI.get_module("EmailAndFax")
 #Guardian = UI.get_module("Guardian")
-=======
-PatientDetail = UI.get_module("PatientRegistration")
-Demographics = UI.get_module("Demographics")
-Contact = UI.get_module("Contact")
-Phone = UI.get_module("Phone")
-EmailAndFax = UI.get_module("EmailAndFax")
-Guardian = UI.get_module("Guardian")
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
-
 
 @login_required
 def aushadha_patient_search(request, patient_id= None):

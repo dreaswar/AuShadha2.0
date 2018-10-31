@@ -11,11 +11,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.template import Template, Context
-<<<<<<< HEAD
 from django.urls import reverse
-=======
-from django.core.urlresolvers import reverse
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.contrib.auth.decorators import login_required
 
 #from django.core.context_processors import csrf

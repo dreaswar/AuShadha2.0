@@ -25,10 +25,7 @@ import json
 # General Django Imports----------------------------------
 from django.shortcuts import render_to_response
 from django.shortcuts import render
-<<<<<<< HEAD
 from django.template.loader import render_to_string
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 #from django.core.context_processors import csrf
@@ -40,11 +37,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.core import serializers
 ##from django.core.serializers import json
 from django.core.serializers.json import DjangoJSONEncoder
-<<<<<<< HEAD
 from django.urls import reverse
-=======
-from django.core.urlresolvers import reverse
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.contrib.auth.decorators import login_required
 
 
@@ -99,13 +92,8 @@ def home(request):
         if label:
           installed_apps.append(label)
     installed_apps = json.dumps(installed_apps)
-<<<<<<< HEAD
     variable = {'user':user,'installed_apps':installed_apps}
     return render(request,'aushadha_ui/base.html',variable)
-=======
-    variable = RequestContext(request, {'user':user,'installed_apps':installed_apps})
-    return render_to_response('aushadha_ui/base.html',variable)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
   else:
     raise Http404("Bad Request Method")
@@ -116,18 +104,15 @@ def get_reference_apps(request):
     if request.method == 'GET':
         from .ui import ui as UI
         apps = UI.get_module('ReferenceApp')
-<<<<<<< HEAD
+
         data = {'success': True,
                 'apps': [app._meta.app_label.replace('_',' ').upper() for app in apps] if apps else None
                }
-=======
-        data = {'success': True,'apps': [app._meta.app_label.replace('_',' ').upper() for app in apps]}
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         jsondata = json.dumps(data)
         app_objs = [{'app_url': app.get_pane_url(),
                      'app_name':app._meta.app_label.replace('_',' ').upper()
                     } 
-<<<<<<< HEAD
+
                     for app in apps] if apps else None 
         variable = {'user': request.user,
                     'apps': [app._meta.app_label.replace('_',' ').upper() for app in apps] if apps else None,
@@ -137,18 +122,6 @@ def get_reference_apps(request):
         return render(request, 'aushadha_ui/header_pane/reference_apps.html', variable)
         print("Reference Apps are: ")
         print(apps)
-=======
-                    for app in apps]
-        variable = RequestContext(request,
-                                   {'user': request.user,
-                                    #'apps': [app._meta.app_label.replace('_',' ').upper() for app in apps],
-                                    'app_objs': app_objs
-                                   })
-
-        return render_to_response('aushadha_ui/header_pane/reference_apps.html', variable)
-        #print("Reference Apps are: ")
-        #print(apps)
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         #return HttpResponse(jsondata,content_type='application/json')
     else:
         raise Http404("Bad Request Method")
@@ -200,11 +173,8 @@ def installed_apps(request):
 
       #Hack to avoid core modules. This way the UI atleast starts with core modules
       #as dependencies
-<<<<<<< HEAD
+
       if  main_module not in ['django','AuShadha']:
-=======
-      if  main_module not in ['django','AuShadha'] or app_name in ['search']:
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         x = importlib.import_module(app)
         label = getattr(x,'MODULE_LABEL',None)
         ui_sections = getattr(x,'ui_sections',None)
@@ -226,11 +196,8 @@ def installed_apps(request):
             'UI': serialise_ui(UI)
             }
     print(( dir(json)))
-<<<<<<< HEAD
     print("INSTALLED APPS IS : ")
     print(installed_apps)
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
     jsondata = json.dumps(data)
     return HttpResponse(jsondata, content_type='application/json')
 

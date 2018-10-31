@@ -117,11 +117,7 @@ WSGI_APPLICATION = 'AuShadha.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-<<<<<<< HEAD
         'NAME': 'aushadha2',
-=======
-        'NAME': 'aushadha',
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
         'USER': 'aushadha',
         'PASSWORD': 'aushadha',
         'HOST': 'localhost',
@@ -189,22 +185,22 @@ INSTALLED_APPS = (
     'aushadha_users',
     'clinic',
     'search',
-<<<<<<< HEAD
     'patient',
 
-  # Core AuShadha Registry for ICD 10 codes, ICD 10 PCS codes, Drug Database
-#   and Vaccine Registry
+  # Core AuShadha Registry for 
+  # ICD 10 codes, 
+  # ICD 10 PCS codes, 
+  # FDA Drug Database
+  # DrugbankCA Database
+  # FDA Vaccine Registry
+  # Investigation and Imaging Registry
     'registry.icd10',
     'registry.icd10pcs',
     'registry.drug_db',
     'registry.drug_db.drugbankca',
     'registry.inv_and_imaging',
     'registry.vaccine_registry',
-  
-  
-=======
-    'patient'
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
+
 )
 
 try:
@@ -213,9 +209,6 @@ except(IOError):
   ENABLED_APPS = list(INSTALLED_APPS)
   pass # Stupid hack just to let sphinx-apidoc pass this
 
-<<<<<<< HEAD
 print("ENABLED APPS")
 print(ENABLED_APPS)
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 UI_INITIALIZED = False

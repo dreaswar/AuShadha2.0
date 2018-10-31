@@ -762,10 +762,7 @@ function(
                         }
                         else if ( widgetQ.widget.type == 'search' ){
                             var widgetStore = new JsonRest({target: widgetQ.widget.url});
-<<<<<<< HEAD
 			    console.log(widgetStore);
-=======
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                             var searchBox = new FilteringSelect({regExp        : '[a-zA-Z0-9 -]+'  ,
                                                                 required       : true              ,
                                                                 invalidMessage : 'No Results'      ,
@@ -777,7 +774,6 @@ function(
                                                                 placeHolder    : widgetQ.widget.placeHolder ,
                                                                 hasDownArrow   : widgetQ.widget.hasDownArrow,
                                                                 onChange       : function(e){
-<<<<<<< HEAD
                                                                     //widgetQ.widget.onchange
 								    console.log("EVENT IS : ");
 								    console.log(registry.byId(widgetQ.widget.id));
@@ -794,9 +790,6 @@ function(
 										    fController.onFilteringSelectChoice(registry.byId(widgetQ.widget.id));
 									})
 								    }
-=======
-                                                                                    //widgetQ.widget.onchange
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                                                                                   },
                                                                 style: widgetQ.widget.style? widgetQ.widget.style: "position:relative;top: 0.1em;width: 96%;height:15%;left: 2%;"
                                                                 },

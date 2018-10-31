@@ -108,7 +108,7 @@ define(["dijit/registry",
                             
       },
 
-<<<<<<< HEAD
+
       onFilteringSelectChoice:function (e/* on widget obj */, value /*New Value*/){
                                 console.log(e.store);
                                 e.store.get( e.get('value') ).
@@ -128,24 +128,12 @@ define(["dijit/registry",
                                 then(
                                   function(item /*returned item*/){
                                          console.log(item);
-=======
-      onPatientChoice:function (e/* on widget obj */){
-//                                 console.log(e.store);
-                                e.store.get( e.get('value') ).
-                                then(
-                                  function(item /*returned item*/){
-//                                         console.log(item);
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
                                         // This will update all Panes;
                                         paneEventController._reInitAllPanes(item);
                                         console.log("Called _reInitAllPanes");
                                   }
                                 );
-<<<<<<< HEAD
       }, 
-=======
-      },
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 
       onPatientGridSelect:function (item/* on widget obj */){
 //                                         console.log(item);
@@ -163,8 +151,5 @@ define(["dijit/registry",
 
   return paneEventController;
 
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
+

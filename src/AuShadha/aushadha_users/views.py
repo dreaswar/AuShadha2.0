@@ -22,11 +22,8 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 #from django.core.context_processors import csrf
 from django.contrib.auth.models import User
-<<<<<<< HEAD
+
 from django.urls import reverse
-=======
-from django.core.urlresolvers import reverse
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
@@ -36,11 +33,7 @@ from django.core.paginator import Paginator
 from django.core import serializers
 ##from django.core.serializers import json
 from django.core.serializers.json import DjangoJSONEncoder
-<<<<<<< HEAD
 from django.contrib.auth import login, logout
-=======
-from django.contrib.auth.views import login, logout
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.forms import AuthenticationForm

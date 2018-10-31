@@ -89,7 +89,6 @@ class ModelInstanceSummary(object):
     return unicode( self.__call__() )
 
 
-<<<<<<< HEAD
   def get_all_related_objects(self):
     ''' Retrieves all related objects to a model'''
     return [
@@ -102,13 +101,6 @@ class ModelInstanceSummary(object):
       ''' Creates a dictionary with module_path and field_name which can be used for imports '''
 
       for x in self.get_all_related_objects():
-=======
-  def build_module_path_map(self):
-      ''' Creates a dictionary with module_path and field_name which can be used for imports '''
-
-      for x in self.instance._meta.get_all_related_objects():
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
-
         d = { 'module_path' : [x.model.__module__, x.model.__name__], 
              'field_name' : x.field.name 
              }
@@ -150,8 +142,4 @@ class ModelInstanceSummary(object):
       model_label  = rel_objs['model_label']
       queryset_name = "%s_obj" %(model_label)
       queryset = rel_objs['queryset']
-<<<<<<< HEAD
       self.variable[queryset_name] = queryset
-=======
-      self.variable[queryset_name] = queryset
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #################################################################################
 # Project     : AuShadha2.0
 # Description : Models for Search App for AuShadha
@@ -48,9 +47,4 @@ class Search(AuShadhaBaseModel):
 
     def __unicode__(self):
         return '%s' % self.search_for
-=======
-from __future__ import absolute_import
-from django.db import models
 
-# Create your models here.
->>>>>>> 7267bc2cae01b0396f99de8b8af48c7397d820e0
