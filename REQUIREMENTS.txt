@@ -1,5 +1,17 @@
-Django>=1.5.4
-psycopg2
-PyYAML>=3.10
-Sphinx>=1.2b2
+# AuShadha 2.0 - Main Requirements File
+#
+# UPDATED: Modernized dependencies for Django 4.2 LTS
+#
+# For development, install:
+#   pip install -r requirements/development.txt
+#
+# For production, install:
+#   pip install -r requirements/production.txt
+#
+# For testing only:
+#   pip install -r requirements/testing.txt
+#
+# See requirements/ directory for detailed dependency lists
 
+# Default to development requirements
+-r requirements/development.txt

@@ -1,0 +1,21 @@
+# Base requirements for AuShadha 2.0
+# Common dependencies for all environments
+
+# Django Framework (LTS - supported until April 2026)
+Django>=4.2,<4.3
+
+# Database
+psycopg2-binary>=2.9.9
+
+# Configuration
+PyYAML>=6.0.1
+python-decouple>=3.8
+
+# Documentation
+Sphinx>=7.2.6
+
+# Timezone support
+pytz>=2024.1
+
+# Python Imaging Library (for file uploads)
+Pillow>=10.2.0

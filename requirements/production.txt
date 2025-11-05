@@ -1,0 +1,23 @@
+# Production requirements for AuShadha 2.0
+# Includes base requirements plus production-specific tools
+
+-r base.txt
+
+# WSGI Server
+gunicorn>=21.2.0
+
+# Production Database (if using PostgreSQL)
+psycopg2>=2.9.9  # C extension (faster than psycopg2-binary)
+
+# Redis for caching and sessions (optional but recommended)
+redis>=5.0.1
+django-redis>=5.4.0
+
+# Monitoring and Error Tracking
+sentry-sdk>=1.40.0
+
+# Security
+django-cors-headers>=4.3.1
+
+# Performance
+django-redis>=5.4.0

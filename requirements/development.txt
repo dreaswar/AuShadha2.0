@@ -1,0 +1,29 @@
+# Development requirements for AuShadha 2.0
+# Includes base requirements plus development tools
+
+-r base.txt
+
+# Testing
+pytest>=7.4.3
+pytest-django>=4.7.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.5.0  # Parallel test execution
+factory-boy>=3.3.0  # Test data factories
+
+# Code Quality
+black>=23.12.1  # Code formatter
+flake8>=7.0.0  # Linter
+isort>=5.13.2  # Import sorting
+mypy>=1.8.0  # Type checking
+pylint>=3.0.3  # Additional linting
+
+# Debugging
+ipython>=8.20.0
+django-extensions>=3.2.3
+django-debug-toolbar>=4.2.0
+
+# Documentation
+sphinx-rtd-theme>=2.0.0
+
+# Performance profiling
+django-silk>=5.0.4
