@@ -10,17 +10,15 @@
 
 ########################### General Module imports #############################
 
-from __future__ import absolute_import
-from __future__ import print_function
-from datetime import datetime, date, time
 import json
+import logging
+from datetime import datetime, date, time
 
 ########################### General Django Imports #############################
 
 from django.shortcuts import render
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext
-#from django.core.context_processors import csrf
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
@@ -30,11 +28,9 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 ##################### Application Specific Model Imports #######################
-
-#import AuShadha.settings as settings
-from AuShadha.settings import APP_ROOT_URL
 
 from AuShadha.core.serializers.data_grid import generate_json_for_datagrid
 from AuShadha.core.views.dijit_tree import DijitTreeNode, DijitTree
@@ -43,6 +39,22 @@ from AuShadha.utilities.forms import aumodelformerrorformatter_factory
 from aushadha_ui.data.json import ModelInstanceJson
 from aushadha_ui.data.summary import ModelInstanceSummary
 from aushadha_ui.ui import ui as UI
+
+# Initialize logger
+logger = logging.getLogger(__name__)
+
+# Get APP_ROOT_URL from settings
+APP_ROOT_URL = getattr(settings, 'APP_ROOT_URL', '/AuShadha/')
+
+
+######################### Helper Functions #######################################
+
+def is_ajax(request):
+    """
+    Check if request is AJAX (Django 4.0+ compatible).
+    Replaces deprecated request.is_ajax()
+    """
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
 
 
@@ -64,8 +76,7 @@ def render_patient_json(request):
         if all_p is not None:
             data = []
             for patient in all_p:
-                print("Evaluating Patient: ")
-                print(patient)
+                logger.debug(f"Evaluating Patient: {patient}")
                 jsondata = ModelInstanceJson(patient).return_data()
                 data.append(jsondata)
         else:
@@ -78,7 +89,7 @@ def render_patient_json(request):
 
 @login_required
 def render_patient_summary(request, patient_id=None):
-    if request.method == "GET" and request.is_ajax():
+    if request.method == "GET" and is_ajax(request):
         user = request.user
 
         if patient_id:
@@ -130,7 +141,7 @@ def render_patient_info(request, patient_id=None):
 def patient_detail_add(request, clinic_id=None):
 
     user = request.user
-    print("Received a request to add a New Patient....")
+    logger.info("Received request to add new patient")
 
     try:
         if clinic_id:
@@ -143,7 +154,7 @@ def patient_detail_add(request, clinic_id=None):
     try:
         clinic = Clinic.objects.get(pk=clinic_id)
         patient_detail_obj = PatientDetail(parent_clinic=clinic)
-        if request.method == "GET" and request.is_ajax():
+        if request.method == "GET" and is_ajax(request):
             patient_detail_form = PatientDetailForm(
                 instance=patient_detail_obj)
             variable = {"user": user,
@@ -153,7 +164,7 @@ def patient_detail_add(request, clinic_id=None):
 
             return render(request, 'patient_detail/add.html', variable)
 
-        elif request.method == "POST" and request.is_ajax():
+        elif request.method == "POST" and is_ajax(request):
             patient_detail_form = PatientDetailForm(request.POST,
                                                     instance=patient_detail_obj)
             if patient_detail_form.is_valid():
@@ -201,13 +212,14 @@ def patient_detail_edit(request, id):
             if not getattr(patient_detail_obj, 'urls', None):
                 patient_detail_obj.save()
 
-        except TypeError or ValueError or AttributeError:
+        except (TypeError, ValueError, AttributeError):
+            logger.error(f"Invalid patient ID: {id}")
             raise Http404("BadRequest")
 
         except PatientDetail.DoesNotExist:
             raise Http404("BadRequest: Patient detail Data Does Not Exist")
 
-        if request.method == "GET" and request.is_ajax():
+        if request.method == "GET" and is_ajax(request):
             patient_detail_edit_form = PatientDetailForm(
                 auto_id=False, instance=patient_detail_obj)
             variable = {"user": user,
@@ -217,7 +229,7 @@ def patient_detail_edit(request, id):
 
             return render(request, 'patient_detail/edit.html', variable)
 
-        elif request.method == 'POST' and request.is_ajax():
+        elif request.method == 'POST' and is_ajax(request):
             patient_detail_edit_form = PatientDetailForm(
                 request.POST, instance=patient_detail_obj)
             if patient_detail_edit_form.is_valid():
@@ -253,8 +265,9 @@ def patient_detail_del(request, id):
             try:
                 id = int(id)
                 patient_detail_obj = PatientDetail.objects.get(pk=id)
-            except TypeError or ValueError or AttributeError:
-                if request.is_ajax():
+            except (TypeError, ValueError, AttributeError):
+                logger.error(f"Invalid patient ID for deletion: {id}")
+                if is_ajax(request):
                     success = False
                     error_message = '''
                             ERROR!! Bad Request. Please refresh page and try again.
@@ -265,7 +278,7 @@ def patient_detail_del(request, id):
                 else:
                     raise Http404("BadRequest")
             except PatientDetail.DoesNotExist:
-                if request.is_ajax():
+                if is_ajax(request):
                     success = False
                     error_message = '''
                             ERROR!! Requested Patient Data Does not Exist.
@@ -279,7 +292,7 @@ def patient_detail_del(request, id):
                         "BadRequest: Patient detail Data Does Not Exist")
             if user.is_superuser:
                 patient_detail_obj.delete()
-                if request.is_ajax():
+                if is_ajax(request):
                     success = True
                     error_message = "Patient Deleted Successfully"
                     data = {"success": success, "error_message": error_message}
@@ -288,7 +301,7 @@ def patient_detail_del(request, id):
                 else:
                     return HttpResponseRedirect('/')
             else:
-                if request.is_ajax():
+                if is_ajax(request):
                     success = False
                     error_message = "ERROR ! No Priviliges to Delete..."
                     data = {"success": success, "error_message": error_message}

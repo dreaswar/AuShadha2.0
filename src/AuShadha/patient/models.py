@@ -7,20 +7,24 @@
 ################################################################################
 
 
-from __future__ import absolute_import
-from __future__ import print_function
+import logging
 from django.db import models
 from django.contrib.auth.models import User
-import six
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 # AuShadha Imports
 from aushadha_users.models import AuShadhaUser
-from aushadha_base_models.models import AuShadhaBaseModel, \
-                                        AuShadhaBaseModelForm
+from aushadha_base_models.models import AuShadhaBaseModel, AuShadhaBaseModelForm
 from clinic.models import Clinic
 
 from .dijit_fields_constants import PATIENT_DETAIL_FORM_CONSTANTS
-from AuShadha.settings import APP_ROOT_URL
+
+# Initialize logger
+logger = logging.getLogger(__name__)
+
+# Get APP_ROOT_URL from settings
+APP_ROOT_URL = getattr(settings, 'APP_ROOT_URL', '/AuShadha/')
 
 DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES=('parent_clinic',)
 
@@ -81,53 +85,57 @@ class PatientDetail(AuShadhaBaseModel):
 
 
     def get_all_json_exportable_fields(self):
-      """
+        """
         Gets the JSON exportable fields and its values as key, value pair
         This skips AutoField, OneToOneField type of field
-      """
-      exportable_fields = {}
-      for item in self._meta.get_fields_with_model():
-        if item[0].__class__.__name__ not in ['OneToOneField']:
-          exportable_fields[item[0][0].name] = item[0][0].value_from_object(self)
-        else:
-          continue
-      return exportable_fields
+        """
+        exportable_fields = {}
+        for field in self._meta.get_fields():
+            # Skip AutoField, OneToOneField, and related fields
+            if not isinstance(field, (models.AutoField, models.OneToOneField)) and field.concrete:
+                try:
+                    exportable_fields[field.name] = field.value_from_object(self)
+                except AttributeError:
+                    logger.warning(f"Could not export field: {field.name}")
+                    continue
+        return exportable_fields
 
 
-    def __unicode__(self):
+    def __str__(self):
+        """String representation of patient (Python 3)"""
+        if self.full_name:
+            return self.full_name
+
         if self.middle_name and self.last_name:
-            return "%s %s %s" % (self.first_name.capitalize(),
-                                 self.middle_name.capitalize(),
-                                 self.last_name.capitalize()
-                                 )
-        elif self.last_name or self.middle_name:
-          if self.last_name:
-            return "%s %s" % (self.first_name.capitalize(),
-                               self.last_name.capitalize())
-          else:
-            return "%s %s" % (self.first_name.capitalize(),
-                              self.middle_name.capitalize())
+            return f"{self.first_name.capitalize()} {self.middle_name.capitalize()} {self.last_name.capitalize()}"
+        elif self.last_name:
+            return f"{self.first_name.capitalize()} {self.last_name.capitalize()}"
+        elif self.middle_name:
+            return f"{self.first_name.capitalize()} {self.middle_name.capitalize()}"
+        return self.first_name.capitalize()
 
 
     def check_before_you_add(self):
-      """
+        """
         Checks whether the patient has already been registered in the
-        database before adding.
-      """
-      all_pat = PatientDetail.objects.all()
-      hosp_id = self.patient_hospital_id
-      id_list = []
-      if all_pat:
-        for p in all_pat:
-            id_list.append(p.patient_hospital_id)
-        if hosp_id in id_list:
-            error = "Patient is already registered"
-            print(error)
-            return False
-        else:
+        database before adding. Uses efficient database query.
+        """
+        if not self.patient_hospital_id:
             return True
-      else:
-          return True
+
+        # Efficient query - only checks if hospital ID exists
+        # Exclude self if this is an update (has pk)
+        queryset = PatientDetail.objects.filter(
+            patient_hospital_id=self.patient_hospital_id
+        )
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+
+        if queryset.exists():
+            error_msg = f"Patient with hospital ID '{self.patient_hospital_id}' is already registered"
+            logger.error(error_msg)
+            raise ValidationError(error_msg)
+        return True
 
     def save(self, *args, **kwargs):
 
@@ -146,45 +154,43 @@ class PatientDetail(AuShadhaBaseModel):
 
 
     def _field_list(self):
+        """Get list of model fields"""
         self.field_list = []
-        print(self._meta.fields)
+        logger.debug(f"Fields for {self.__class__.__name__}: {self._meta.fields}")
         for field in self._meta.fields:
             self.field_list.append(field)
         return self.field_list
 
     def _formatted_obj_data(self):
-        if not self.field_list:
-            _field_list()
+        """
+        Format object data as HTML list.
+        Note: This method appears unused and has been fixed for completeness.
+        Consider removing if not needed.
+        """
+        if not hasattr(self, 'field_list') or not self.field_list:
+            self._field_list()
+
         str_obj = "<ul>"
-        for obj in self._field_list:
-            _str += "<li>" + obj + "<li>"
-            str_obj += _str
+        for field in self.field_list:
+            str_obj += f"<li>{field.name}: {getattr(self, field.name, 'N/A')}</li>"
         str_obj += "</ul>"
         return str_obj
 
 
     def _set_full_name(self):
-
         """
-            Defines and sets the Full Name for a Model on save.
-            This stores the value under the self.full_name attribute.
-            This is mainly intented for name display and search
+        Defines and sets the Full Name for a Model on save.
+        This stores the value under the self.full_name attribute.
+        This is mainly intended for name display and search.
         """
+        parts = [self.first_name.capitalize()]
 
-        if self.middle_name and self.last_name:
-            self.full_name = six.text_type(self.first_name.capitalize() + " " +
-                                     self.middle_name.capitalize() + " " +
-                                     self.last_name.capitalize()
-                                     )
-        else:
-          if self.last_name:
-            self.full_name = six.text_type(self.first_name.capitalize() + " " +
-                                     self.last_name.capitalize()
-                                     )
-          if self.middle_name:
-            self.full_name = six.text_type(self.first_name.capitalize() + " " +
-                                     self.middle_name.capitalize()
-                                     )
+        if self.middle_name:
+            parts.append(self.middle_name.capitalize())
+        if self.last_name:
+            parts.append(self.last_name.capitalize())
+
+        self.full_name = " ".join(parts)
         return self.full_name
 
 
