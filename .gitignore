@@ -13,6 +13,13 @@ venv
 
 *.py[co]
 *.db
+*.sqlite3
+db.sqlite3
+
+# Logs
+*.log
+logs/
+src/AuShadha/logs/
 
 .Python
 .DS_Store
