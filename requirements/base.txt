@@ -19,3 +19,6 @@ pytz>=2024.1
 
 # Python Imaging Library (for file uploads)
 Pillow>=10.2.0
+
+# Python 2/3 compatibility (required by legacy code)
+six>=1.16.0
