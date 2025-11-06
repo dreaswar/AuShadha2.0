@@ -289,113 +289,151 @@ def patient_detail_add(request, clinic_id=None):
 
 @login_required
 def patient_detail_edit(request, id):
+    """
+    Edit patient details - supports both HTMX and traditional requests.
+    """
+    if not request.user:
+        return HttpResponseRedirect('login')
 
-    if request.user:
-        user = request.user
-        try:
-            id = int(id)
-            patient_detail_obj = PatientDetail.objects.get(pk=id)
-            if not getattr(patient_detail_obj, 'urls', None):
-                patient_detail_obj.save()
+    user = request.user
 
-        except (TypeError, ValueError, AttributeError):
-            logger.error(f"Invalid patient ID: {id}")
-            raise Http404("BadRequest")
+    try:
+        id = int(id)
+        patient_detail_obj = PatientDetail.objects.get(pk=id)
+        if not getattr(patient_detail_obj, 'urls', None):
+            patient_detail_obj.save()
 
-        except PatientDetail.DoesNotExist:
-            raise Http404("BadRequest: Patient detail Data Does Not Exist")
+    except (TypeError, ValueError, AttributeError):
+        logger.error(f"Invalid patient ID: {id}")
+        raise Http404("BadRequest")
 
-        if request.method == "GET" and is_ajax(request):
-            patient_detail_edit_form = PatientDetailForm(
-                auto_id=False, instance=patient_detail_obj)
-            variable = {"user": user,
-                        "patient_detail_obj": patient_detail_obj,
-                        "patient_detail_edit_form": patient_detail_edit_form
-                        }
+    except PatientDetail.DoesNotExist:
+        raise Http404("BadRequest: Patient detail Data Does Not Exist")
 
-            return render(request, 'patient_detail/edit.html', variable)
+    if request.method == "GET":
+        patient_detail_edit_form = PatientDetailForm(
+            auto_id=False, instance=patient_detail_obj)
+        variable = {
+            "user": user,
+            "patient": patient_detail_obj,  # For HTMX template
+            "patient_detail_obj": patient_detail_obj,  # For legacy template
+            "patient_detail_edit_form": patient_detail_edit_form
+        }
 
-        elif request.method == 'POST' and is_ajax(request):
-            patient_detail_edit_form = PatientDetailForm(
-                request.POST, instance=patient_detail_obj)
-            if patient_detail_edit_form.is_valid():
-                detail_object = patient_detail_edit_form.save()
-                success = True
-                error_message = "Patient Edited Successfully"
-                form_errors = None
-                #jsondata = return_patient_json(detail_object, success=True)
+        # Return edit partial for HTMX
+        if is_ajax(request):
+            return render(request, 'patient/partials/patient_edit.html', variable)
+        # Or full page for non-AJAX
+        return render(request, 'patient_detail/edit.html', variable)
+
+    elif request.method == 'POST':
+        patient_detail_edit_form = PatientDetailForm(
+            request.POST, instance=patient_detail_obj)
+
+        if patient_detail_edit_form.is_valid():
+            detail_object = patient_detail_edit_form.save()
+            logger.info(f"Patient {detail_object.patient_hospital_id} updated successfully")
+
+            # For HTMX, return updated patient list
+            if is_ajax(request):
+                # Refresh the patient list
+                return patient_list(request)
             else:
-                success = False
-                error_message = "Error:: Patient Detail could not be edited."
+                # For non-AJAX, return JSON
+                data = {
+                    'success': True,
+                    'error_message': 'Patient Edited Successfully',
+                    'form_errors': None
+                }
+                return HttpResponse(json.dumps(data), content_type='application/json')
+        else:
+            logger.warning(f"Patient edit form validation failed: {patient_detail_edit_form.errors}")
+
+            # For HTMX, return form with errors
+            if is_ajax(request):
+                variable = {
+                    "user": user,
+                    "patient": patient_detail_obj,
+                    "patient_detail_obj": patient_detail_obj,
+                    "patient_detail_edit_form": patient_detail_edit_form
+                }
+                return render(request, 'patient/partials/patient_edit.html', variable)
+            else:
+                # For non-AJAX, return JSON with errors
                 form_errors = ''
                 for error in patient_detail_edit_form.errors:
-                    form_errors += '<p>' + error + '</p>'
-                #jsondata = return_patient_json(detail_object=None, success=False)
+                    form_errors += f'<p>{error}</p>'
 
-            data = {'success': success,
-                    'error_message': error_message,
+                data = {
+                    'success': False,
+                    'error_message': 'Error: Patient Detail could not be edited.',
                     'form_errors': form_errors
-                    }
-            jsondata = json.dumps(data)
-            return HttpResponse(jsondata, content_type='application/json')
+                }
+                return HttpResponse(json.dumps(data), content_type='application/json')
 
-        else:
-            raise Http404("BadRequest: Unsupported Request Method")
+    else:
+        raise Http404("BadRequest: Unsupported Request Method")
 
 
 @login_required
 def patient_detail_del(request, id):
+    """
+    Delete patient - supports both HTMX DELETE and traditional GET requests.
+    Only superusers can delete patients.
+    """
     user = request.user
-    if request.user and user.is_superuser:
-        if request.method == "GET":
-            try:
-                id = int(id)
-                patient_detail_obj = PatientDetail.objects.get(pk=id)
-            except (TypeError, ValueError, AttributeError):
-                logger.error(f"Invalid patient ID for deletion: {id}")
-                if is_ajax(request):
-                    success = False
-                    error_message = '''
-                            ERROR!! Bad Request. Please refresh page and try again.
-                           '''
-                    data = {"success": success, "error_message": error_message}
-                    jsondata = json.dumps(data)
-                    return HttpResponse(jsondata, content_type="application/json")
-                else:
-                    raise Http404("BadRequest")
-            except PatientDetail.DoesNotExist:
-                if is_ajax(request):
-                    success = False
-                    error_message = '''
-                            ERROR!! Requested Patient Data Does not Exist.
-                            Refresh Page and try again..
-                           '''
-                    data = {"success": success, "error_message": error_message}
-                    jsondata = json.dumps(data)
-                    return HttpResponse(jsondata, content_type="application/json")
-                else:
-                    raise Http404(
-                        "BadRequest: Patient detail Data Does Not Exist")
-            if user.is_superuser:
-                patient_detail_obj.delete()
-                if is_ajax(request):
-                    success = True
-                    error_message = "Patient Deleted Successfully"
-                    data = {"success": success, "error_message": error_message}
-                    jsondata = json.dumps(data)
-                    return HttpResponse(jsondata, content_type="application/json")
-                else:
-                    return HttpResponseRedirect('/')
-            else:
-                if is_ajax(request):
-                    success = False
-                    error_message = "ERROR ! No Priviliges to Delete..."
-                    data = {"success": success, "error_message": error_message}
-                    jsondata = json.dumps(data)
-                    return HttpResponse(jsondata, content_type="application/json")
-                else:
-                    return HttpResponseRedirect('/')
+
+    # Check superuser permission
+    if not user.is_superuser:
+        logger.warning(f"User {user.username} attempted to delete patient without permissions")
+        if is_ajax(request):
+            return HttpResponse(
+                '<div class="alert alert-error">You do not have permission to delete patients.</div>',
+                status=403
+            )
         else:
-            raise Http404("BadRequest: Unsupported Request Method")
+            raise Http404("Server Error: No Permission to delete.")
+
+    # Support both DELETE (HTMX) and GET (legacy) methods
+    if request.method not in ["GET", "DELETE"]:
+        raise Http404("BadRequest: Unsupported Request Method")
+
+    try:
+        id = int(id)
+        patient_detail_obj = PatientDetail.objects.get(pk=id)
+    except (TypeError, ValueError, AttributeError):
+        logger.error(f"Invalid patient ID for deletion: {id}")
+        if is_ajax(request):
+            return HttpResponse(
+                '<div class="alert alert-error">Invalid patient ID. Please refresh and try again.</div>',
+                status=400
+            )
+        else:
+            raise Http404("BadRequest")
+    except PatientDetail.DoesNotExist:
+        logger.error(f"Patient with ID {id} not found for deletion")
+        if is_ajax(request):
+            return HttpResponse(
+                '<div class="alert alert-error">Patient not found. They may have already been deleted.</div>',
+                status=404
+            )
+        else:
+            raise Http404("BadRequest: Patient detail Data Does Not Exist")
+
+    # Perform deletion
+    patient_name = patient_detail_obj.full_name or patient_detail_obj.first_name
+    patient_detail_obj.delete()
+    logger.info(f"Patient {patient_name} (ID: {id}) deleted by {user.username}")
+
+    # Return appropriate response
+    if is_ajax(request):
+        # For HTMX, return empty response with success header
+        # The hx-swap="outerHTML swap:1s" in the template will handle the animation
+        return HttpResponse('', status=200)
     else:
-        raise Http404("Server Error: No Permission to delete.")
+        # Legacy JSON response
+        data = {
+            "success": True,
+            "error_message": "Patient Deleted Successfully"
+        }
+        return HttpResponse(json.dumps(data), content_type="application/json")
