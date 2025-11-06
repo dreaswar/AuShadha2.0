@@ -51,24 +51,27 @@ def autoload():
           if module_has_submodule( app_module, 'models' ):
               raise
 
-      for app in settings.ENABLED_APPS:
-          app_module = import_module( app['app'] )
-          role = app['role']
-          class_name = app['class_name']
+      # Only process ENABLED_APPS if it contains dictionaries (from configure.yaml)
+      # If it's just a list of strings (fallback from INSTALLED_APPS), skip this
+      if settings.ENABLED_APPS and isinstance(settings.ENABLED_APPS[0], dict):
+          for app in settings.ENABLED_APPS:
+              app_module = import_module( app['app'] )
+              role = app['role']
+              class_name = app['class_name']
 
-          try:
-            module = import_module("{}.{}".format( app['app'], app['module']) )
-            class_obj = getattr(module,class_name)
-            UI.registry[role] = ''
-            UI.registry[role] = class_obj
+              try:
+                module = import_module("{}.{}".format( app['app'], app['module']) )
+                class_obj = getattr(module,class_name)
+                UI.registry[role] = ''
+                UI.registry[role] = class_obj
 
-          except (AttributeError, ImportError ) as err:
-            settings.UI_INITIALIZED = False
-            raise Exception(err)
+              except (AttributeError, ImportError ) as err:
+                settings.UI_INITIALIZED = False
+                raise Exception(err)
 
-          except:
-            if module_has_submodule( app_module, app['module'] ):
-                raise
+              except:
+                if module_has_submodule( app_module, app['module'] ):
+                    raise
 
       settings.UI_INITIALIZED = True
       #print "*" * 100

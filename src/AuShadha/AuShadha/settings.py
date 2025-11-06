@@ -185,10 +185,15 @@ print(STATICFILES_DIR)
 # This duplicate definition has been removed to avoid conflicts
 
 try:
-  ENABLED_APPS = yaml.load( open('AuShadha/configure.yaml').read() ) # This settings doesnt do anything now. 
-except(IOError):
+  config_path = os.path.join(ROOT_PATH, 'configure.yaml')
+  with open(config_path, 'r') as f:
+    ENABLED_APPS = yaml.safe_load(f)
+  print('Trying to run custom code at startup...')
+  print('Loading apps and roles from configure.yaml')
+except(IOError, FileNotFoundError) as e:
   ENABLED_APPS = list(INSTALLED_APPS)
-  pass # Stupid hack just to let sphinx-apidoc pass this
+  print(f'configure.yaml not found at {config_path if "config_path" in locals() else "unknown path"}, using INSTALLED_APPS')
+  pass # Fallback to INSTALLED_APPS if configure.yaml doesn't exist
 
 print("ENABLED APPS")
 print(ENABLED_APPS)
