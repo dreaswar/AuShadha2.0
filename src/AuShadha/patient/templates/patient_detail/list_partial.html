@@ -9,7 +9,7 @@
                 {{ patient.sex }}
             </span>
         </td>
-        <td>{{ patient.parent_clinic.name|default:"—" }}</td>
+        <td>{{ patient.parent_clinic.name_of_clinic|default:"—" }}</td>
         <td>
             <div class="action-buttons" onclick="event.stopPropagation();">
                 <a href="{% url 'patient_detail_modern' patient.id %}"

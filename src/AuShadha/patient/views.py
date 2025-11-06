@@ -407,24 +407,24 @@ def patient_add_modern(request, clinic_id=None):
                 if not clinic:
                     # Create a default clinic if none exists
                     clinic = Clinic.objects.create(
-                        name="Default Clinic",
-                        description="Automatically created default clinic"
+                        name_of_clinic="Default Clinic",
+                        nature_of_clinic="poly_clinic"
                     )
     except (ValueError, TypeError, AttributeError):
         # If any error, get first clinic or create one
         clinic = Clinic.objects.first()
         if not clinic:
             clinic = Clinic.objects.create(
-                name="Default Clinic",
-                description="Automatically created default clinic"
+                name_of_clinic="Default Clinic",
+                nature_of_clinic="poly_clinic"
             )
     except Clinic.DoesNotExist:
         # Clinic with specific ID doesn't exist, use first available or create
         clinic = Clinic.objects.first()
         if not clinic:
             clinic = Clinic.objects.create(
-                name="Default Clinic",
-                description="Automatically created default clinic"
+                name_of_clinic="Default Clinic",
+                nature_of_clinic="poly_clinic"
             )
 
     patient_detail_obj = PatientDetail(parent_clinic=clinic)
