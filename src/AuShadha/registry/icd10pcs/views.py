@@ -13,7 +13,7 @@ from datetime import datetime, date, time
 
 # General Django Imports----------------------------------
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.models import User

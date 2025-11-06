@@ -18,7 +18,7 @@ import importlib
 import json
 
 # General Django Imports----------------------------------
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 #from django.core.context_processors import csrf
