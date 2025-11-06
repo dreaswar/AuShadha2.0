@@ -1,106 +1,63 @@
-from django.conf.urls import *
-from django.contrib import admin
-import AuShadha.settings
+"""
+URL Configuration for Patient Module
+Django 4.2 compatible with path() syntax
+"""
 
-from .views import *
+from django.urls import path
+from django.contrib import admin
+
+from . import views
 from .dijit_widgets.pane import render_patient_pane
 from .dijit_widgets.tree import render_patient_tree
 
-admin.autodiscover()
+app_name = 'patient'
 
-urlpatterns = [ 
+urlpatterns = [
 
-################################ PATIENT CRUD ##################################
+    ################################ HTMX VIEWS (NEW) ###############################
 
-   url(r'new/add/(?P<clinic_id>\d+)/$'                             ,
-       patient_detail_add,
-       name='patient_detail_add'
-       ),
+    # Patient Home (list page)
+    path('', views.patient_home, name='patient_home'),
 
-   url(r'new/add/$'                             ,
-       patient_detail_add,
-       name='patient_detail_add_without_id'
-       ),
+    # Patient List (HTMX partial)
+    path('list/', views.patient_list, name='patient_list'),
 
-   url(r'patient/edit/(?P<id>\d+)/$',
-       patient_detail_edit,
-       name='patient_detail_edit'
-       ),
+    # Patient Detail (HTMX partial)
+    path('<int:id>/detail/', views.patient_detail, name='patient_detail'),
 
-   url(r'patient/del/(?P<id>\d+)/$',
-       patient_detail_del,
-       name='patient_detail_del'
-       ),
+    ################################ PATIENT CRUD ##################################
 
+    # Add Patient
+    path('add/', views.patient_detail_add, name='patient_add'),
+    path('add/<int:clinic_id>/', views.patient_detail_add, name='patient_add_with_clinic'),
 
-################################ PATIENT JSON ##################################
+    # Edit Patient
+    path('<int:id>/edit/', views.patient_detail_edit, name='patient_edit'),
 
-   url(r'patient/json/$',
-           render_patient_json,
-           name='render_patient_json'
-       ),
+    # Delete Patient
+    path('<int:id>/delete/', views.patient_detail_del, name='patient_delete'),
 
+    ################################ PATIENT JSON ##################################
 
-################################ PATIENT SUMMARY ###############################
+    path('json/', views.render_patient_json, name='render_patient_json'),
 
-   url(r'patient/summary/$',
-       render_patient_summary,
-       name='render_patient_summary_without_id'
-       ),
+    ################################ PATIENT SUMMARY ###############################
 
-   url(r'patient/summary/(?P<patient_id>\d+)/$',
-       render_patient_summary,
-       name='render_patient_summary_with_id'
-       ),
+    path('summary/', views.render_patient_summary, name='render_patient_summary_without_id'),
+    path('<int:patient_id>/summary/', views.render_patient_summary, name='render_patient_summary_with_id'),
 
-################################ PATIENT INFO  #################################
+    ################################ PATIENT INFO  #################################
 
-  url(r'patient/info/(?P<patient_id>\d+)/$',
-       render_patient_info,
-       name='render_patient_info'
-       ),
+    path('<int:patient_id>/info/', views.render_patient_info, name='render_patient_info'),
 
-################################ PATIENT PANE ##################################
+    ################################ PATIENT PANE ##################################
 
-  url(r'patient/pane/(?P<patient_id>\d+)/$',
-       render_patient_pane,
-       name='render_patient_pane_with_id'
-       ),
+    path('pane/', render_patient_pane, name='render_patient_pane_without_id'),
+    path('<int:patient_id>/pane/', render_patient_pane, name='render_patient_pane_with_id'),
 
-  url(r'patient/pane/$',
-       render_patient_pane,
-       name='render_patient_pane_without_id'
-       ),
+    ################################ PATIENT TREE ##################################
 
-################################ PATIENT TREE ##################################
-
-   url(r'patient/tree/(?P<patient_id>\d+)/$',
-       render_patient_tree,
-       name='render_patient_tree_with_id'
-       ),
-
-   url(r'patient/tree/$',
-       render_patient_tree,
-       name='render_patient_tree_without_id'
-       ),
-
-############################ PATIENT INDEX ######################################
-
-   #url(r'patient/index/$',
-       #'patient.views.patient_index',
-       #name='patient_index'
-       #),
-
-############################ PATIENT LIST ######################################
-
-   #url(r'patient/list/$',
-       #'patient.views.render_patient_list' ,
-       #name='render_patient_list'
-       #),
-
-   #    url(r'patient/list/(?P<id>\d+)/$',
-   #            'patient.views.patient_detail_list',
-   #            name = 'patient_detail_list'
-   #    ),
+    path('tree/', render_patient_tree, name='render_patient_tree_without_id'),
+    path('<int:patient_id>/tree/', render_patient_tree, name='render_patient_tree_with_id'),
 
 ]

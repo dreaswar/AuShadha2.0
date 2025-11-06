@@ -67,6 +67,88 @@ from patient.models import PatientDetail, PatientDetailForm
 from .dijit_widgets.tree import PatientTree
 
 
+######################### HTMX VIEWS (NEW) #######################################
+
+@login_required
+def patient_home(request):
+    """
+    Patient home page with HTMX-powered list.
+    Main landing page for patient management.
+    """
+    return render(request, 'patient/home.html', {
+        'user': request.user,
+    })
+
+
+@login_required
+def patient_list(request):
+    """
+    Patient list partial - loaded via HTMX.
+    Supports search and pagination.
+    """
+    from django.core.paginator import Paginator
+
+    # Get search query
+    search_query = request.GET.get('search', '').strip()
+
+    # Base queryset
+    patients = PatientDetail.objects.select_related('parent_clinic').all()
+
+    # Apply search filter
+    if search_query:
+        from django.db.models import Q
+        patients = patients.filter(
+            Q(patient_hospital_id__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(middle_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(full_name__icontains=search_query)
+        )
+
+    # Order by most recent first
+    patients = patients.order_by('-id')
+
+    # Pagination
+    paginator = Paginator(patients, 20)  # 20 patients per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'patients': page_obj,
+        'page_obj': page_obj,
+        'paginator': paginator,
+        'is_paginated': page_obj.has_other_pages(),
+        'search_query': search_query,
+    }
+
+    return render(request, 'patient/partials/patient_list.html', context)
+
+
+@login_required
+def patient_detail(request, id):
+    """
+    Patient detail view - loaded via HTMX.
+    Shows comprehensive patient information.
+    """
+    try:
+        patient = PatientDetail.objects.select_related('parent_clinic').get(pk=id)
+    except PatientDetail.DoesNotExist:
+        return HttpResponse(
+            '<div class="alert alert-error">Patient not found</div>',
+            status=404
+        )
+
+    context = {
+        'patient': patient,
+        'user': request.user,
+    }
+
+    return render(request, 'patient/partials/patient_detail.html', context)
+
+
+######################### ORIGINAL VIEWS ##########################################
+
+
 @login_required
 def render_patient_json(request):
 
@@ -154,7 +236,7 @@ def patient_detail_add(request, clinic_id=None):
     try:
         clinic = Clinic.objects.get(pk=clinic_id)
         patient_detail_obj = PatientDetail(parent_clinic=clinic)
-        if request.method == "GET" and is_ajax(request):
+        if request.method == "GET":
             patient_detail_form = PatientDetailForm(
                 instance=patient_detail_obj)
             variable = {"user": user,
@@ -162,6 +244,10 @@ def patient_detail_add(request, clinic_id=None):
                         "patient_detail_form": patient_detail_form
                         }
 
+            # Return form partial for HTMX
+            if is_ajax(request):
+                return render(request, 'patient/partials/patient_form.html', variable)
+            # Or full page for non-AJAX
             return render(request, 'patient_detail/add.html', variable)
 
         elif request.method == "POST" and is_ajax(request):

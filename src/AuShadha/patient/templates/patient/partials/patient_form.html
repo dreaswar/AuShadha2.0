@@ -1,0 +1,204 @@
+<!-- Patient Add/Edit Form - Loaded via HTMX -->
+<div x-data="{
+    formData: {
+        patient_hospital_id: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        age: '',
+        sex: 'Male'
+    },
+    errors: {},
+    isSubmitting: false,
+
+    validateField(field) {
+        // Client-side validation with Alpine.js
+        this.errors[field] = '';
+
+        if (field === 'patient_hospital_id' && !this.formData.patient_hospital_id) {
+            this.errors[field] = 'Hospital ID is required';
+        }
+
+        if (field === 'first_name' && !this.formData.first_name) {
+            this.errors[field] = 'First name is required';
+        }
+
+        if (field === 'age' && this.formData.age) {
+            const age = parseInt(this.formData.age);
+            if (isNaN(age) || age < 0 || age > 150) {
+                this.errors[field] = 'Please enter a valid age (0-150)';
+            }
+        }
+    },
+
+    validateForm() {
+        this.validateField('patient_hospital_id');
+        this.validateField('first_name');
+        this.validateField('age');
+
+        return Object.values(this.errors).every(error => !error);
+    }
+}">
+    <form hx-post="{% url 'patient:patient_add' %}"
+          hx-target="#patient-list"
+          hx-swap="innerHTML"
+          @submit.prevent="if(validateForm()) { isSubmitting = true; $el.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true})); }"
+          class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Success/Error Messages -->
+        <div x-show="errors.form" x-transition class="alert alert-error" style="display: none;">
+            <span x-text="errors.form"></span>
+        </div>
+
+        <!-- Hospital ID -->
+        <div class="form-field">
+            <label for="id_patient_hospital_id" class="form-label">
+                Hospital ID <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   name="patient_hospital_id"
+                   id="id_patient_hospital_id"
+                   x-model="formData.patient_hospital_id"
+                   @blur="validateField('patient_hospital_id')"
+                   class="form-input"
+                   :class="{'border-red-500': errors.patient_hospital_id}"
+                   placeholder="e.g., P2025001"
+                   required>
+            <p x-show="errors.patient_hospital_id"
+               x-text="errors.patient_hospital_id"
+               class="form-error"
+               style="display: none;"></p>
+            <p class="text-xs text-gray-500 mt-1">Unique identifier for the patient</p>
+        </div>
+
+        <!-- Name Fields Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- First Name -->
+            <div class="form-field">
+                <label for="id_first_name" class="form-label">
+                    First Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       name="first_name"
+                       id="id_first_name"
+                       x-model="formData.first_name"
+                       @blur="validateField('first_name')"
+                       class="form-input"
+                       :class="{'border-red-500': errors.first_name}"
+                       placeholder="John"
+                       required>
+                <p x-show="errors.first_name"
+                   x-text="errors.first_name"
+                   class="form-error"
+                   style="display: none;"></p>
+            </div>
+
+            <!-- Middle Name -->
+            <div class="form-field">
+                <label for="id_middle_name" class="form-label">
+                    Middle Name / Initial
+                </label>
+                <input type="text"
+                       name="middle_name"
+                       id="id_middle_name"
+                       x-model="formData.middle_name"
+                       class="form-input"
+                       placeholder="M.">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-field">
+                <label for="id_last_name" class="form-label">
+                    Last Name
+                </label>
+                <input type="text"
+                       name="last_name"
+                       id="id_last_name"
+                       x-model="formData.last_name"
+                       class="form-input"
+                       placeholder="Doe">
+            </div>
+        </div>
+
+        <!-- Age and Sex Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Age -->
+            <div class="form-field">
+                <label for="id_age" class="form-label">
+                    Age
+                </label>
+                <input type="number"
+                       name="age"
+                       id="id_age"
+                       x-model="formData.age"
+                       @blur="validateField('age')"
+                       class="form-input"
+                       :class="{'border-red-500': errors.age}"
+                       placeholder="35"
+                       min="0"
+                       max="150">
+                <p x-show="errors.age"
+                   x-text="errors.age"
+                   class="form-error"
+                   style="display: none;"></p>
+            </div>
+
+            <!-- Sex -->
+            <div class="form-field">
+                <label for="id_sex" class="form-label">
+                    Sex
+                </label>
+                <select name="sex"
+                        id="id_sex"
+                        x-model="formData.sex"
+                        class="form-input">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Clinic Selection (hidden for now, will use default) -->
+        <input type="hidden" name="parent_clinic" value="1">
+
+        <!-- Form Actions -->
+        <div class="flex justify-end gap-3 pt-4 border-t">
+            <button type="button"
+                    @click="$dispatch('close-modal')"
+                    class="btn btn-secondary"
+                    :disabled="isSubmitting">
+                Cancel
+            </button>
+            <button type="submit"
+                    class="btn btn-primary"
+                    :disabled="isSubmitting">
+                <span x-show="!isSubmitting">Add Patient</span>
+                <span x-show="isSubmitting" style="display: none;">
+                    <svg class="animate-spin h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Handle form submission success
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.successful) {
+            // Close modal if form submission was successful
+            window.dispatchEvent(new CustomEvent('close-modal'));
+            // Show success message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success fixed top-4 right-4 z-50';
+            alert.textContent = 'Patient added successfully!';
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+        }
+    });
+</script>
