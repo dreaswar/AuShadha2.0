@@ -31,14 +31,19 @@ def autoload():
     def load_modules():
 
       for app in settings.INSTALLED_APPS:
-        app_module = import_module( app ) 
+        # Handle both 'app_name' and 'app_name.apps.AppConfig' formats
+        app_name = app.split('.')[0] if '.' in app else app
+        try:
+          app_module = import_module( app_name )
+        except ImportError:
+          continue
         print(app_module)
         try:
           try:
-            import_module("{}.aushadha".format( app ) )
+            import_module("{}.aushadha".format( app_name ) )
           except (ImportError):
             continue
-          import_module("{}.models".format( app ) )
+          import_module("{}.models".format( app_name ) )
 
         except:
           if module_has_submodule( app_module, 'aushadha' ):

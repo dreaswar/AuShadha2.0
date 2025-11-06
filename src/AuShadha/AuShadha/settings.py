@@ -56,14 +56,28 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
 
     'clinic.apps.ClinicConfig',
     'patient.apps.PatientConfig',
     'aushadha_base_models.apps.AushadhaBaseModelsConfig',
     'aushadha_users.apps.AushadhaUsersConfig',
     'aushadha_ui.apps.AushadhaUiConfig',
+    'search',
+
+    # Core AuShadha Registry for
+    # ICD 10 codes, ICD 10 PCS codes,
+    # FDA Drug Database, DrugbankCA Database
+    # FDA Vaccine Registry, Investigation and Imaging Registry
+    'registry.icd10',
+    'registry.icd10pcs',
+    'registry.drug_db',
+    'registry.drug_db.drugbankca',
+    'registry.inv_and_imaging',
+    'registry.vaccine_registry',
 ]
 
 MIDDLEWARE = [
@@ -167,41 +181,8 @@ STATICFILES_DIR = [
     os.path.join(BASE_DIR, 'static'),
 ]
 print(STATICFILES_DIR)
-INSTALLED_APPS = (
-
-# Core Django Apps used 
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-
-# Core AuShadha Apps, base_models, custom_users:
-    'aushadha_ui',
-    'aushadha_base_models',
-    'aushadha_users',
-    'clinic',
-    'search',
-    'patient',
-
-  # Core AuShadha Registry for 
-  # ICD 10 codes, 
-  # ICD 10 PCS codes, 
-  # FDA Drug Database
-  # DrugbankCA Database
-  # FDA Vaccine Registry
-  # Investigation and Imaging Registry
-    'registry.icd10',
-    'registry.icd10pcs',
-    'registry.drug_db',
-    'registry.drug_db.drugbankca',
-    'registry.inv_and_imaging',
-    'registry.vaccine_registry',
-
-)
+# Note: INSTALLED_APPS is defined above at line 54
+# This duplicate definition has been removed to avoid conflicts
 
 try:
   ENABLED_APPS = yaml.load( open('AuShadha/configure.yaml').read() ) # This settings doesnt do anything now. 

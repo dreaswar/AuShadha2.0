@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+        <title>AuShadha - Login</title>
+    {% endblock title %}
+
+    {% block media %}
+        {% include 'aushadha_ui/style_links_modern.html' %}
+    {% endblock media %}
+
+    {% block js %}
+        {% include 'aushadha_ui/script_links_modern.html' %}
+    {% endblock js %}
+</head>
+
+<body>
+    <div class="login-container" x-data="loginForm()">
+        <!-- Logo and Header -->
+        <div class="login-header">
+            <img src="{% static 'aushadha_ui/images/AuShadha_logo/AuShadha_logo_256.png' %}"
+                 alt="AuShadha"
+                 title="AuShadha Open Source EMR"
+                 class="login-logo">
+            <h1 class="login-title">AuShadha EMR</h1>
+            <p class="login-subtitle">Electronic Medical Records System</p>
+        </div>
+
+        <!-- Error Message -->
+        <div x-show="errorMessage"
+             x-transition
+             class="alert alert-error"
+             role="alert">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <span x-text="errorMessage"></span>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST"
+              action=""
+              @submit="handleLogin"
+              x-ref="loginForm">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text"
+                       id="id_username"
+                       name="username"
+                       x-model="username"
+                       class="form-input"
+                       :class="{ 'error': errors.username }"
+                       placeholder="Enter your username"
+                       required>
+                <p x-show="errors.username"
+                   x-text="errors.username"
+                   class="form-error"></p>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password"
+                       id="id_password"
+                       name="password"
+                       x-model="password"
+                       class="form-input"
+                       :class="{ 'error': errors.password }"
+                       placeholder="Enter your password"
+                       required>
+                <p x-show="errors.password"
+                   x-text="errors.password"
+                   class="form-error"></p>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit"
+                    class="btn btn-primary"
+                    :disabled="loading">
+                <template x-if="loading">
+                    <div class="spinner"></div>
+                </template>
+                <template x-if="!loading">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </template>
+                <span x-text="loading ? 'Logging in...' : 'Login'"></span>
+            </button>
+
+            <!-- Register Button (Feature Coming Soon) -->
+            <button type="button"
+                    class="btn btn-secondary"
+                    @click="alert('Registration feature will be implemented soon. Thank you for your patience!')">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
+                </svg>
+                Register
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            {% include 'registration/footer.html' %}
+        </div>
+    </div>
+</body>
+</html>

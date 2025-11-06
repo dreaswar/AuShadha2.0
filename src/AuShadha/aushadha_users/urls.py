@@ -12,7 +12,7 @@ admin.autodiscover()
 
 urlpatterns = [
 
-  url(r'^login/$' ,login_view),
+  url(r'^login/$', login_view, {'template_name': 'registration/login_modern.html'}),
   url(r'^logout/$',logout_view),
 
 #  url(r'^login/$' ,

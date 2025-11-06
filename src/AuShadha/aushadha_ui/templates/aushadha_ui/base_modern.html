@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="AuShadha 2.0 - Modern Stack">
+
+    {% block title %}
+        <title>AuShadha</title>
+    {% endblock title %}
+
+    {% block media %}
+        {% include 'aushadha_ui/style_links_modern.html' %}
+    {% endblock media %}
+
+    {% block style_bits %}
+        <style type="text/css">
+            /* Inline custom styles can go here */
+        </style>
+    {% endblock style_bits %}
+
+    {% block js %}
+        {% include 'aushadha_ui/script_links_modern.html' %}
+    {% endblock js %}
+
+    {% block js_bits %}
+        <!-- Any additional JS scripts can be inserted here -->
+    {% endblock js_bits %}
+</head>
+
+<body>
+    <!-- Main Application Container -->
+    <div id="app" x-data="app()">
+        {% block content %}
+            <!-- Page content goes here -->
+        {% endblock content %}
+    </div>
+
+    <!-- Alpine.js App Initialization -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('app', () => ({
+                init() {
+                    console.log('AuShadha 2.0 - Modern UI loaded');
+                    {% if user.is_authenticated %}
+                        console.log('User authenticated: {{ user.username }}');
+                    {% endif %}
+                }
+            }));
+        });
+
+        // HTMX configuration for Django CSRF
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (csrfToken) {
+                event.detail.headers['X-CSRFToken'] = csrfToken;
+            }
+        });
+    </script>
+</body>
+</html>

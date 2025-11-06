@@ -1,0 +1,45 @@
+{% load static %}
+
+<!-- Favicon -->
+<link rel="shortcut icon"
+      href="{% static 'aushadha_ui/images/AuShadha_logo/AuShadha_logo_16.png' %}"
+      type="image/x-icon" />
+
+<!-- Modern CSS Reset -->
+<style>
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    img, picture, video, canvas, svg {
+        display: block;
+        max-width: 100%;
+    }
+
+    input, button, textarea, select {
+        font: inherit;
+    }
+
+    p, h1, h2, h3, h4, h5, h6 {
+        overflow-wrap: break-word;
+    }
+</style>
+
+<!-- Custom Application Styles -->
+<link rel="stylesheet"
+      href="{% static 'aushadha_ui/styles/modern.css' %}"
+      type="text/css" />
+
+<!-- You can add Tailwind CSS later if needed:
+<script src="https://cdn.tailwindcss.com"></script>
+-->

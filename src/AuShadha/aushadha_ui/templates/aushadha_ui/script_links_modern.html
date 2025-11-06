@@ -1,0 +1,25 @@
+{% load static %}
+
+<!-- HTMX - Dynamic HTML without JavaScript -->
+<script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous">
+</script>
+
+<!-- Alpine.js - Lightweight reactive framework -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+<!-- HTMX Extensions (optional, add as needed) -->
+<!-- <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script> -->
+<!-- <script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script> -->
+
+<!-- Custom scripts for authenticated users -->
+{% if user.is_authenticated %}
+    <script type="text/javascript"
+            src="{% static 'aushadha_ui/js/app.js' %}">
+    </script>
+{% else %}
+    <script type="text/javascript"
+            src="{% static 'aushadha_ui/js/login_modern.js' %}">
+    </script>
+{% endif %}
