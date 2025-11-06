@@ -183,6 +183,10 @@ SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_AGE = 3600  # 1 hour
 SESSION_SAVE_EVERY_REQUEST = True
 
+# Ensure logs directory exists
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
 # Logging Configuration
 LOGGING = {
     'version': 1,
