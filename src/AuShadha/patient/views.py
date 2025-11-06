@@ -339,11 +339,16 @@ def patient_list_modern(request):
             'total_count': patients.count()
         }
 
-        # Return partial template for HTMX requests
+        # Return different templates based on request type
         if request.headers.get('HX-Request'):
-            return render(request, 'patient_detail/list_partial.html', variable)
+            # For HTMX requests from search/pagination, return just table rows
+            if request.GET.get('search') or request.GET.get('page'):
+                return render(request, 'patient_detail/list_partial.html', variable)
+            # For HTMX requests loading the whole page (from sidebar), return content without base
+            else:
+                return render(request, 'patient_detail/list_content.html', variable)
 
-        # Return full page for normal requests
+        # Return full page for normal browser requests
         return render(request, 'patient_detail/list_modern.html', variable)
     else:
         raise Http404("Bad Request Method")

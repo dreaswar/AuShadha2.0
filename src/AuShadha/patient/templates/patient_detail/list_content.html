@@ -1,0 +1,282 @@
+<!-- Patient List Content - Used for HTMX loading into main content area -->
+<style>
+    .patient-list-container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #343a40;
+        margin: 0;
+    }
+
+    .search-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+        flex: 1;
+        max-width: 400px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .stats-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-badge {
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .stat-badge strong {
+        color: #343a40;
+        margin-right: 0.25rem;
+    }
+
+    .patient-table-container {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        overflow: hidden;
+    }
+
+    .patient-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .patient-table thead {
+        background: #f8f9fa;
+    }
+
+    .patient-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .patient-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .patient-table tbody tr {
+        transition: background-color 0.2s;
+        cursor: pointer;
+    }
+
+    .patient-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .patient-name {
+        font-weight: 500;
+        color: #343a40;
+    }
+
+    .patient-id {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .patient-sex {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .patient-sex.male {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .patient-sex.female {
+        background: #fce4ec;
+        color: #c2185b;
+    }
+
+    .patient-sex.others {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-icon {
+        padding: 0.5rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: #6c757d;
+        transition: color 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-icon:hover {
+        color: #667eea;
+    }
+
+    .btn-icon.delete:hover {
+        color: #dc3545;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .pagination-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #dee2e6;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #667eea;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .pagination-info {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+</style>
+
+<div class="patient-list-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Patients</h1>
+        <a href="{% url 'patient_add_modern_without_clinic' %}" class="btn btn-primary">
+            + Add New Patient
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text"
+               class="search-input"
+               name="search"
+               placeholder="Search by name or hospital ID..."
+               value="{{ search_query }}"
+               hx-get="{% url 'patient_list_modern' %}"
+               hx-trigger="keyup changed delay:500ms, search"
+               hx-target="#patient-table-body"
+               hx-swap="innerHTML">
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-badge">
+            <strong>{{ total_count }}</strong> patient{{ total_count|pluralize }}
+        </div>
+        {% if search_query %}
+        <div class="stat-badge">
+            Searching for: <strong>"{{ search_query }}"</strong>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Patient Table -->
+    <div class="patient-table-container">
+        <table class="patient-table">
+            <thead>
+                <tr>
+                    <th>Hospital ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Clinic</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="patient-table-body">
+                {% include 'patient_detail/list_partial.html' %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        {% if patients.has_other_pages %}
+        <div class="pagination">
+            {% if patients.has_previous %}
+                <button class="pagination-btn"
+                        hx-get="{% url 'patient_list_modern' %}?page={{ patients.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                        hx-target="#patient-table-body"
+                        hx-swap="innerHTML">
+                    ← Previous
+                </button>
+            {% endif %}
+
+            <span class="pagination-info">
+                Page {{ patients.number }} of {{ patients.paginator.num_pages }}
+            </span>
+
+            {% if patients.has_next %}
+                <button class="pagination-btn"
+                        hx-get="{% url 'patient_list_modern' %}?page={{ patients.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                        hx-target="#patient-table-body"
+                        hx-swap="innerHTML">
+                    Next →
+                </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
