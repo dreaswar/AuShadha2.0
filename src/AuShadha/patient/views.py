@@ -391,63 +391,86 @@ def patient_add_modern(request, clinic_id=None):
     """
     user = request.user
 
+    # Try to get clinic - first from parameter, then from query string, then first available
     try:
         if clinic_id:
             clinic_id = int(clinic_id)
+            clinic = Clinic.objects.get(pk=clinic_id)
         else:
-            clinic_id = int(request.GET.get('clinic_id', 1))
-    except (KeyError, NameError, AttributeError, ValueError, TypeError):
-        clinic_id = 1
+            # Try to get from query parameter
+            clinic_id_param = request.GET.get('clinic_id')
+            if clinic_id_param:
+                clinic = Clinic.objects.get(pk=int(clinic_id_param))
+            else:
+                # Get first available clinic or create a default one
+                clinic = Clinic.objects.first()
+                if not clinic:
+                    # Create a default clinic if none exists
+                    clinic = Clinic.objects.create(
+                        name="Default Clinic",
+                        description="Automatically created default clinic"
+                    )
+    except (ValueError, TypeError, AttributeError):
+        # If any error, get first clinic or create one
+        clinic = Clinic.objects.first()
+        if not clinic:
+            clinic = Clinic.objects.create(
+                name="Default Clinic",
+                description="Automatically created default clinic"
+            )
+    except Clinic.DoesNotExist:
+        # Clinic with specific ID doesn't exist, use first available or create
+        clinic = Clinic.objects.first()
+        if not clinic:
+            clinic = Clinic.objects.create(
+                name="Default Clinic",
+                description="Automatically created default clinic"
+            )
 
-    try:
-        clinic = Clinic.objects.get(pk=clinic_id)
-        patient_detail_obj = PatientDetail(parent_clinic=clinic)
+    patient_detail_obj = PatientDetail(parent_clinic=clinic)
 
-        if request.method == "GET":
-            patient_detail_form = PatientDetailForm(instance=patient_detail_obj)
+    if request.method == "GET":
+        patient_detail_form = PatientDetailForm(instance=patient_detail_obj)
+        variable = {
+            "user": user,
+            "clinic": clinic,
+            "patient_detail_obj": patient_detail_obj,
+            "patient_detail_form": patient_detail_form
+        }
+        return render(request, 'patient_detail/add_modern.html', variable)
+
+    elif request.method == "POST":
+        patient_detail_form = PatientDetailForm(request.POST, instance=patient_detail_obj)
+
+        if patient_detail_form.is_valid():
+            saved_patient = patient_detail_form.save(commit=False)
+            saved_patient.parent_clinic = clinic
+            saved_patient.save()
+
+            # For HTMX requests, return success message
+            if request.headers.get('HX-Request'):
+                variable = {
+                    'success': True,
+                    'message': f'Patient {saved_patient.full_name} added successfully!',
+                    'patient': saved_patient
+                }
+                response = render(request, 'patient_detail/form_success.html', variable)
+                response['HX-Trigger'] = 'patientAdded'
+                return response
+            else:
+                return HttpResponseRedirect(f'/AuShadha/pat/patient/{saved_patient.id}/')
+        else:
+            # Return form with errors
             variable = {
                 "user": user,
                 "clinic": clinic,
                 "patient_detail_obj": patient_detail_obj,
-                "patient_detail_form": patient_detail_form
+                "patient_detail_form": patient_detail_form,
+                "errors": patient_detail_form.errors
             }
             return render(request, 'patient_detail/add_modern.html', variable)
-
-        elif request.method == "POST":
-            patient_detail_form = PatientDetailForm(request.POST, instance=patient_detail_obj)
-
-            if patient_detail_form.is_valid():
-                saved_patient = patient_detail_form.save(commit=False)
-                saved_patient.parent_clinic = clinic
-                saved_patient.save()
-
-                # For HTMX requests, return success message
-                if request.headers.get('HX-Request'):
-                    variable = {
-                        'success': True,
-                        'message': f'Patient {saved_patient.full_name} added successfully!',
-                        'patient': saved_patient
-                    }
-                    response = render(request, 'patient_detail/form_success.html', variable)
-                    response['HX-Trigger'] = 'patientAdded'
-                    return response
-                else:
-                    return HttpResponseRedirect(f'/AuShadha/pat/patient/{saved_patient.id}/')
-            else:
-                # Return form with errors
-                variable = {
-                    "user": user,
-                    "clinic": clinic,
-                    "patient_detail_obj": patient_detail_obj,
-                    "patient_detail_form": patient_detail_form,
-                    "errors": patient_detail_form.errors
-                }
-                return render(request, 'patient_detail/add_modern.html', variable)
-        else:
-            raise Http404('Bad Request: Unsupported Request Method.')
-
-    except Clinic.DoesNotExist:
-        raise Http404("Clinic Does Not Exist")
+    else:
+        raise Http404('Bad Request: Unsupported Request Method.')
 
 
 @login_required
