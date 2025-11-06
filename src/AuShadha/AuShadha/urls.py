@@ -15,12 +15,12 @@ Including another URLconf
 """
 from __future__ import absolute_import
 from __future__ import print_function
-from django.conf.urls import url , include
+from django.urls import re_path, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.contrib.auth import views as auth_views 
+from django.contrib.auth import views as auth_views
 
 from AuShadha import settings
 from aushadha_users.views import login_view, logout_view
@@ -29,30 +29,30 @@ from aushadha_users.views import login_view, logout_view
 from .startup import run
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    re_path(r'^admin/', admin.site.urls),
 
-    url(r'^AuShadha/search/', include('search.urls') ),
+    re_path(r'^AuShadha/search/', include('search.urls') ),
 
-    url(r'^home/', include('aushadha_ui.urls') ),
-    url(r'^AuShadha/home/', include('aushadha_ui.urls') ),
-    url(r'^AuShadha/ui/', include('aushadha_ui.urls') ),
-    # url(r'^$', include('aushadha_ui.urls'))
+    re_path(r'^home/', include('aushadha_ui.urls') ),
+    re_path(r'^AuShadha/home/', include('aushadha_ui.urls') ),
+    re_path(r'^AuShadha/ui/', include('aushadha_ui.urls') ),
+    # re_path(r'^$', include('aushadha_ui.urls'))
 
-    url(r'^AuShadha/authenticate/', include('aushadha_users.urls')),
+    re_path(r'^AuShadha/authenticate/', include('aushadha_users.urls')),
 
     #    url(r'^AuShadha/logout/$', include('aushadha_users.urls')),
 
 
-  url(r'^AuShadha/icd10/'  , include('registry.icd10.urls') ),
-  url(r'^AuShadha/icd10pcs/' , include('registry.icd10pcs.urls') ),
-  url(r'^AuShadha/drug_db/'  , include('registry.drug_db.urls') ),
-  url(r'^AuShadha/fda_drug_db/', include('registry.drug_db.urls') ),
-  url(r'^AuShadha/drugbankcadrugs/', include('registry.drug_db.drugbankca.urls') ),
+  re_path(r'^AuShadha/icd10/'  , include('registry.icd10.urls') ),
+  re_path(r'^AuShadha/icd10pcs/' , include('registry.icd10pcs.urls') ),
+  re_path(r'^AuShadha/drug_db/'  , include('registry.drug_db.urls') ),
+  re_path(r'^AuShadha/fda_drug_db/', include('registry.drug_db.urls') ),
+  re_path(r'^AuShadha/drugbankcadrugs/', include('registry.drug_db.drugbankca.urls') ),
 
 
-  url(r'^AuShadha/pat/'    , include('patient.urls') ),
-  url(r'^AuShadha/patient/', include('patient.urls') ),
-  url(r'^AuShadha/patient/', include('patient.urls') ),
+  re_path(r'^AuShadha/pat/'    , include('patient.urls') ),
+  re_path(r'^AuShadha/patient/', include('patient.urls') ),
+  re_path(r'^AuShadha/patient/', include('patient.urls') ),
 
 # url(r'^AuShadha/admission/', include('admission.admission.urls') ),
 # url(r'^AuShadha/demographics/', include('demographics.demographics.urls') ),
@@ -100,12 +100,12 @@ urlpatterns = [
 #(r'^AuShadha/home/$', 'patient.views.patient_list'),
 
 # Login and Logout URLS
-    #url(r'^AuShadha/log/', include('aushadha_users.urls') ),
-    #url(r'^AuShadha/logout/$',include('aushadha_users.urls') ),
-    url(r'^AuShadha/authenticate/', include('aushadha_users.urls') ),
+    #re_path(r'^AuShadha/log/', include('aushadha_users.urls') ),
+    #re_path(r'^AuShadha/logout/$',include('aushadha_users.urls') ),
+    re_path(r'^AuShadha/authenticate/', include('aushadha_users.urls') ),
 
-#url(r'^AuShadha/login/$', login_view, name="login"),
-#url(r'^AuShadha/logout/$',logout_view, name="logout"),
+#re_path(r'^AuShadha/login/$', login_view, name="login"),
+#re_path(r'^AuShadha/logout/$',logout_view, name="logout"),
 
 # If it dosent match anything else..
 #(r'^AuShadha/alternate_layout/$','patient.views.alternate_layout'),

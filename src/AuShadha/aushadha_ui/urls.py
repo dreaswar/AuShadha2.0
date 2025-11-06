@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from __future__ import absolute_import
-from django.conf.urls import url , include
+from django.urls import re_path, include
 from django.contrib import admin
 
 from aushadha_ui.views import home
@@ -25,20 +25,20 @@ from .dijit_widgets.pane import render_aushadha_ui_pane
 #from data.views import installed_apps
 
 urlpatterns = [
-    #url(r'', home ),
-    
-    url(r'^$',  home, name='home'),
-    
-    url(r'json/installed_apps/$',  
-         installed_apps, 
+    #re_path(r'', home ),
+
+    re_path(r'^$',  home, name='home'),
+
+    re_path(r'json/installed_apps/$',
+         installed_apps,
          name='installed_apps'),
-    
-    url(r'render/pane/$',  
-         render_aushadha_ui_pane, 
+
+    re_path(r'render/pane/$',
+         render_aushadha_ui_pane,
          name='render_aushadha_ui_pane'),
-    
-    url(r'get/reference_apps/$',  
-          get_reference_apps, 
+
+    re_path(r'get/reference_apps/$',
+          get_reference_apps,
           name='get_reference_apps'),
 
     #(r'^AuShadha/json_data/', include('json_data.urls') ),

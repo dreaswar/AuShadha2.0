@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 import AuShadha.settings
 from django.contrib.auth import login, logout
@@ -12,16 +12,16 @@ admin.autodiscover()
 
 urlpatterns = [
 
-  url(r'^login/$', login_view, {'template_name': 'registration/login_modern.html'}),
-  url(r'^logout/$',logout_view),
+  re_path(r'^login/$', login_view, {'template_name': 'registration/login_modern.html'}),
+  re_path(r'^logout/$',logout_view),
 
-#  url(r'^login/$' ,
+#  re_path(r'^login/$' ,
 #     login,
 #     {'template_name':'registration/login.html',
 #      'authentication_form': AuShadhaUserForm
 #     },
 #     name="login"
 #  ),
-  url(r'^logout/$',logout, name="logout"),
+  re_path(r'^logout/$',logout, name="logout"),
 
 ]
