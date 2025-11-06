@@ -11,6 +11,22 @@
 
     <!-- Additional custom styles for layout -->
     <style>
+        /* Reset body styles for full viewport layout */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            display: block;
+            color: #343a40;
+        }
+
         /* CSS Grid Layout for application structure */
         .app-layout {
             display: grid;
@@ -21,7 +37,10 @@
             grid-template-rows: 60px 1fr 40px;
             grid-template-columns: 250px 1fr;
             height: 100vh;
+            width: 100vw;
             gap: 0;
+            margin: 0;
+            padding: 0;
         }
 
         .app-header {
@@ -70,13 +89,17 @@
             background: #f8f9fa;
             border-right: 1px solid #e9ecef;
             overflow-y: auto;
+            height: 100%;
         }
 
         .app-main {
             grid-area: main;
-            background: #ffffff;
+            background: #f7f8fa;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 2rem;
+            height: 100%;
+            max-width: 100%;
         }
 
         .app-footer {
@@ -335,6 +358,21 @@
         }
 
         /* Responsive */
+        /* Extra large screens - wider sidebar */
+        @media (min-width: 1600px) {
+            .app-layout {
+                grid-template-columns: 280px 1fr;
+            }
+        }
+
+        /* Tablets and smaller */
+        @media (max-width: 1024px) {
+            .app-layout {
+                grid-template-columns: 220px 1fr;
+            }
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
             .app-layout {
                 grid-template-areas:
@@ -351,6 +389,10 @@
 
             .app-main {
                 padding: 1rem;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
