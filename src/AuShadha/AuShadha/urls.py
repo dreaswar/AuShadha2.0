@@ -21,6 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 
 from AuShadha import settings
 from aushadha_users.views import login_view, logout_view
@@ -30,6 +31,10 @@ from .startup import run
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
+
+    # Redirect root /AuShadha/ to /AuShadha/home/
+    re_path(r'^AuShadha/$', RedirectView.as_view(url='/AuShadha/home/', permanent=False)),
+    re_path(r'^$', RedirectView.as_view(url='/AuShadha/home/', permanent=False)),
 
     re_path(r'^AuShadha/search/', include('search.urls') ),
 
