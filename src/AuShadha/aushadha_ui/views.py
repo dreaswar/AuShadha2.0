@@ -87,13 +87,21 @@ def home(request):
     apps = settings.INSTALLED_APPS
 
     for app in apps:
+      # Extract base app name from AppConfig path (e.g., 'clinic.apps.ClinicConfig' -> 'clinic')
+      app_name = app.split('.')[0] if '.' in app else app
+
       #Hack to avoid core modules. This way the UI atleast starts with core modules
       #as dependencies
-      if not app.split('.')[0] == 'AuShadha':
-        x = importlib.import_module(app)
-        label = getattr(x,'MODULE_LABEL',None)
-        if label:
-          installed_apps.append(label)
+      if app_name != 'AuShadha':
+        try:
+          x = importlib.import_module(app_name)
+          label = getattr(x,'MODULE_LABEL',None)
+          if label:
+            installed_apps.append(label)
+        except (ImportError, ModuleNotFoundError) as e:
+          # Skip apps that can't be imported
+          print(f"Warning: Could not import app '{app_name}': {e}")
+          pass
     installed_apps = json.dumps(installed_apps)
     variable = {'user':user,'installed_apps':installed_apps}
 
@@ -181,20 +189,26 @@ def installed_apps(request):
       #as dependencies
 
       if  main_module not in ['django','AuShadha']:
-        x = importlib.import_module(app)
-        label = getattr(x,'MODULE_LABEL',None)
-        ui_sections = getattr(x,'ui_sections',None)
-        if ui_sections: 
-          url = ui_sections['widgets']['tree']
-        else:
-          url = None
+        try:
+          # Import the base app module, not the AppConfig path
+          x = importlib.import_module(main_module)
+          label = getattr(x,'MODULE_LABEL',None)
+          ui_sections = getattr(x,'ui_sections',None)
+          if ui_sections:
+            url = ui_sections['widgets']['tree']
+          else:
+            url = None
 
-        if label:
-          apps = {}
-          apps['app'] = label
-          apps['ui_sections'] = ui_sections
-          apps['url'] = url
-          installed_apps.append(apps)
+          if label:
+            apps = {}
+            apps['app'] = label
+            apps['ui_sections'] = ui_sections
+            apps['url'] = url
+            installed_apps.append(apps)
+        except (ImportError, ModuleNotFoundError) as e:
+          # Skip apps that can't be imported
+          print(f"Warning: Could not import app '{main_module}': {e}")
+          pass
 
     data = {'success':success,
             'error_message':"Returning Installed Apps",
