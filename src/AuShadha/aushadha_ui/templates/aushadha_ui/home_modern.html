@@ -1,0 +1,658 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuShadha 2.0 - Electronic Medical Records</title>
+
+    <!-- Modern CSS -->
+    {% include 'aushadha_ui/style_links_modern.html' %}
+
+    <!-- Additional custom styles for layout -->
+    <style>
+        /* CSS Grid Layout for application structure */
+        .app-layout {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "sidebar main main"
+                "footer footer footer";
+            grid-template-rows: 60px 1fr 40px;
+            grid-template-columns: 250px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .app-header {
+            grid-area: header;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .app-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-header .user-name {
+            font-size: 0.9rem;
+        }
+
+        .app-header .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .app-header .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .app-sidebar {
+            grid-area: sidebar;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            overflow-y: auto;
+        }
+
+        .app-main {
+            grid-area: main;
+            background: #ffffff;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .app-footer {
+            grid-area: footer;
+            background: #343a40;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            color: #495057;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #e7f1ff;
+            color: #667eea;
+            border-left-color: #667eea;
+            font-weight: 500;
+        }
+
+        .nav-item-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Loading indicator */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            margin-top: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Welcome section */
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+
+        .welcome-section p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Quick stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        /* Content section */
+        .content-section {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+            color: #343a40;
+        }
+
+        /* Notification toast */
+        .notification-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success { border-left: 4px solid #28a745; }
+        .notification.error { border-left: 4px solid #dc3545; }
+        .notification.info { border-left: 4px solid #17a2b8; }
+        .notification.warning { border-left: 4px solid #ffc107; }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-layout {
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
+                grid-template-rows: 60px 1fr 40px;
+                grid-template-columns: 1fr;
+            }
+
+            .app-sidebar {
+                display: none;
+            }
+
+            .app-main {
+                padding: 1rem;
+            }
+        }
+    </style>
+
+    <!-- Modern JavaScript -->
+    {% include 'aushadha_ui/script_links_modern.html' %}
+</head>
+<body x-data="aushadhaApp()" x-init="init()">
+
+    <!-- Loading Overlay -->
+    <div x-show="loading"
+         x-transition
+         class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-message" x-text="loadingMessage"></div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container">
+        <template x-for="notification in notifications" :key="notification.id">
+            <div class="notification"
+                 :class="notification.type"
+                 x-show="notification.visible"
+                 x-transition>
+                <div class="notification-content">
+                    <strong x-text="notification.title"></strong>
+                    <p x-text="notification.message" style="margin: 0.25rem 0 0 0;"></p>
+                </div>
+                <button @click="removeNotification(notification.id)"
+                        style="background: none; border: none; cursor: pointer; font-size: 1.25rem; color: #6c757d;">
+                    &times;
+                </button>
+            </div>
+        </template>
+    </div>
+
+    <!-- Main Application Layout -->
+    <div class="app-layout">
+
+        <!-- Header -->
+        <header class="app-header">
+            <h1>AuShadha 2.0</h1>
+            <div class="user-info">
+                <span class="user-name">{{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Patient Management</div>
+                    <a href="#"
+                       @click.prevent="loadContent('/AuShadha/pat/', 'Patients')"
+                       class="nav-item"
+                       :class="{ 'active': activeSection === 'Patients' }">
+                        <span class="nav-item-icon">👤</span>
+                        <span>Patients</span>
+                    </a>
+                    <a href="#"
+                       @click.prevent="loadContent('/AuShadha/search/patient/', 'Patient Search')"
+                       class="nav-item"
+                       :class="{ 'active': activeSection === 'Patient Search' }">
+                        <span class="nav-item-icon">🔍</span>
+                        <span>Search</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Reference Data</div>
+                    <a href="#"
+                       @click.prevent="loadContent('/AuShadha/icd10/', 'ICD-10')"
+                       class="nav-item"
+                       :class="{ 'active': activeSection === 'ICD-10' }">
+                        <span class="nav-item-icon">📋</span>
+                        <span>ICD-10</span>
+                    </a>
+                    <a href="#"
+                       @click.prevent="loadContent('/AuShadha/icd10pcs/', 'ICD-10 PCS')"
+                       class="nav-item"
+                       :class="{ 'active': activeSection === 'ICD-10 PCS' }">
+                        <span class="nav-item-icon">📊</span>
+                        <span>ICD-10 PCS</span>
+                    </a>
+                    <a href="#"
+                       @click.prevent="loadContent('/AuShadha/drug_db/', 'Drug Database')"
+                       class="nav-item"
+                       :class="{ 'active': activeSection === 'Drug Database' }">
+                        <span class="nav-item-icon">💊</span>
+                        <span>Drug Database</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#"
+                       @click.prevent="showAbout()"
+                       class="nav-item">
+                        <span class="nav-item-icon">ℹ️</span>
+                        <span>About</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="app-main" id="mainContent">
+            <div class="welcome-section">
+                <h2>Welcome to AuShadha 2.0</h2>
+                <p>Modern Electronic Medical Records System</p>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-value" x-text="stats.totalPatients">0</div>
+                    <div class="stat-label">Total Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" x-text="stats.todayVisits">0</div>
+                    <div class="stat-label">Today's Visits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" x-text="stats.pendingTasks">0</div>
+                    <div class="stat-label">Pending Tasks</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3>Quick Actions</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary"
+                            @click="loadContent('/AuShadha/pat/', 'Patients')">
+                        View Patients
+                    </button>
+                    <button class="btn btn-secondary"
+                            @click="loadContent('/AuShadha/search/patient/', 'Search')">
+                        Search Patient
+                    </button>
+                    <button class="btn btn-secondary"
+                            @click="loadContent('/AuShadha/icd10/', 'ICD-10')">
+                        Browse ICD-10
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3>Recent Activity</h3>
+                <p class="text-muted">No recent activity to display.</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            &copy; Dr. Easwar T.R, 2016-2025
+        </footer>
+    </div>
+
+    <!-- Modal Template -->
+    <template x-if="modal.show">
+        <div class="modal-backdrop" @click.self="closeModal()">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <h3 x-text="modal.title"></h3>
+                    <button @click="closeModal()"
+                            style="background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #6c757d;">
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body" x-html="modal.content"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @click="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Alpine.js Application Logic -->
+    <script>
+        function aushadhaApp() {
+            return {
+                loading: true,
+                loadingMessage: 'Loading AuShadha...',
+                activeSection: 'Dashboard',
+                notifications: [],
+                notificationId: 0,
+                modal: {
+                    show: false,
+                    title: '',
+                    content: ''
+                },
+                stats: {
+                    totalPatients: 0,
+                    todayVisits: 0,
+                    pendingTasks: 0
+                },
+
+                init() {
+                    // Simulate loading
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.showNotification('success', 'Welcome!', 'AuShadha loaded successfully');
+                        this.loadStats();
+                    }, 1000);
+
+                    // Setup HTMX event handlers
+                    document.body.addEventListener('htmx:beforeRequest', () => {
+                        this.loading = true;
+                        this.loadingMessage = 'Loading...';
+                    });
+
+                    document.body.addEventListener('htmx:afterRequest', () => {
+                        this.loading = false;
+                    });
+
+                    document.body.addEventListener('htmx:responseError', (event) => {
+                        this.showNotification('error', 'Error', 'Failed to load content');
+                        this.loading = false;
+                    });
+                },
+
+                loadContent(url, section) {
+                    this.activeSection = section;
+                    this.loading = true;
+                    this.loadingMessage = `Loading ${section}...`;
+
+                    // Use HTMX to load content
+                    htmx.ajax('GET', url, {
+                        target: '#mainContent',
+                        swap: 'innerHTML'
+                    }).then(() => {
+                        this.loading = false;
+                    }).catch((error) => {
+                        this.loading = false;
+                        this.showNotification('error', 'Error', `Failed to load ${section}`);
+                        console.error('Load error:', error);
+                    });
+                },
+
+                loadStats() {
+                    // In a real implementation, this would fetch from an API
+                    // For now, we'll use placeholder data
+                    fetch('/AuShadha/ui/json/installed_apps/')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Loaded apps data:', data);
+                            // Update stats when real API is available
+                        })
+                        .catch(error => {
+                            console.error('Failed to load stats:', error);
+                        });
+                },
+
+                showNotification(type, title, message) {
+                    const id = ++this.notificationId;
+                    const notification = {
+                        id,
+                        type,
+                        title,
+                        message,
+                        visible: true
+                    };
+
+                    this.notifications.push(notification);
+
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        this.removeNotification(id);
+                    }, 5000);
+                },
+
+                removeNotification(id) {
+                    const index = this.notifications.findIndex(n => n.id === id);
+                    if (index !== -1) {
+                        this.notifications[index].visible = false;
+                        setTimeout(() => {
+                            this.notifications.splice(index, 1);
+                        }, 300);
+                    }
+                },
+
+                showAbout() {
+                    this.modal.title = 'About AuShadha 2.0';
+                    this.modal.content = `
+                        <p><strong>AuShadha 2.0</strong> is a modern Electronic Medical Records (EMR) system designed for healthcare providers.</p>
+                        <p>Version: 2.0</p>
+                        <p>Author: Dr. Easwar T.R</p>
+                        <p>Built with Django, HTMX, and Alpine.js</p>
+                    `;
+                    this.modal.show = true;
+                },
+
+                closeModal() {
+                    this.modal.show = false;
+                }
+            };
+        }
+
+        // Configure HTMX globally
+        document.addEventListener('DOMContentLoaded', function() {
+            htmx.config.globalViewTransitions = true;
+        });
+    </script>
+</body>
+</html>
