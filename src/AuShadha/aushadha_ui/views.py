@@ -23,7 +23,7 @@ import importlib
 import json
 
 # General Django Imports----------------------------------
-from django.shortcuts import render_to_response
+# render_to_response removed in Django 3.0, use render() instead
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.http import Http404, HttpResponse, HttpResponseRedirect

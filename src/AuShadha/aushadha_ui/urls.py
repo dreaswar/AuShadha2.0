@@ -10,11 +10,11 @@ Class-based views
     1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
 Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
+    1. Import the include() function: from django.urls import re_path as url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from __future__ import absolute_import
-from django.conf.urls import url , include
+from django.urls import re_path as url , include
 from django.contrib import admin
 
 from aushadha_ui.views import home

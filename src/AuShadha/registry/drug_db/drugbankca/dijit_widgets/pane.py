@@ -17,7 +17,7 @@ from django.urls import reverse
 from django.template import RequestContext
 from django.template import Template, Context
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+# render_to_response removed in Django 3.0, use render() instead
 from aushadha_ui.ui import ui as UI
 
 from registry.drug_db.drugbankca.models import DrugBankCaDrugs

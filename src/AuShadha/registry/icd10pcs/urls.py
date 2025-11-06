@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import *
+from django.urls import re_path as url
 from django.contrib import admin
 
 import AuShadha.settings

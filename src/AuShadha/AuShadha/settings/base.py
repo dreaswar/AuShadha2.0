@@ -112,17 +112,23 @@ WSGI_APPLICATION = 'AuShadha.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': get_env('DB_ENGINE', 'django.db.backends.postgresql_psycopg2'),
-        'NAME': get_env('DB_NAME', required=True),
+DB_ENGINE = get_env('DB_ENGINE', 'django.db.backends.postgresql_psycopg2')
+DB_CONFIG = {
+    'ENGINE': DB_ENGINE,
+    'NAME': get_env('DB_NAME', required=True),
+}
+
+# PostgreSQL/MySQL specific settings (not needed for SQLite)
+if 'sqlite' not in DB_ENGINE:
+    DB_CONFIG.update({
         'USER': get_env('DB_USER', required=True),
         'PASSWORD': get_env('DB_PASSWORD', required=True),
         'HOST': get_env('DB_HOST', 'localhost'),
         'PORT': get_env('DB_PORT', '5432'),
         'CONN_MAX_AGE': 600,  # Connection pooling
-    }
-}
+    })
+
+DATABASES = {'default': DB_CONFIG}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

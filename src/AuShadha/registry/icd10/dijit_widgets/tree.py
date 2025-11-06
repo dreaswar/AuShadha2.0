@@ -4,7 +4,7 @@ import yaml
 import json
 
 # General Django Imports----------------------------------
-from django.shortcuts import render_to_response
+# render_to_response removed in Django 3.0, use render() instead
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.models import User

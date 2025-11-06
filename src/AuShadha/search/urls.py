@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from django.conf.urls import url , include
+from django.urls import re_path as url , include
 #from django.views.generic.simple import direct_to_template
 
 import AuShadha.settings

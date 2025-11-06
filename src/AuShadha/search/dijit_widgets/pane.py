@@ -22,7 +22,7 @@ from django.http import Http404, HttpResponse
 from django.urls import reverse
 from django.template import Template, Context
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+# render_to_response removed in Django 3.0, use render() instead
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 
