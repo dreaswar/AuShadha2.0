@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import re_path
 from django.contrib import admin
 import AuShadha.settings
 
@@ -12,22 +12,22 @@ urlpatterns = [
 
 ################################ PATIENT CRUD ##################################
 
-   url(r'new/add/(?P<clinic_id>\d+)/$'                             ,
+   re_path(r'new/add/(?P<clinic_id>\d+)/$'                             ,
        patient_detail_add,
        name='patient_detail_add'
        ),
 
-   url(r'new/add/$'                             ,
+   re_path(r'new/add/$'                             ,
        patient_detail_add,
        name='patient_detail_add_without_id'
        ),
 
-   url(r'patient/edit/(?P<id>\d+)/$',
+   re_path(r'patient/edit/(?P<id>\d+)/$',
        patient_detail_edit,
        name='patient_detail_edit'
        ),
 
-   url(r'patient/del/(?P<id>\d+)/$',
+   re_path(r'patient/del/(?P<id>\d+)/$',
        patient_detail_del,
        name='patient_detail_del'
        ),
@@ -35,7 +35,7 @@ urlpatterns = [
 
 ################################ PATIENT JSON ##################################
 
-   url(r'patient/json/$',
+   re_path(r'patient/json/$',
            render_patient_json,
            name='render_patient_json'
        ),
@@ -43,43 +43,43 @@ urlpatterns = [
 
 ################################ PATIENT SUMMARY ###############################
 
-   url(r'patient/summary/$',
+   re_path(r'patient/summary/$',
        render_patient_summary,
        name='render_patient_summary_without_id'
        ),
 
-   url(r'patient/summary/(?P<patient_id>\d+)/$',
+   re_path(r'patient/summary/(?P<patient_id>\d+)/$',
        render_patient_summary,
        name='render_patient_summary_with_id'
        ),
 
 ################################ PATIENT INFO  #################################
 
-  url(r'patient/info/(?P<patient_id>\d+)/$',
+  re_path(r'patient/info/(?P<patient_id>\d+)/$',
        render_patient_info,
        name='render_patient_info'
        ),
 
 ################################ PATIENT PANE ##################################
 
-  url(r'patient/pane/(?P<patient_id>\d+)/$',
+  re_path(r'patient/pane/(?P<patient_id>\d+)/$',
        render_patient_pane,
        name='render_patient_pane_with_id'
        ),
 
-  url(r'patient/pane/$',
+  re_path(r'patient/pane/$',
        render_patient_pane,
        name='render_patient_pane_without_id'
        ),
 
 ################################ PATIENT TREE ##################################
 
-   url(r'patient/tree/(?P<patient_id>\d+)/$',
+   re_path(r'patient/tree/(?P<patient_id>\d+)/$',
        render_patient_tree,
        name='render_patient_tree_with_id'
        ),
 
-   url(r'patient/tree/$',
+   re_path(r'patient/tree/$',
        render_patient_tree,
        name='render_patient_tree_without_id'
        ),
