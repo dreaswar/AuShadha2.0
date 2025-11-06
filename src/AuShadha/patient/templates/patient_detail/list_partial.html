@@ -1,0 +1,51 @@
+{% if patients %}
+    {% for patient in patients %}
+    <tr onclick="window.location='{% url 'patient_detail_modern' patient.id %}'">
+        <td class="patient-id">{{ patient.patient_hospital_id }}</td>
+        <td class="patient-name">{{ patient.full_name }}</td>
+        <td>{{ patient.age|default:"—" }}</td>
+        <td>
+            <span class="patient-sex {{ patient.sex|lower }}">
+                {{ patient.sex }}
+            </span>
+        </td>
+        <td>{{ patient.parent_clinic.name|default:"—" }}</td>
+        <td>
+            <div class="action-buttons" onclick="event.stopPropagation();">
+                <a href="{% url 'patient_detail_modern' patient.id %}"
+                   class="btn-icon"
+                   title="View">
+                    👁️
+                </a>
+                <a href="{% url 'patient_edit_modern' patient.id %}"
+                   class="btn-icon"
+                   title="Edit">
+                    ✏️
+                </a>
+                {% if user.is_superuser %}
+                <button class="btn-icon delete"
+                        title="Delete"
+                        hx-post="{% url 'patient_delete_modern' patient.id %}"
+                        hx-confirm="Are you sure you want to delete {{ patient.full_name }}?"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML">
+                    🗑️
+                </button>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="6">
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <h3>No patients found</h3>
+                <p>{% if search_query %}Try a different search term{% else %}Add your first patient to get started{% endif %}</p>
+            </div>
+        </td>
+    </tr>
+{% endif %}

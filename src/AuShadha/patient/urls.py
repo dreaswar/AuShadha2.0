@@ -103,4 +103,41 @@ urlpatterns = [
    #            name = 'patient_detail_list'
    #    ),
 
+############################ MODERN UI URLS ######################################
+
+   re_path(r'^$',
+       patient_list_modern,
+       name='patient_list_modern'
+       ),
+
+   re_path(r'list/$',
+       patient_list_modern,
+       name='patient_list_modern_alt'
+       ),
+
+   re_path(r'patient/(?P<id>\d+)/$',
+       patient_detail_modern,
+       name='patient_detail_modern'
+       ),
+
+   re_path(r'add/$',
+       patient_add_modern,
+       name='patient_add_modern_without_clinic'
+       ),
+
+   re_path(r'add/(?P<clinic_id>\d+)/$',
+       patient_add_modern,
+       name='patient_add_modern'
+       ),
+
+   re_path(r'edit/(?P<id>\d+)/$',
+       patient_edit_modern,
+       name='patient_edit_modern'
+       ),
+
+   re_path(r'delete/(?P<id>\d+)/$',
+       patient_delete_modern,
+       name='patient_delete_modern'
+       ),
+
 ]

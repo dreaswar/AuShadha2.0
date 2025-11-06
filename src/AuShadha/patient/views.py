@@ -300,3 +300,238 @@ def patient_detail_del(request, id):
             raise Http404("BadRequest: Unsupported Request Method")
     else:
         raise Http404("Server Error: No Permission to delete.")
+
+
+######################### MODERN UI VIEWS (HTMX + Alpine.js) ####################
+
+@login_required
+def patient_list_modern(request):
+    """
+    Modern patient list view using HTMX
+    Returns full page on GET, or partial HTML for HTMX requests
+    """
+    if request.method == 'GET':
+        # Get all patients ordered by name
+        patients = PatientDetail.objects.all().select_related('parent_clinic').order_by('first_name', 'last_name')
+
+        # Search functionality
+        search_query = request.GET.get('search', '').strip()
+        if search_query:
+            from django.db.models import Q
+            patients = patients.filter(
+                Q(patient_hospital_id__icontains=search_query) |
+                Q(first_name__icontains=search_query) |
+                Q(middle_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(full_name__icontains=search_query)
+            )
+
+        # Pagination
+        from django.core.paginator import Paginator
+        paginator = Paginator(patients, 25)  # 25 patients per page
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        variable = {
+            'user': request.user,
+            'patients': page_obj,
+            'search_query': search_query,
+            'total_count': patients.count()
+        }
+
+        # Return partial template for HTMX requests
+        if request.headers.get('HX-Request'):
+            return render(request, 'patient_detail/list_partial.html', variable)
+
+        # Return full page for normal requests
+        return render(request, 'patient_detail/list_modern.html', variable)
+    else:
+        raise Http404("Bad Request Method")
+
+
+@login_required
+def patient_detail_modern(request, id):
+    """
+    Modern patient detail view using HTMX
+    """
+    if request.method == 'GET':
+        try:
+            patient_id = int(id)
+            patient = PatientDetail.objects.select_related('parent_clinic').get(pk=patient_id)
+
+            variable = {
+                'user': request.user,
+                'patient': patient
+            }
+
+            # Return partial template for HTMX requests
+            if request.headers.get('HX-Request'):
+                return render(request, 'patient_detail/detail_partial.html', variable)
+
+            # Return full page for normal requests
+            return render(request, 'patient_detail/detail_modern.html', variable)
+
+        except (ValueError, TypeError, AttributeError):
+            raise Http404("Bad Request Parameters")
+        except PatientDetail.DoesNotExist:
+            raise Http404("Patient Does Not Exist")
+    else:
+        raise Http404("Bad Request Method")
+
+
+@login_required
+def patient_add_modern(request, clinic_id=None):
+    """
+    Modern patient add view using HTMX forms
+    """
+    user = request.user
+
+    try:
+        if clinic_id:
+            clinic_id = int(clinic_id)
+        else:
+            clinic_id = int(request.GET.get('clinic_id', 1))
+    except (KeyError, NameError, AttributeError, ValueError, TypeError):
+        clinic_id = 1
+
+    try:
+        clinic = Clinic.objects.get(pk=clinic_id)
+        patient_detail_obj = PatientDetail(parent_clinic=clinic)
+
+        if request.method == "GET":
+            patient_detail_form = PatientDetailForm(instance=patient_detail_obj)
+            variable = {
+                "user": user,
+                "clinic": clinic,
+                "patient_detail_obj": patient_detail_obj,
+                "patient_detail_form": patient_detail_form
+            }
+            return render(request, 'patient_detail/add_modern.html', variable)
+
+        elif request.method == "POST":
+            patient_detail_form = PatientDetailForm(request.POST, instance=patient_detail_obj)
+
+            if patient_detail_form.is_valid():
+                saved_patient = patient_detail_form.save(commit=False)
+                saved_patient.parent_clinic = clinic
+                saved_patient.save()
+
+                # For HTMX requests, return success message
+                if request.headers.get('HX-Request'):
+                    variable = {
+                        'success': True,
+                        'message': f'Patient {saved_patient.full_name} added successfully!',
+                        'patient': saved_patient
+                    }
+                    response = render(request, 'patient_detail/form_success.html', variable)
+                    response['HX-Trigger'] = 'patientAdded'
+                    return response
+                else:
+                    return HttpResponseRedirect(f'/AuShadha/pat/patient/{saved_patient.id}/')
+            else:
+                # Return form with errors
+                variable = {
+                    "user": user,
+                    "clinic": clinic,
+                    "patient_detail_obj": patient_detail_obj,
+                    "patient_detail_form": patient_detail_form,
+                    "errors": patient_detail_form.errors
+                }
+                return render(request, 'patient_detail/add_modern.html', variable)
+        else:
+            raise Http404('Bad Request: Unsupported Request Method.')
+
+    except Clinic.DoesNotExist:
+        raise Http404("Clinic Does Not Exist")
+
+
+@login_required
+def patient_edit_modern(request, id):
+    """
+    Modern patient edit view using HTMX forms
+    """
+    user = request.user
+
+    try:
+        patient_id = int(id)
+        patient_detail_obj = PatientDetail.objects.get(pk=patient_id)
+
+        if request.method == "GET":
+            patient_detail_form = PatientDetailForm(instance=patient_detail_obj)
+            variable = {
+                "user": user,
+                "patient_detail_obj": patient_detail_obj,
+                "patient_detail_form": patient_detail_form
+            }
+            return render(request, 'patient_detail/edit_modern.html', variable)
+
+        elif request.method == 'POST':
+            patient_detail_form = PatientDetailForm(request.POST, instance=patient_detail_obj)
+
+            if patient_detail_form.is_valid():
+                saved_patient = patient_detail_form.save()
+
+                # For HTMX requests, return success message
+                if request.headers.get('HX-Request'):
+                    variable = {
+                        'success': True,
+                        'message': f'Patient {saved_patient.full_name} updated successfully!',
+                        'patient': saved_patient
+                    }
+                    response = render(request, 'patient_detail/form_success.html', variable)
+                    response['HX-Trigger'] = 'patientUpdated'
+                    return response
+                else:
+                    return HttpResponseRedirect(f'/AuShadha/pat/patient/{saved_patient.id}/')
+            else:
+                # Return form with errors
+                variable = {
+                    "user": user,
+                    "patient_detail_obj": patient_detail_obj,
+                    "patient_detail_form": patient_detail_form,
+                    "errors": patient_detail_form.errors
+                }
+                return render(request, 'patient_detail/edit_modern.html', variable)
+        else:
+            raise Http404("Bad Request: Unsupported Request Method")
+
+    except (TypeError, ValueError, AttributeError):
+        raise Http404("Bad Request Parameters")
+    except PatientDetail.DoesNotExist:
+        raise Http404("Patient Does Not Exist")
+
+
+@login_required
+def patient_delete_modern(request, id):
+    """
+    Modern patient delete view using HTMX
+    """
+    user = request.user
+
+    if not user.is_superuser:
+        raise Http404("No Permission to Delete")
+
+    if request.method == "POST":  # Delete should be POST/DELETE, not GET
+        try:
+            patient_id = int(id)
+            patient = PatientDetail.objects.get(pk=patient_id)
+            patient_name = patient.full_name
+            patient.delete()
+
+            if request.headers.get('HX-Request'):
+                variable = {
+                    'success': True,
+                    'message': f'Patient {patient_name} deleted successfully!'
+                }
+                response = render(request, 'patient_detail/delete_success.html', variable)
+                response['HX-Trigger'] = 'patientDeleted'
+                return response
+            else:
+                return HttpResponseRedirect('/AuShadha/pat/')
+
+        except (TypeError, ValueError, AttributeError):
+            raise Http404("Bad Request Parameters")
+        except PatientDetail.DoesNotExist:
+            raise Http404("Patient Does Not Exist")
+    else:
+        raise Http404("Bad Request Method")
