@@ -231,12 +231,6 @@
         };
     }
 
-    // Global function to open dialog from anywhere
-    window.openDialog = function(options) {
-        // Find the dialog component and call openDialog
-        const dialogEl = document.querySelector('[x-data*="dialog()"]');
-        if (dialogEl && dialogEl.__x) {
-            dialogEl.__x.$data.openDialog(options);
-        }
-    };
+    // Note: window.openDialog is defined in base_modern.html
+    // to ensure it's available globally before any Alpine components initialize
 </script>
