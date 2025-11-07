@@ -17,28 +17,8 @@
     .page-title {
         font-size: 1.75rem;
         font-weight: 600;
-        color: #343a40;
+        color: var(--claro-text);
         margin: 0;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: all 0.2s;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #5568d3;
     }
 
     .search-bar {
@@ -51,15 +31,16 @@
         flex: 1;
         max-width: 400px;
         padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        font-size: 0.9rem;
+        border: 1px solid var(--claro-border);
+        border-radius: var(--claro-border-radius);
+        font-size: var(--claro-font-size);
+        box-shadow: var(--claro-input-inset);
     }
 
     .search-input:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--claro-primary);
+        box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.2), var(--claro-input-inset);
     }
 
     .stats-row {
@@ -70,22 +51,24 @@
 
     .stat-badge {
         padding: 0.5rem 1rem;
-        background: #f8f9fa;
-        border-radius: 6px;
+        background: var(--claro-panel-bg);
+        border-radius: var(--claro-border-radius);
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--claro-text-light);
+        border: 1px solid var(--claro-border);
     }
 
     .stat-badge strong {
-        color: #343a40;
+        color: var(--claro-text);
         margin-right: 0.25rem;
     }
 
     .patient-table-container {
         background: white;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
+        border-radius: var(--claro-border-radius);
+        border: 1px solid var(--claro-border);
         overflow: hidden;
+        box-shadow: var(--claro-shadow-sm);
     }
 
     .patient-table {
@@ -94,7 +77,7 @@
     }
 
     .patient-table thead {
-        background: #f8f9fa;
+        background: var(--claro-panel-bg);
     }
 
     .patient-table th {
@@ -102,13 +85,13 @@
         text-align: left;
         font-weight: 600;
         font-size: 0.875rem;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
+        color: var(--claro-text);
+        border-bottom: 2px solid var(--claro-border);
     }
 
     .patient-table td {
         padding: 1rem;
-        border-bottom: 1px solid #e9ecef;
+        border-bottom: 1px solid var(--claro-border-light);
     }
 
     .patient-table tbody tr {
@@ -117,17 +100,17 @@
     }
 
     .patient-table tbody tr:hover {
-        background: #f8f9fa;
+        background: var(--claro-hover-bg);
     }
 
     .patient-name {
         font-weight: 500;
-        color: #343a40;
+        color: var(--claro-text);
     }
 
     .patient-id {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--claro-text-light);
     }
 
     .patient-sex {
@@ -159,50 +142,28 @@
         align-items: center;
     }
 
-    .btn-icon {
-        padding: 0.25rem 0.5rem;
-        border: none;
-        background: none;
-        cursor: pointer;
-        color: #6c757d;
-        transition: color 0.2s;
-        text-decoration: none;
-        font-size: 1rem;
-        line-height: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-icon:hover {
-        color: #667eea;
-    }
-
-    .btn-icon.delete:hover {
-        color: #dc3545;
-    }
-
     .pagination {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 0.5rem;
         padding: 1.5rem;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid var(--claro-border);
     }
 
     .pagination-btn {
         padding: 0.5rem 1rem;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--claro-border);
         background: white;
-        border-radius: 6px;
+        border-radius: var(--claro-border-radius);
         cursor: pointer;
         transition: all 0.2s;
+        box-shadow: var(--claro-shadow-sm);
     }
 
     .pagination-btn:hover:not(:disabled) {
-        background: #f8f9fa;
-        border-color: #667eea;
+        background: var(--claro-hover-bg);
+        border-color: var(--claro-primary);
     }
 
     .pagination-btn:disabled {
@@ -211,14 +172,14 @@
     }
 
     .pagination-info {
-        color: #6c757d;
+        color: var(--claro-text-light);
         font-size: 0.875rem;
     }
 
     .empty-state {
         text-align: center;
         padding: 3rem;
-        color: #6c757d;
+        color: var(--claro-text-light);
     }
 
     .empty-state-icon {

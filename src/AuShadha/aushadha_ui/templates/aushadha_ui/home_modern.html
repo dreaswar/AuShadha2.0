@@ -21,10 +21,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #ffffff;
+            font-family: var(--claro-font-family);
+            font-size: var(--claro-font-size);
+            background: var(--claro-bg);
             display: block;
-            color: #343a40;
+            color: var(--claro-text);
         }
 
         /* CSS Grid Layout for application structure */
@@ -45,13 +46,13 @@
 
         .app-header {
             grid-area: header;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--claro-primary-gradient);
             color: white;
             padding: 0 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: var(--claro-shadow-md);
         }
 
         .app-header h1 {
@@ -86,15 +87,15 @@
 
         .app-sidebar {
             grid-area: sidebar;
-            background: #f8f9fa;
-            border-right: 1px solid #e9ecef;
+            background: var(--claro-panel-bg);
+            border-right: 1px solid var(--claro-border);
             overflow-y: auto;
             height: 100%;
         }
 
         .app-main {
             grid-area: main;
-            background: #f7f8fa;
+            background: var(--claro-bg);
             overflow-y: auto;
             overflow-x: hidden;
             padding: 2rem;
@@ -104,7 +105,7 @@
 
         .app-footer {
             grid-area: footer;
-            background: #343a40;
+            background: var(--claro-text);
             color: white;
             display: flex;
             align-items: center;
@@ -126,13 +127,13 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             font-weight: 600;
-            color: #6c757d;
+            color: var(--claro-text-light);
             letter-spacing: 0.5px;
         }
 
         .nav-item {
             padding: 0.75rem 1rem;
-            color: #495057;
+            color: var(--claro-text);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -143,15 +144,15 @@
         }
 
         .nav-item:hover {
-            background: #e9ecef;
-            color: #667eea;
-            border-left-color: #667eea;
+            background: var(--claro-hover-bg);
+            color: var(--claro-primary);
+            border-left-color: var(--claro-primary);
         }
 
         .nav-item.active {
-            background: #e7f1ff;
-            color: #667eea;
-            border-left-color: #667eea;
+            background: var(--claro-selected-bg);
+            color: var(--claro-primary);
+            border-left-color: var(--claro-primary);
             font-weight: 500;
         }
 
@@ -187,8 +188,8 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #f3f4f6;
-            border-top-color: #667eea;
+            border: 4px solid var(--claro-border-light);
+            border-top-color: var(--claro-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -199,17 +200,18 @@
 
         .loading-message {
             margin-top: 1rem;
-            color: #6c757d;
+            color: var(--claro-text-light);
             font-size: 0.9rem;
         }
 
         /* Welcome section */
         .welcome-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--claro-primary-gradient);
             color: white;
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: var(--claro-border-radius);
             margin-bottom: 2rem;
+            box-shadow: var(--claro-shadow-sm);
         }
 
         .welcome-section h2 {
@@ -232,43 +234,45 @@
 
         .stat-card {
             background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border: 1px solid var(--claro-border);
+            border-radius: var(--claro-border-radius);
             padding: 1.5rem;
             text-align: center;
             transition: all 0.2s;
+            box-shadow: var(--claro-shadow-sm);
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--claro-shadow-md);
         }
 
         .stat-value {
             font-size: 2rem;
             font-weight: 600;
-            color: #667eea;
+            color: var(--claro-primary);
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            color: #6c757d;
+            color: var(--claro-text-light);
             font-size: 0.875rem;
         }
 
         /* Content section */
         .content-section {
             background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border: 1px solid var(--claro-border);
+            border-radius: var(--claro-border-radius);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            box-shadow: var(--claro-shadow-sm);
         }
 
         .content-section h3 {
             margin: 0 0 1rem 0;
             font-size: 1.25rem;
-            color: #343a40;
+            color: var(--claro-text);
         }
 
         /* Notification toast */
@@ -282,14 +286,15 @@
 
         .notification {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: var(--claro-border-radius);
+            box-shadow: var(--claro-shadow-md);
             padding: 1rem;
             margin-bottom: 1rem;
             display: flex;
             align-items: start;
             gap: 1rem;
             animation: slideIn 0.3s ease-out;
+            border: 1px solid var(--claro-border);
         }
 
         @keyframes slideIn {
@@ -303,10 +308,10 @@
             }
         }
 
-        .notification.success { border-left: 4px solid #28a745; }
-        .notification.error { border-left: 4px solid #dc3545; }
-        .notification.info { border-left: 4px solid #17a2b8; }
-        .notification.warning { border-left: 4px solid #ffc107; }
+        .notification.success { border-left: 4px solid var(--claro-success); }
+        .notification.error { border-left: 4px solid var(--claro-danger); }
+        .notification.info { border-left: 4px solid var(--claro-info); }
+        .notification.warning { border-left: 4px solid var(--claro-warning); }
 
         /* Modal */
         .modal-backdrop {
@@ -324,17 +329,18 @@
 
         .modal-content {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--claro-border-radius-lg);
             max-width: 600px;
             width: 90%;
             max-height: 90vh;
             overflow: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: var(--claro-shadow-lg);
+            border: 1px solid var(--claro-border);
         }
 
         .modal-header {
             padding: 1.5rem;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--claro-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -343,6 +349,7 @@
         .modal-header h3 {
             margin: 0;
             font-size: 1.25rem;
+            color: var(--claro-text);
         }
 
         .modal-body {
@@ -351,7 +358,7 @@
 
         .modal-footer {
             padding: 1.5rem;
-            border-top: 1px solid #e9ecef;
+            border-top: 1px solid var(--claro-border);
             display: flex;
             justify-content: flex-end;
             gap: 0.5rem;
@@ -422,7 +429,8 @@
                     <p x-text="notification.message" style="margin: 0.25rem 0 0 0;"></p>
                 </div>
                 <button @click="removeNotification(notification.id)"
-                        style="background: none; border: none; cursor: pointer; font-size: 1.25rem; color: #6c757d;">
+                        class="btn-icon"
+                        style="font-size: 1.25rem;">
                     &times;
                 </button>
             </div>
@@ -558,7 +566,8 @@
                 <div class="modal-header">
                     <h3 x-text="modal.title"></h3>
                     <button @click="closeModal()"
-                            style="background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #6c757d;">
+                            class="btn-icon"
+                            style="font-size: 1.5rem;">
                         &times;
                     </button>
                 </div>

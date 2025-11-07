@@ -12,26 +12,27 @@
 
     .form-card {
         background: white;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
+        border-radius: var(--claro-border-radius);
+        border: 1px solid var(--claro-border);
         padding: 2rem;
+        box-shadow: var(--claro-shadow-sm);
     }
 
     .form-header {
         margin-bottom: 2rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #f8f9fa;
+        border-bottom: 2px solid var(--claro-border-light);
     }
 
     .form-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #343a40;
+        color: var(--claro-text);
         margin: 0 0 0.5rem 0;
     }
 
     .form-subtitle {
-        color: #6c757d;
+        color: var(--claro-text-light);
         font-size: 0.9rem;
         margin: 0;
     }
@@ -44,38 +45,39 @@
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: #495057;
+        color: var(--claro-text);
         font-size: 0.9rem;
     }
 
     .form-label.required::after {
         content: " *";
-        color: #dc3545;
+        color: var(--claro-danger);
     }
 
     .form-control, .form-select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-family: inherit;
+        border: 1px solid var(--claro-border);
+        border-radius: var(--claro-border-radius);
+        font-size: var(--claro-font-size);
+        font-family: var(--claro-font-family);
         transition: all 0.2s;
         background-color: white;
+        box-shadow: var(--claro-input-inset);
     }
 
     .form-control:focus, .form-select:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--claro-primary);
+        box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.2), var(--claro-input-inset);
     }
 
     .form-control.is-invalid, .form-select.is-invalid {
-        border-color: #dc3545;
+        border-color: var(--claro-danger);
     }
 
     .form-control:disabled, .form-select:disabled {
-        background-color: #e9ecef;
+        background-color: var(--claro-disabled-bg);
         cursor: not-allowed;
     }
 
@@ -93,13 +95,13 @@
 
     .form-help {
         font-size: 0.8rem;
-        color: #6c757d;
+        color: var(--claro-text-light);
         margin-top: 0.25rem;
         display: block;
     }
 
     .form-error, .invalid-feedback {
-        color: #dc3545;
+        color: var(--claro-danger);
         font-size: 0.85rem;
         margin-top: 0.25rem;
         display: block;
@@ -110,40 +112,8 @@
         gap: 1rem;
         justify-content: flex-end;
         padding-top: 1.5rem;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid var(--claro-border);
         margin-top: 2rem;
-    }
-
-    .btn {
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-primary {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #5568d3;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-secondary {
-        background: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background: #5a6268;
     }
 
     .form-select {
@@ -175,7 +145,7 @@
         </div>
 
         {% if errors %}
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-error" role="alert">
             <strong>Please correct the following errors:</strong>
             <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
                 {% for field, error_list in patient_detail_form.errors.items %}
@@ -288,7 +258,7 @@
 
             <div class="form-group">
                 <label class="form-label">Clinic</label>
-                <div style="padding: 0.75rem 1rem; background: #f8f9fa; border-radius: 6px; color: #495057;">
+                <div style="padding: 0.75rem 1rem; background: var(--claro-panel-bg); border-radius: var(--claro-border-radius); color: var(--claro-text); border: 1px solid var(--claro-border);">
                     {{ clinic.name_of_clinic }} ({{ clinic.nature_of_clinic }})
                 </div>
                 <small class="form-help">Patient will be registered under this clinic</small>

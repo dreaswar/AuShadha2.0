@@ -1,224 +1,603 @@
-/* AuShadha 2.0 - Modern Styles */
+/* ============================================================================
+   AuShadha 2.0 - Claro-Inspired Design System
+   Based on Dojo Dijit Claro Theme
+   ============================================================================ */
 
+/* CSS Variables - Claro Color Palette */
 :root {
-    --primary-color: #4169E1;
-    --primary-hover: #3151C1;
-    --secondary-color: #6C757D;
-    --success-color: #28A745;
-    --danger-color: #DC3545;
-    --warning-color: #FFC107;
-    --info-color: #17A2B8;
-    --light-color: #F8F9FA;
-    --dark-color: #343A40;
-    --border-color: #DEE2E6;
-    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+    /* Primary Colors - Blues like Claro */
+    --claro-primary: #3c8dbc;
+    --claro-primary-light: #7dbcea;
+    --claro-primary-dark: #2b6c8e;
+
+    /* Neutrals - Grays */
+    --claro-bg: #ffffff;
+    --claro-bg-alt: #f8f9fa;
+    --claro-bg-hover: #ebebeb;
+    --claro-border: #b5bcc7;
+    --claro-border-light: #d3d3d3;
+
+    /* Text Colors */
+    --claro-text: #333333;
+    --claro-text-light: #666666;
+    --claro-text-muted: #999999;
+
+    /* State Colors */
+    --claro-success: #5cb85c;
+    --claro-danger: #d9534f;
+    --claro-warning: #f0ad4e;
+    --claro-info: #5bc0de;
+
+    /* Shadows - Subtle like Claro */
+    --claro-shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --claro-shadow-md: 0 2px 6px rgba(0,0,0,0.15);
+    --claro-shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+
+    /* Border Radius - Subtle */
+    --claro-radius: 4px;
+    --claro-radius-lg: 6px;
+
+    /* Spacing - 8px grid */
+    --claro-space-xs: 4px;
+    --claro-space-sm: 8px;
+    --claro-space-md: 16px;
+    --claro-space-lg: 24px;
+    --claro-space-xl: 32px;
+
+    /* Gradients - Top to bottom, light to slightly darker */
+    --claro-gradient-light: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+    --claro-gradient-primary: linear-gradient(to bottom, #7dbcea 0%, #3c8dbc 100%);
+    --claro-gradient-hover: linear-gradient(to bottom, #f8f8f8 0%, #e8e8e8 100%);
+}
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+
+* {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--dark-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--claro-text);
+    background: var(--claro-bg-alt);
+    margin: 0;
+    padding: 0;
 }
 
-/* Login Container */
-.login-container {
-    width: 100%;
-    max-width: 450px;
-    padding: 2rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    margin: 1rem;
-}
+/* ============================================================================
+   Typography
+   ============================================================================ */
 
-.login-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.login-logo {
-    width: 150px;
-    margin: 0 auto 1rem;
-}
-
-.login-title {
-    font-size: 1.75rem;
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 var(--claro-space-md) 0;
     font-weight: 600;
-    color: var(--dark-color);
-    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    color: var(--claro-text);
 }
 
-.login-subtitle {
-    color: var(--secondary-color);
-    font-size: 0.95rem;
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+h3 { font-size: 18px; }
+h4 { font-size: 16px; }
+h5 { font-size: 14px; }
+h6 { font-size: 13px; }
+
+p {
+    margin: 0 0 var(--claro-space-md) 0;
 }
 
-/* Form Styles */
+a {
+    color: var(--claro-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--claro-primary-dark);
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   Buttons - Claro Style
+   ============================================================================ */
+
+.btn, .dijitButton {
+    display: inline-block;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--claro-border);
+    border-radius: var(--claro-radius);
+    background: var(--claro-gradient-light);
+    color: var(--claro-text);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, var(--claro-shadow-sm);
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn:hover, .dijitButton:hover {
+    background: var(--claro-gradient-hover);
+    border-color: #9fa6ad;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, var(--claro-shadow-md);
+    text-decoration: none;
+}
+
+.btn:active, .dijitButton:active {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2) inset;
+    background: linear-gradient(to bottom, #e0e0e0 0%, #f0f0f0 100%);
+}
+
+.btn:focus {
+    outline: 2px solid var(--claro-primary-light);
+    outline-offset: 2px;
+}
+
+.btn:disabled, .dijitButtonDisabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Button Variants */
+.btn-primary {
+    background: var(--claro-gradient-primary);
+    border-color: #3c8dbc;
+    color: white;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to bottom, #8ba3c7 0%, #2b6c8e 100%);
+    border-color: #2b6c8e;
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--claro-gradient-light);
+    border-color: var(--claro-border);
+    color: var(--claro-text);
+}
+
+.btn-success {
+    background: linear-gradient(to bottom, #7ec87e 0%, #5cb85c 100%);
+    border-color: #4cae4c;
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(to bottom, #e57373 0%, #d9534f 100%);
+    border-color: #d43f3a;
+    color: white;
+}
+
+.btn-sm {
+    padding: 4px 12px;
+    font-size: 12px;
+}
+
+.btn-lg {
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
+/* ============================================================================
+   Form Controls - Claro Style
+   ============================================================================ */
+
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--claro-space-md);
 }
 
 .form-label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--dark-color);
+    margin-bottom: var(--claro-space-xs);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--claro-text);
 }
 
-.form-input {
+.form-label.required::after {
+    content: " *";
+    color: var(--claro-danger);
+}
+
+.form-control, .form-select, .dijitTextBox, .dijitSelect {
+    display: block;
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-family: inherit;
+    line-height: 1.5;
+    color: var(--claro-text);
+    background-color: white;
+    background-clip: padding-box;
+    border: 1px solid var(--claro-border);
+    border-radius: var(--claro-radius);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) inset;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+.form-control:focus, .form-select:focus {
+    border-color: var(--claro-primary);
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(60,141,188,0.2), 0 1px 2px rgba(0,0,0,0.05) inset;
 }
 
-.form-input.error {
-    border-color: var(--danger-color);
-}
-
-.form-error {
-    color: var(--danger-color);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-/* Button Styles */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    gap: 0.5rem;
-}
-
-.btn:disabled {
-    opacity: 0.6;
+.form-control:disabled, .form-select:disabled {
+    background-color: #ebebeb;
+    opacity: 0.7;
     cursor: not-allowed;
 }
 
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
-    width: 100%;
+.form-control.is-invalid {
+    border-color: var(--claro-danger);
 }
 
-.btn-primary:hover:not(:disabled) {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 2px rgba(217,83,79,0.2), 0 1px 2px rgba(0,0,0,0.05) inset;
 }
 
-.btn-secondary {
-    background: var(--secondary-color);
-    color: white;
-    width: 100%;
-    margin-top: 0.5rem;
+/* Select Dropdown */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 32px;
 }
 
-.btn-secondary:hover:not(:disabled) {
-    background: #5A6268;
+.form-help {
+    display: block;
+    margin-top: var(--claro-space-xs);
+    font-size: 12px;
+    color: var(--claro-text-muted);
 }
 
-/* Alert Styles */
-.alert {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
+.form-error, .invalid-feedback {
+    display: block;
+    margin-top: var(--claro-space-xs);
+    font-size: 12px;
+    color: var(--claro-danger);
+}
+
+/* Form Layouts */
+.form-row {
     display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 0 -8px;
 }
 
-.alert-error {
-    background: #FEE;
-    border: 1px solid var(--danger-color);
-    color: var(--danger-color);
+.form-row > * {
+    padding: 0 8px;
+}
+
+/* ============================================================================
+   Cards & Panels - Claro Style
+   ============================================================================ */
+
+.card, .dijitContentPane {
+    background: white;
+    border: 1px solid var(--claro-border-light);
+    border-radius: var(--claro-radius);
+    box-shadow: var(--claro-shadow-sm);
+    margin-bottom: var(--claro-space-md);
+}
+
+.card-header {
+    padding: 12px 16px;
+    background: var(--claro-gradient-light);
+    border-bottom: 1px solid var(--claro-border-light);
+    border-radius: var(--claro-radius) var(--claro-radius) 0 0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.card-footer {
+    padding: 12px 16px;
+    background: var(--claro-bg-alt);
+    border-top: 1px solid var(--claro-border-light);
+    border-radius: 0 0 var(--claro-radius) var(--claro-radius);
+}
+
+/* ============================================================================
+   Tables - Claro Style
+   ============================================================================ */
+
+.table, .dijitGrid {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid var(--claro-border-light);
+    border-radius: var(--claro-radius);
+}
+
+.table thead th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--claro-text);
+    background: var(--claro-gradient-light);
+    border-bottom: 2px solid var(--claro-border);
+}
+
+.table tbody td {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--claro-border-light);
+}
+
+.table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Striped table */
+.table-striped tbody tr:nth-of-type(odd) {
+    background: #f9f9f9;
+}
+
+.table-striped tbody tr:hover {
+    background: #f0f0f0;
+}
+
+/* ============================================================================
+   Navigation & Tabs - Claro Style
+   ============================================================================ */
+
+.nav-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--claro-border);
+    margin-bottom: var(--claro-space-md);
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-link {
+    display: block;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: var(--claro-radius) var(--claro-radius) 0 0;
+    color: var(--claro-text-light);
+    background: var(--claro-bg-alt);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-tabs .nav-link:hover {
+    background: var(--claro-bg-hover);
+    color: var(--claro-text);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--claro-text);
+    background: white;
+    border-color: var(--claro-border) var(--claro-border) white;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   Alerts - Claro Style
+   ============================================================================ */
+
+.alert {
+    padding: 12px 16px;
+    border: 1px solid;
+    border-radius: var(--claro-radius);
+    margin-bottom: var(--claro-space-md);
 }
 
 .alert-success {
-    background: #EFE;
-    border: 1px solid var(--success-color);
-    color: var(--success-color);
+    background: #dff0d8;
+    border-color: #d0e9c6;
+    color: #3c763d;
 }
 
 .alert-info {
-    background: #EFF;
-    border: 1px solid var(--info-color);
-    color: var(--info-color);
+    background: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
 }
 
-/* Loading States */
-.htmx-request .htmx-indicator {
-    display: inline;
+.alert-warning {
+    background: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
 }
 
-.htmx-indicator {
-    display: none;
+.alert-danger {
+    background: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
 }
 
-.spinner {
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid var(--primary-color);
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    animation: spin 1s linear infinite;
+/* ============================================================================
+   Badges & Labels - Claro Style
+   ============================================================================ */
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 3px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.badge-primary {
+    background: var(--claro-primary);
+    color: white;
 }
 
-/* Footer */
+.badge-success {
+    background: var(--claro-success);
+    color: white;
+}
+
+.badge-danger {
+    background: var(--claro-danger);
+    color: white;
+}
+
+.badge-warning {
+    background: var(--claro-warning);
+    color: white;
+}
+
+.badge-secondary {
+    background: #999;
+    color: white;
+}
+
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
+
+/* Text Alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Text Colors */
+.text-muted { color: var(--claro-text-muted); }
+.text-primary { color: var(--claro-primary); }
+.text-success { color: var(--claro-success); }
+.text-danger { color: var(--claro-danger); }
+.text-warning { color: var(--claro-warning); }
+
+/* Spacing */
+.m-0 { margin: 0; }
+.mt-1 { margin-top: var(--claro-space-sm); }
+.mt-2 { margin-top: var(--claro-space-md); }
+.mt-3 { margin-top: var(--claro-space-lg); }
+.mb-1 { margin-bottom: var(--claro-space-sm); }
+.mb-2 { margin-bottom: var(--claro-space-md); }
+.mb-3 { margin-bottom: var(--claro-space-lg); }
+.p-0 { padding: 0; }
+.p-1 { padding: var(--claro-space-sm); }
+.p-2 { padding: var(--claro-space-md); }
+.p-3 { padding: var(--claro-space-lg); }
+
+/* Display */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-inline { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-flex { display: flex; }
+
+/* Flex Utilities */
+.flex-row { flex-direction: row; }
+.flex-column { flex-direction: column; }
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.align-start { align-items: flex-start; }
+.align-center { align-items: center; }
+.align-end { align-items: flex-end; }
+.gap-1 { gap: var(--claro-space-sm); }
+.gap-2 { gap: var(--claro-space-md); }
+.gap-3 { gap: var(--claro-space-lg); }
+
+/* Borders */
+.border { border: 1px solid var(--claro-border-light); }
+.border-top { border-top: 1px solid var(--claro-border-light); }
+.border-bottom { border-bottom: 1px solid var(--claro-border-light); }
+.border-left { border-left: 1px solid var(--claro-border-light); }
+.border-right { border-right: 1px solid var(--claro-border-light); }
+.rounded { border-radius: var(--claro-radius); }
+
+/* Shadows */
+.shadow-sm { box-shadow: var(--claro-shadow-sm); }
+.shadow { box-shadow: var(--claro-shadow-md); }
+.shadow-lg { box-shadow: var(--claro-shadow-lg); }
+
+/* Width */
+.w-25 { width: 25%; }
+.w-50 { width: 50%; }
+.w-75 { width: 75%; }
+.w-100 { width: 100%; }
+
+/* ============================================================================
+   Responsive
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row > * {
+        width: 100%;
+    }
+}
+
+/* ============================================================================
+   Login Page Specific (override body for login)
+   ============================================================================ */
+
+body.login-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: var(--claro-space-lg);
+    background: white;
+    border-radius: var(--claro-radius-lg);
+    box-shadow: var(--claro-shadow-lg);
+    margin: var(--claro-space-md);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--claro-space-lg);
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--claro-text);
+    margin-bottom: var(--claro-space-sm);
+}
+
+.login-subtitle {
+    color: var(--claro-text-muted);
+    font-size: 14px;
+}
+
 .login-footer {
     text-align: center;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
-    color: var(--secondary-color);
-    font-size: 0.875rem;
+    margin-top: var(--claro-space-lg);
+    padding-top: var(--claro-space-md);
+    border-top: 1px solid var(--claro-border-light);
+    color: var(--claro-text-muted);
+    font-size: 12px;
 }
-
-/* Responsive */
-@media (max-width: 480px) {
-    .login-container {
-        padding: 1.5rem;
-    }
-
-    .login-title {
-        font-size: 1.5rem;
-    }
-}
-
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
