@@ -140,4 +140,16 @@ urlpatterns = [
        name='patient_delete_modern'
        ),
 
+############################ PLACEHOLDER URLS FOR CHAIN DIALOGS ######################################
+
+   re_path(r'patient/(?P<id>\d+)/history/add/$',
+       patient_history_placeholder,
+       name='patient_history_add'
+       ),
+
+   re_path(r'patient/(?P<id>\d+)/complaints/add/$',
+       patient_complaints_placeholder,
+       name='patient_complaints_add'
+       ),
+
 ]

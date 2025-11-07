@@ -1,0 +1,43 @@
+<!-- Placeholder for Medical History Form -->
+<div class="placeholder-content">
+    <div style="text-align: center; padding: var(--claro-spacing-6);">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: var(--claro-bg-panel); border-radius: 50%; margin-bottom: var(--claro-spacing-4);">
+            <span style="font-size: 40px;">📋</span>
+        </div>
+        <h3 style="margin: 0 0 var(--claro-spacing-2) 0; color: var(--claro-text-primary);">
+            Medical History Module
+        </h3>
+        <p style="margin: 0 0 var(--claro-spacing-4) 0; color: var(--claro-text-secondary);">
+            The medical history module is under development.
+        </p>
+        <div class="alert alert-info">
+            <strong>Coming Soon:</strong> This section will allow you to record:
+            <ul style="text-align: left; margin: var(--claro-spacing-3) 0; padding-left: var(--claro-spacing-6);">
+                <li>Past illnesses and diagnoses</li>
+                <li>Previous surgeries and procedures</li>
+                <li>Current medications</li>
+                <li>Allergies and adverse reactions</li>
+                <li>Family medical history</li>
+                <li>Social history (smoking, alcohol, etc.)</li>
+            </ul>
+        </div>
+        <div style="margin-top: var(--claro-spacing-6); padding-top: var(--claro-spacing-4); border-top: var(--claro-border-width) solid var(--claro-border-light);">
+            <button class="btn btn-primary" onclick="closeDialog()">
+                Return to Patient List
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeDialog() {
+        // Trigger table refresh
+        window.dispatchEvent(new CustomEvent('dialog:success'));
+
+        // Close dialog
+        const dialogEl = document.querySelector('[x-data*="dialog()"]');
+        if (dialogEl && dialogEl.__x) {
+            dialogEl.__x.$data.closeDialog();
+        }
+    }
+</script>

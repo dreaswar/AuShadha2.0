@@ -1,0 +1,113 @@
+<!-- Patient Added Success Dialog -->
+<div class="success-dialog-content">
+    <!-- Success Icon and Message -->
+    <div style="text-align: center; margin-bottom: var(--claro-spacing-6);">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: var(--claro-success); border-radius: 50%; margin-bottom: var(--claro-spacing-4);">
+            <span style="font-size: 32px; color: white;">✓</span>
+        </div>
+        <h2 style="margin: 0 0 var(--claro-spacing-2) 0; color: var(--claro-text-primary); font-size: 20px;">
+            Patient Added Successfully!
+        </h2>
+        <p style="margin: 0; color: var(--claro-text-secondary); font-size: var(--claro-font-size-base);">
+            <strong>{{ patient.full_name }}</strong> (ID: {{ patient.patient_hospital_id }}) has been added to the system.
+        </p>
+    </div>
+
+    <!-- Action Options -->
+    <div class="card" style="padding: var(--claro-spacing-4); margin-bottom: var(--claro-spacing-4);">
+        <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px; color: var(--claro-text-primary);">
+            Would you like to add more details?
+        </h3>
+        <p style="margin: 0 0 var(--claro-spacing-4) 0; font-size: 13px; color: var(--claro-text-secondary);">
+            You can add medical history, complaints, or other patient details now, or do it later from the patient's record.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: var(--claro-spacing-2);">
+            <!-- Medical History Button -->
+            <button class="btn btn-primary"
+                    style="width: 100%; justify-content: flex-start; display: flex; align-items: center; gap: var(--claro-spacing-2);"
+                    onclick="chainDialog({
+                        title: 'Add Medical History - {{ patient.full_name }}',
+                        url: '/AuShadha/pat/patient/{{ patient.id }}/history/add/',
+                        width: '900px'
+                    })">
+                <span style="font-size: 18px;">📋</span>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600;">Add Medical History</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Past illnesses, surgeries, medications</div>
+                </div>
+            </button>
+
+            <!-- Chief Complaints Button -->
+            <button class="btn btn-primary"
+                    style="width: 100%; justify-content: flex-start; display: flex; align-items: center; gap: var(--claro-spacing-2);"
+                    onclick="chainDialog({
+                        title: 'Add Chief Complaints - {{ patient.full_name }}',
+                        url: '/AuShadha/pat/patient/{{ patient.id }}/complaints/add/',
+                        width: '900px'
+                    })">
+                <span style="font-size: 18px;">🩺</span>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600;">Add Chief Complaints</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Current symptoms and complaints</div>
+                </div>
+            </button>
+
+            <!-- View Patient Details Button -->
+            <button class="btn btn-secondary"
+                    style="width: 100%; justify-content: flex-start; display: flex; align-items: center; gap: var(--claro-spacing-2);"
+                    onclick="chainDialog({
+                        title: 'Patient Details - {{ patient.full_name }}',
+                        url: '/AuShadha/pat/patient/{{ patient.id }}/',
+                        width: '900px'
+                    })">
+                <span style="font-size: 18px;">👤</span>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600;">View Patient Details</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Review and edit patient information</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Done Button -->
+    <div style="display: flex; justify-content: center; padding-top: var(--claro-spacing-2); border-top: var(--claro-border-width) solid var(--claro-border-light);">
+        <button class="btn btn-secondary" onclick="closeAndRefresh()">
+            Done - Return to Patient List
+        </button>
+    </div>
+</div>
+
+<script>
+    // Function to chain open another dialog
+    function chainDialog(options) {
+        // Close current dialog first
+        const dialogEl = document.querySelector('[x-data*="dialog()"]');
+        if (dialogEl && dialogEl.__x) {
+            dialogEl.__x.$data.closeDialog();
+        }
+
+        // Small delay to allow close animation, then open new dialog
+        setTimeout(() => {
+            window.openDialog(options);
+        }, 250);
+    }
+
+    // Function to close dialog and refresh patient list
+    function closeAndRefresh() {
+        // Trigger table refresh
+        window.dispatchEvent(new CustomEvent('dialog:success'));
+
+        // Close dialog
+        const dialogEl = document.querySelector('[x-data*="dialog()"]');
+        if (dialogEl && dialogEl.__x) {
+            dialogEl.__x.$data.closeDialog();
+        }
+    }
+</script>
+
+<style>
+    .success-dialog-content {
+        min-height: 300px;
+    }
+</style>

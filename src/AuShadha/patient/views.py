@@ -452,16 +452,16 @@ def patient_add_modern(request, clinic_id=None):
             saved_patient.parent_clinic = clinic
             saved_patient.save()
 
-            # For HTMX requests, return success message
+            # For HTMX requests, return success dialog with options
             if request.headers.get('HX-Request'):
                 variable = {
                     'success': True,
                     'message': f'Patient {saved_patient.full_name} added successfully!',
-                    'patient': saved_patient
+                    'patient': saved_patient,
+                    'user': user
                 }
-                response = render(request, 'patient_detail/form_success.html', variable)
-                response['HX-Trigger'] = 'patientAdded'
-                return response
+                # Return success dialog with options to add more details
+                return render(request, 'patient_detail/add_success_dialog.html', variable)
             else:
                 return HttpResponseRedirect(f'/AuShadha/pat/patient/{saved_patient.id}/')
         else:
@@ -571,3 +571,37 @@ def patient_delete_modern(request, id):
             raise Http404("Patient Does Not Exist")
     else:
         raise Http404("Bad Request Method")
+
+
+################################# PLACEHOLDER VIEWS FOR CHAIN DIALOGS #################################
+
+@login_required
+def patient_history_placeholder(request, id):
+    """
+    Placeholder view for medical history - to be implemented
+    """
+    try:
+        patient = PatientDetail.objects.get(pk=id)
+        variable = {
+            'patient': patient,
+            'user': request.user
+        }
+        return render(request, 'patient_detail/history_placeholder.html', variable)
+    except PatientDetail.DoesNotExist:
+        raise Http404("Patient Does Not Exist")
+
+
+@login_required
+def patient_complaints_placeholder(request, id):
+    """
+    Placeholder view for chief complaints - to be implemented
+    """
+    try:
+        patient = PatientDetail.objects.get(pk=id)
+        variable = {
+            'patient': patient,
+            'user': request.user
+        }
+        return render(request, 'patient_detail/complaints_placeholder.html', variable)
+    except PatientDetail.DoesNotExist:
+        raise Http404("Patient Does Not Exist")
