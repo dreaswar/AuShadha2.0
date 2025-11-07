@@ -715,30 +715,41 @@
         window.openDialog = function(options) {
             console.log('Opening dialog with options:', options);
 
-            // Find the dialog component
-            const dialogEl = document.querySelector('[x-data*="dialog()"]');
-            if (!dialogEl) {
-                console.error('Dialog component element not found');
-                return;
-            }
+            // Function to try opening the dialog
+            const tryOpenDialog = (retries = 5) => {
+                const dialogEl = document.querySelector('[x-data*="dialog()"]');
 
-            // Wait for Alpine to initialize the component
-            if (dialogEl.__x && dialogEl.__x.$data) {
-                dialogEl.__x.$data.openDialog(options);
-            } else {
-                // Alpine not ready yet, wait a bit
-                console.log('Waiting for Alpine to initialize dialog...');
-                setTimeout(() => {
-                    if (dialogEl.__x && dialogEl.__x.$data) {
-                        dialogEl.__x.$data.openDialog(options);
-                    } else {
-                        console.error('Dialog component not initialized by Alpine');
+                if (!dialogEl) {
+                    console.error('Dialog component element not found');
+                    if (retries > 0) {
+                        setTimeout(() => tryOpenDialog(retries - 1), 50);
                     }
-                }, 100);
-            }
+                    return;
+                }
+
+                // Check if Alpine has initialized this component
+                if (dialogEl.__x && dialogEl.__x.$data && typeof dialogEl.__x.$data.openDialog === 'function') {
+                    dialogEl.__x.$data.openDialog(options);
+                } else {
+                    // Alpine not ready yet, retry
+                    if (retries > 0) {
+                        console.log('Waiting for Alpine to initialize dialog, retries left:', retries);
+                        setTimeout(() => tryOpenDialog(retries - 1), 100);
+                    } else {
+                        console.error('Dialog component not initialized by Alpine after multiple attempts');
+                    }
+                }
+            };
+
+            tryOpenDialog();
         };
 
         console.log('window.openDialog function defined');
+
+        // Wait for Alpine to be fully initialized
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine initialized');
+        });
     </script>
 </body>
 </html>
