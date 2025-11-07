@@ -54,6 +54,20 @@ from clinic.models import Clinic
 from patient.models import PatientDetail, PatientDetailForm
 from .dijit_widgets.tree import PatientTree
 
+# Import medical history models and forms
+from patient.models import (
+    PastMedicalHistory,
+    CurrentMedication,
+    Allergy,
+    FamilyHistory,
+    SocialHistory,
+    PastMedicalHistoryForm,
+    CurrentMedicationForm,
+    AllergyForm,
+    FamilyHistoryForm,
+    SocialHistoryForm,
+)
+
 
 @login_required
 def render_patient_json(request):
@@ -573,20 +587,99 @@ def patient_delete_modern(request, id):
         raise Http404("Bad Request Method")
 
 
-################################# PLACEHOLDER VIEWS FOR CHAIN DIALOGS #################################
+################################# MEDICAL HISTORY VIEWS #################################
 
 @login_required
 def patient_history_placeholder(request, id):
     """
-    Placeholder view for medical history - to be implemented
+    View for adding/editing medical history
     """
     try:
         patient = PatientDetail.objects.get(pk=id)
-        variable = {
-            'patient': patient,
-            'user': request.user
-        }
-        return render(request, 'patient_detail/history_placeholder.html', variable)
+
+        if request.method == "GET":
+            # Get or create social history (one per patient)
+            social_history, created = SocialHistory.objects.get_or_create(patient=patient)
+
+            # Get existing records
+            past_history = PastMedicalHistory.objects.filter(patient=patient)
+            medications = CurrentMedication.objects.filter(patient=patient)
+            allergies = Allergy.objects.filter(patient=patient)
+            family_history = FamilyHistory.objects.filter(patient=patient)
+
+            # Create empty forms for adding new records
+            past_history_form = PastMedicalHistoryForm()
+            medication_form = CurrentMedicationForm()
+            allergy_form = AllergyForm()
+            family_history_form = FamilyHistoryForm()
+            social_history_form = SocialHistoryForm(instance=social_history)
+
+            variable = {
+                'patient': patient,
+                'user': request.user,
+                'past_history': past_history,
+                'medications': medications,
+                'allergies': allergies,
+                'family_history': family_history,
+                'social_history': social_history,
+                'past_history_form': past_history_form,
+                'medication_form': medication_form,
+                'allergy_form': allergy_form,
+                'family_history_form': family_history_form,
+                'social_history_form': social_history_form,
+            }
+            return render(request, 'patient_detail/history_form.html', variable)
+
+        elif request.method == "POST":
+            # Determine which form was submitted based on a hidden field
+            form_type = request.POST.get('form_type')
+
+            if form_type == 'past_history':
+                form = PastMedicalHistoryForm(request.POST)
+                if form.is_valid():
+                    record = form.save(commit=False)
+                    record.patient = patient
+                    record.save()
+                    success_message = "Past medical history added successfully"
+
+            elif form_type == 'medication':
+                form = CurrentMedicationForm(request.POST)
+                if form.is_valid():
+                    record = form.save(commit=False)
+                    record.patient = patient
+                    record.save()
+                    success_message = "Medication added successfully"
+
+            elif form_type == 'allergy':
+                form = AllergyForm(request.POST)
+                if form.is_valid():
+                    record = form.save(commit=False)
+                    record.patient = patient
+                    record.save()
+                    success_message = "Allergy added successfully"
+
+            elif form_type == 'family_history':
+                form = FamilyHistoryForm(request.POST)
+                if form.is_valid():
+                    record = form.save(commit=False)
+                    record.patient = patient
+                    record.save()
+                    success_message = "Family history added successfully"
+
+            elif form_type == 'social_history':
+                social_history, created = SocialHistory.objects.get_or_create(patient=patient)
+                form = SocialHistoryForm(request.POST, instance=social_history)
+                if form.is_valid():
+                    form.save()
+                    success_message = "Social history updated successfully"
+
+            # Return success and refresh the form
+            if request.headers.get('HX-Request'):
+                # Reload the entire form to show updated data
+                return HttpResponseRedirect(f'/AuShadha/pat/patient/{id}/history/add/')
+            else:
+                return HttpResponseRedirect(f'/AuShadha/pat/patient/{id}/')
+
     except PatientDetail.DoesNotExist:
         raise Http404("Patient Does Not Exist")
 

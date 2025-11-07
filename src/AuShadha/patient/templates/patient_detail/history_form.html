@@ -1,0 +1,534 @@
+<!-- Medical History Form -->
+<div class="medical-history-form">
+    <div style="padding: var(--claro-spacing-4);">
+        <h2 style="margin: 0 0 var(--claro-spacing-2) 0; color: var(--claro-text-primary); font-size: 18px;">
+            Medical History - {{ patient.full_name }}
+        </h2>
+        <p style="margin: 0 0 var(--claro-spacing-6) 0; color: var(--claro-text-secondary); font-size: 13px;">
+            Hospital ID: {{ patient.patient_hospital_id }}
+        </p>
+
+        <!-- Tabs for different sections -->
+        <div x-data="{ activeTab: 'past' }" class="tabs">
+            <!-- Tab Headers -->
+            <div class="tab-list" style="display: flex; gap: var(--claro-spacing-2); border-bottom: 2px solid var(--claro-border-medium); margin-bottom: var(--claro-spacing-4);">
+                <button
+                    @click="activeTab = 'past'"
+                    :class="{ 'active': activeTab === 'past' }"
+                    class="tab-button"
+                    style="padding: var(--claro-spacing-3) var(--claro-spacing-4); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    📋 Past Medical History
+                </button>
+                <button
+                    @click="activeTab = 'medications'"
+                    :class="{ 'active': activeTab === 'medications' }"
+                    class="tab-button"
+                    style="padding: var(--claro-spacing-3) var(--claro-spacing-4); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    💊 Current Medications
+                </button>
+                <button
+                    @click="activeTab = 'allergies'"
+                    :class="{ 'active': activeTab === 'allergies' }"
+                    class="tab-button"
+                    style="padding: var(--claro-spacing-3) var(--claro-spacing-4); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    ⚠️ Allergies
+                </button>
+                <button
+                    @click="activeTab = 'family'"
+                    :class="{ 'active': activeTab === 'family' }"
+                    class="tab-button"
+                    style="padding: var(--claro-spacing-3) var(--claro-spacing-4); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    👨‍👩‍👧 Family History
+                </button>
+                <button
+                    @click="activeTab = 'social'"
+                    :class="{ 'active': activeTab === 'social' }"
+                    class="tab-button"
+                    style="padding: var(--claro-spacing-3) var(--claro-spacing-4); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;">
+                    🏠 Social History
+                </button>
+            </div>
+
+            <!-- Past Medical History Tab -->
+            <div x-show="activeTab === 'past'" class="tab-content">
+                <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px;">Past Medical History</h3>
+
+                {% if past_history %}
+                <div class="card" style="margin-bottom: var(--claro-spacing-4); overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Condition</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in past_history %}
+                            <tr>
+                                <td>{{ item.get_condition_type_display }}</td>
+                                <td><strong>{{ item.condition_name }}</strong></td>
+                                <td>{{ item.date_diagnosed|date:"Y-m-d"|default:"Not specified" }}</td>
+                                <td><span class="badge">{{ item.get_status_display }}</span></td>
+                                <td>{{ item.notes|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info" style="margin-bottom: var(--claro-spacing-4);">
+                    No past medical history recorded yet.
+                </div>
+                {% endif %}
+
+                <!-- Add New Form -->
+                <div class="card">
+                    <h4 style="margin: 0 0 var(--claro-spacing-3) 0;">Add Past Medical History</h4>
+                    <form method="POST" hx-post="{% url 'patient_history_add' patient.id %}" hx-swap="none">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="past_history">
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                {{ past_history_form.condition_type }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                {{ past_history_form.status }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Condition/Surgery Name</label>
+                            {{ past_history_form.condition_name }}
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">ICD-10 Code</label>
+                                {{ past_history_form.icd_code }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date Diagnosed</label>
+                                {{ past_history_form.date_diagnosed }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            {{ past_history_form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add Past Medical History</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Current Medications Tab -->
+            <div x-show="activeTab === 'medications'" class="tab-content">
+                <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px;">Current Medications</h3>
+
+                {% if medications %}
+                <div class="card" style="margin-bottom: var(--claro-spacing-4); overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Frequency</th>
+                                <th>Route</th>
+                                <th>Indication</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for med in medications %}
+                            <tr>
+                                <td><strong>{{ med.medication_name }}</strong></td>
+                                <td>{{ med.dosage }}</td>
+                                <td>{{ med.frequency }}</td>
+                                <td>{{ med.get_route_display }}</td>
+                                <td>{{ med.indication|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info" style="margin-bottom: var(--claro-spacing-4);">
+                    No current medications recorded yet.
+                </div>
+                {% endif %}
+
+                <!-- Add New Form -->
+                <div class="card">
+                    <h4 style="margin: 0 0 var(--claro-spacing-3) 0;">Add Current Medication</h4>
+                    <form method="POST" hx-post="{% url 'patient_history_add' patient.id %}" hx-swap="none">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="medication">
+
+                        <div class="form-group">
+                            <label class="form-label required">Medication Name</label>
+                            {{ medication_form.medication_name }}
+                        </div>
+
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label class="form-label required">Dosage</label>
+                                {{ medication_form.dosage }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required">Frequency</label>
+                                {{ medication_form.frequency }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Route</label>
+                                {{ medication_form.route }}
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Start Date</label>
+                                {{ medication_form.start_date }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Prescribed By</label>
+                                {{ medication_form.prescribed_by }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Indication</label>
+                            {{ medication_form.indication }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            {{ medication_form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add Medication</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Allergies Tab -->
+            <div x-show="activeTab === 'allergies'" class="tab-content">
+                <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px;">Allergies & Adverse Reactions</h3>
+
+                {% if allergies %}
+                <div class="card" style="margin-bottom: var(--claro-spacing-4); overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Allergen</th>
+                                <th>Severity</th>
+                                <th>Reaction</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for allergy in allergies %}
+                            <tr>
+                                <td>{{ allergy.get_allergy_type_display }}</td>
+                                <td><strong>{{ allergy.allergen }}</strong></td>
+                                <td><span class="badge badge-{{ allergy.severity }}">{{ allergy.get_severity_display }}</span></td>
+                                <td>{{ allergy.reaction }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info" style="margin-bottom: var(--claro-spacing-4);">
+                    No allergies recorded yet.
+                </div>
+                {% endif %}
+
+                <!-- Add New Form -->
+                <div class="card">
+                    <h4 style="margin: 0 0 var(--claro-spacing-3) 0;">Add Allergy</h4>
+                    <form method="POST" hx-post="{% url 'patient_history_add' patient.id %}" hx-swap="none">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="allergy">
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                {{ allergy_form.allergy_type }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Severity</label>
+                                {{ allergy_form.severity }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Allergen</label>
+                            {{ allergy_form.allergen }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Reaction</label>
+                            {{ allergy_form.reaction }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Date Identified</label>
+                            {{ allergy_form.date_identified }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            {{ allergy_form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add Allergy</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Family History Tab -->
+            <div x-show="activeTab === 'family'" class="tab-content">
+                <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px;">Family Medical History</h3>
+
+                {% if family_history %}
+                <div class="card" style="margin-bottom: var(--claro-spacing-4); overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Relationship</th>
+                                <th>Condition</th>
+                                <th>Age of Onset</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fh in family_history %}
+                            <tr>
+                                <td>{{ fh.get_relationship_display }}</td>
+                                <td><strong>{{ fh.condition }}</strong></td>
+                                <td>{{ fh.age_of_onset|default:"—" }}</td>
+                                <td>{{ fh.notes|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info" style="margin-bottom: var(--claro-spacing-4);">
+                    No family history recorded yet.
+                </div>
+                {% endif %}
+
+                <!-- Add New Form -->
+                <div class="card">
+                    <h4 style="margin: 0 0 var(--claro-spacing-3) 0;">Add Family History</h4>
+                    <form method="POST" hx-post="{% url 'patient_history_add' patient.id %}" hx-swap="none">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="family_history">
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label required">Relationship</label>
+                                {{ family_history_form.relationship }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Age of Onset</label>
+                                {{ family_history_form.age_of_onset }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Condition</label>
+                            {{ family_history_form.condition }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            {{ family_history_form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add Family History</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Social History Tab -->
+            <div x-show="activeTab === 'social'" class="tab-content">
+                <h3 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 16px;">Social History</h3>
+
+                <div class="card">
+                    <form method="POST" hx-post="{% url 'patient_history_add' patient.id %}" hx-swap="none">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="social_history">
+
+                        <h4 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 15px;">Substance Use</h4>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Smoking Status</label>
+                                {{ social_history_form.smoking_status }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alcohol Use</label>
+                                {{ social_history_form.alcohol_use }}
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Smoking Details</label>
+                                {{ social_history_form.smoking_details }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alcohol Details</label>
+                                {{ social_history_form.alcohol_details }}
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Drug Use</label>
+                                {{ social_history_form.drug_use }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Drug Details</label>
+                                {{ social_history_form.drug_details }}
+                            </div>
+                        </div>
+
+                        <hr style="margin: var(--claro-spacing-4) 0; border: none; border-top: var(--claro-border-width) solid var(--claro-border-light);">
+
+                        <h4 style="margin: 0 0 var(--claro-spacing-3) 0; font-size: 15px;">Lifestyle & Occupation</h4>
+
+                        <div class="form-group">
+                            <label class="form-label">Exercise Frequency</label>
+                            {{ social_history_form.exercise_frequency }}
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Occupation</label>
+                                {{ social_history_form.occupation }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Marital Status</label>
+                                {{ social_history_form.marital_status }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Occupational Hazards</label>
+                            {{ social_history_form.occupational_hazards }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Living Situation</label>
+                            {{ social_history_form.living_situation }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Additional Notes</label>
+                            {{ social_history_form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Social History</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Done Button -->
+        <div style="display: flex; justify-content: flex-end; padding-top: var(--claro-spacing-4); margin-top: var(--claro-spacing-4); border-top: var(--claro-border-width) solid var(--claro-border-light);">
+            <button class="btn btn-secondary" onclick="closeDialog()">
+                Done - Return to Patient List
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeDialog() {
+        // Trigger table refresh
+        window.dispatchEvent(new CustomEvent('dialog:success'));
+
+        // Close dialog
+        const dialogEl = document.querySelector('[x-data*="dialog()"]');
+        if (dialogEl && dialogEl.__x) {
+            dialogEl.__x.$data.closeDialog();
+        }
+    }
+
+    // Reload page after form submission to show updated data
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.successful) {
+            // Reload the dialog content
+            location.reload();
+        }
+    });
+</script>
+
+<style>
+    .tab-button.active {
+        border-bottom-color: var(--claro-blue) !important;
+        color: var(--claro-blue) !important;
+        font-weight: 600;
+    }
+
+    .tab-button:hover {
+        background: var(--claro-bg-hover);
+    }
+
+    .badge {
+        display: inline-block;
+        padding: var(--claro-spacing-1) var(--claro-spacing-2);
+        border-radius: var(--claro-border-radius);
+        background: var(--claro-bg-panel);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .badge-severe,
+    .badge-life_threatening {
+        background: var(--claro-error);
+        color: white;
+    }
+
+    .badge-moderate {
+        background: var(--claro-warning);
+        color: var(--claro-text-primary);
+    }
+
+    .badge-mild {
+        background: var(--claro-info);
+        color: white;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        padding: var(--claro-spacing-3);
+        text-align: left;
+        border-bottom: var(--claro-border-width) solid var(--claro-border-light);
+    }
+
+    .table th {
+        background: var(--claro-bg-panel);
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--claro-text-secondary);
+    }
+
+    .table tbody tr:hover {
+        background: var(--claro-bg-hover);
+    }
+</style>

@@ -233,3 +233,18 @@ class PatientDetailForm(AuShadhaBaseModelForm):
         model = PatientDetail
         exclude = DEFAULT_PATIENT_DETAIL_FORM_EXCLUDES
 
+
+# Import medical history models
+from .medical_history_models import (
+    PastMedicalHistory,
+    CurrentMedication,
+    Allergy,
+    FamilyHistory,
+    SocialHistory,
+    PastMedicalHistoryForm,
+    CurrentMedicationForm,
+    AllergyForm,
+    FamilyHistoryForm,
+    SocialHistoryForm,
+)
+
