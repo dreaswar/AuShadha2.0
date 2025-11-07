@@ -7,23 +7,27 @@
 <style>
     .form-container { max-width: 800px; margin: 0 auto; }
     .form-card { background: white; border-radius: 8px; border: 1px solid #e9ecef; padding: 2rem; }
-    .form-header { margin-bottom: 2rem; }
+    .form-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #f8f9fa; }
     .form-title { font-size: 1.5rem; font-weight: 600; color: #343a40; margin: 0 0 0.5rem 0; }
-    .form-subtitle { color: #6c757d; font-size: 0.9rem; }
+    .form-subtitle { color: #6c757d; font-size: 0.9rem; margin: 0; }
     .form-group { margin-bottom: 1.5rem; }
     .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #495057; font-size: 0.9rem; }
-    .form-label.required::after { content: "*"; color: #dc3545; margin-left: 0.25rem; }
-    .form-control { width: 100%; padding: 0.75rem 1rem; border: 1px solid #dee2e6; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s; }
-    .form-control:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    .form-label.required::after { content: " *"; color: #dc3545; }
+    .form-control, .form-select { width: 100%; padding: 0.75rem 1rem; border: 1px solid #dee2e6; border-radius: 6px; font-size: 0.9rem; font-family: inherit; transition: all 0.2s; background-color: white; }
+    .form-control:focus, .form-select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    .form-control.is-invalid, .form-select.is-invalid { border-color: #dc3545; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
-    .form-help { font-size: 0.8rem; color: #6c757d; margin-top: 0.25rem; }
-    .form-error { color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; }
+    .form-help { font-size: 0.8rem; color: #6c757d; margin-top: 0.25rem; display: block; }
+    .form-error, .invalid-feedback { color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; display: block; }
     .form-actions { display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid #e9ecef; margin-top: 2rem; }
-    .radio-group { display: flex; gap: 1rem; }
-    .radio-option { display: flex; align-items: center; gap: 0.5rem; }
-    .radio-option input[type="radio"] { width: auto; margin: 0; }
-    @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-size: 0.9rem; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-primary:hover { background: #5568d3; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3); }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-secondary:hover { background: #5a6268; }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2.5rem; }
+    @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } .form-card { padding: 1.5rem; } }
 </style>
 {% endblock %}
 
@@ -35,39 +39,47 @@
             <p class="form-subtitle">Update patient information</p>
         </div>
 
-        <form method="POST" id="patient-form">
+        <form method="POST" id="patient-form" novalidate>
             {% csrf_token %}
 
             <div class="form-group">
                 <label for="id_patient_hospital_id" class="form-label required">Hospital ID</label>
-                {{ patient_detail_form.patient_hospital_id }}
+                <input type="text" name="patient_hospital_id" id="id_patient_hospital_id"
+                       class="form-control {% if patient_detail_form.patient_hospital_id.errors %}is-invalid{% endif %}"
+                       value="{{ patient_detail_form.patient_hospital_id.value|default:'' }}" required maxlength="15">
                 {% if patient_detail_form.patient_hospital_id.errors %}
-                    <div class="form-error">{{ patient_detail_form.patient_hospital_id.errors.0 }}</div>
+                    <span class="invalid-feedback">{{ patient_detail_form.patient_hospital_id.errors.0 }}</span>
                 {% endif %}
             </div>
 
             <div class="form-row-3">
                 <div class="form-group">
                     <label for="id_first_name" class="form-label required">First Name</label>
-                    {{ patient_detail_form.first_name }}
+                    <input type="text" name="first_name" id="id_first_name"
+                           class="form-control {% if patient_detail_form.first_name.errors %}is-invalid{% endif %}"
+                           value="{{ patient_detail_form.first_name.value|default:'' }}" required maxlength="30">
                     {% if patient_detail_form.first_name.errors %}
-                        <div class="form-error">{{ patient_detail_form.first_name.errors.0 }}</div>
+                        <span class="invalid-feedback">{{ patient_detail_form.first_name.errors.0 }}</span>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="id_middle_name" class="form-label">Middle Name</label>
-                    {{ patient_detail_form.middle_name }}
+                    <input type="text" name="middle_name" id="id_middle_name"
+                           class="form-control {% if patient_detail_form.middle_name.errors %}is-invalid{% endif %}"
+                           value="{{ patient_detail_form.middle_name.value|default:'' }}" maxlength="30">
                     {% if patient_detail_form.middle_name.errors %}
-                        <div class="form-error">{{ patient_detail_form.middle_name.errors.0 }}</div>
+                        <span class="invalid-feedback">{{ patient_detail_form.middle_name.errors.0 }}</span>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="id_last_name" class="form-label">Last Name</label>
-                    {{ patient_detail_form.last_name }}
+                    <input type="text" name="last_name" id="id_last_name"
+                           class="form-control {% if patient_detail_form.last_name.errors %}is-invalid{% endif %}"
+                           value="{{ patient_detail_form.last_name.value|default:'' }}" maxlength="30">
                     {% if patient_detail_form.last_name.errors %}
-                        <div class="form-error">{{ patient_detail_form.last_name.errors.0 }}</div>
+                        <span class="invalid-feedback">{{ patient_detail_form.last_name.errors.0 }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -75,24 +87,24 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="id_age" class="form-label">Age</label>
-                    {{ patient_detail_form.age }}
+                    <input type="text" name="age" id="id_age"
+                           class="form-control {% if patient_detail_form.age.errors %}is-invalid{% endif %}"
+                           value="{{ patient_detail_form.age.value|default:'' }}" maxlength="10" placeholder="e.g., 45 years">
                     {% if patient_detail_form.age.errors %}
-                        <div class="form-error">{{ patient_detail_form.age.errors.0 }}</div>
+                        <span class="invalid-feedback">{{ patient_detail_form.age.errors.0 }}</span>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="id_sex" class="form-label required">Sex</label>
-                    <div class="radio-group">
-                        {% for choice in patient_detail_form.sex %}
-                            <div class="radio-option">
-                                {{ choice.tag }}
-                                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    <select name="sex" id="id_sex" class="form-select {% if patient_detail_form.sex.errors %}is-invalid{% endif %}" required>
+                        <option value="">-- Select Sex --</option>
+                        <option value="Male" {% if patient_detail_form.sex.value == "Male" %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if patient_detail_form.sex.value == "Female" %}selected{% endif %}>Female</option>
+                        <option value="Others" {% if patient_detail_form.sex.value == "Others" %}selected{% endif %}>Others</option>
+                    </select>
                     {% if patient_detail_form.sex.errors %}
-                        <div class="form-error">{{ patient_detail_form.sex.errors.0 }}</div>
+                        <span class="invalid-feedback">{{ patient_detail_form.sex.errors.0 }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -106,13 +118,13 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('#patient-form input[type="text"], #patient-form input[type="number"], #patient-form select').forEach(function(el) {
-            el.classList.add('form-control');
-            if (el.hasAttribute('required')) {
-                el.previousElementSibling.classList.add('required');
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('patient-form');
+    form.querySelectorAll('.form-control, .form-select').forEach(function(field) {
+        field.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
         });
     });
+});
 </script>
 {% endblock %}
