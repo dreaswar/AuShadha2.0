@@ -1,8 +1,8 @@
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
         <div>
-            <h1 style="font-size: 1.75rem; font-weight: 600; margin: 0 0 0.5rem 0; color: var(--claro-text);">{{ patient.full_name }}</h1>
-            <p style="color: var(--claro-text-light); margin: 0;">Hospital ID: {{ patient.patient_hospital_id }}</p>
+            <h1 style="font-size: 1.75rem; font-weight: 600; margin: 0 0 0.5rem 0; color: var(--claro-text-primary);">{{ patient.full_name }}</h1>
+            <p style="color: var(--claro-text-secondary); margin: 0;">Hospital ID: {{ patient.patient_hospital_id }}</p>
         </div>
         <div style="display: flex; gap: 0.5rem;">
             <a href="{% url 'patient_edit_modern' patient.id %}" class="btn btn-primary">Edit</a>
@@ -12,36 +12,36 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">First Name</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">First Name</strong>
             <p>{{ patient.first_name }}</p>
         </div>
 
         {% if patient.middle_name %}
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">Middle Name</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">Middle Name</strong>
             <p>{{ patient.middle_name }}</p>
         </div>
         {% endif %}
 
         {% if patient.last_name %}
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">Last Name</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">Last Name</strong>
             <p>{{ patient.last_name }}</p>
         </div>
         {% endif %}
 
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">Age</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">Age</strong>
             <p>{{ patient.age|default:"Not specified" }}</p>
         </div>
 
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">Sex</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">Sex</strong>
             <p>{{ patient.sex }}</p>
         </div>
 
         <div>
-            <strong style="color: var(--claro-text-light); font-size: 0.875rem;">Clinic</strong>
+            <strong style="color: var(--claro-text-secondary); font-size: 0.875rem;">Clinic</strong>
             <p>{{ patient.parent_clinic.name_of_clinic }}</p>
         </div>
     </div>

@@ -15,9 +15,9 @@
     }
 
     .page-title {
-        font-size: 1.75rem;
+        font-size: 24px;
         font-weight: 600;
-        color: var(--claro-text);
+        color: var(--claro-text-primary);
         margin: 0;
     }
 
@@ -31,16 +31,16 @@
         flex: 1;
         max-width: 400px;
         padding: 0.75rem 1rem;
-        border: 1px solid var(--claro-border);
+        border: 1px solid var(--claro-border-color);
         border-radius: var(--claro-border-radius);
         font-size: var(--claro-font-size);
-        box-shadow: var(--claro-input-inset);
+        box-shadow: var(--claro-shadow-inset);
     }
 
     .search-input:focus {
         outline: none;
-        border-color: var(--claro-primary);
-        box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.2), var(--claro-input-inset);
+        border-color: var(--claro-blue);
+        box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.2), var(--claro-shadow-inset);
     }
 
     .stats-row {
@@ -51,22 +51,22 @@
 
     .stat-badge {
         padding: 0.5rem 1rem;
-        background: var(--claro-panel-bg);
+        background: var(--claro-bg-panel);
         border-radius: var(--claro-border-radius);
         font-size: 0.875rem;
-        color: var(--claro-text-light);
-        border: 1px solid var(--claro-border);
+        color: var(--claro-text-secondary);
+        border: 1px solid var(--claro-border-color);
     }
 
     .stat-badge strong {
-        color: var(--claro-text);
+        color: var(--claro-text-primary);
         margin-right: 0.25rem;
     }
 
     .patient-table-container {
         background: white;
         border-radius: var(--claro-border-radius);
-        border: 1px solid var(--claro-border);
+        border: 1px solid var(--claro-border-color);
         overflow: hidden;
         box-shadow: var(--claro-shadow-sm);
     }
@@ -77,7 +77,7 @@
     }
 
     .patient-table thead {
-        background: var(--claro-panel-bg);
+        background: var(--claro-bg-panel);
     }
 
     .patient-table th {
@@ -85,8 +85,8 @@
         text-align: left;
         font-weight: 600;
         font-size: 0.875rem;
-        color: var(--claro-text);
-        border-bottom: 2px solid var(--claro-border);
+        color: var(--claro-text-primary);
+        border-bottom: 2px solid var(--claro-border-color);
     }
 
     .patient-table td {
@@ -100,17 +100,17 @@
     }
 
     .patient-table tbody tr:hover {
-        background: var(--claro-hover-bg);
+        background: var(--claro-bg-hover);
     }
 
     .patient-name {
         font-weight: 500;
-        color: var(--claro-text);
+        color: var(--claro-text-primary);
     }
 
     .patient-id {
         font-size: 0.875rem;
-        color: var(--claro-text-light);
+        color: var(--claro-text-secondary);
     }
 
     .patient-sex {
@@ -148,12 +148,12 @@
         align-items: center;
         gap: 0.5rem;
         padding: 1.5rem;
-        border-top: 1px solid var(--claro-border);
+        border-top: 1px solid var(--claro-border-color);
     }
 
     .pagination-btn {
         padding: 0.5rem 1rem;
-        border: 1px solid var(--claro-border);
+        border: 1px solid var(--claro-border-color);
         background: white;
         border-radius: var(--claro-border-radius);
         cursor: pointer;
@@ -162,8 +162,8 @@
     }
 
     .pagination-btn:hover:not(:disabled) {
-        background: var(--claro-hover-bg);
-        border-color: var(--claro-primary);
+        background: var(--claro-bg-hover);
+        border-color: var(--claro-blue);
     }
 
     .pagination-btn:disabled {
@@ -172,14 +172,14 @@
     }
 
     .pagination-info {
-        color: var(--claro-text-light);
+        color: var(--claro-text-secondary);
         font-size: 0.875rem;
     }
 
     .empty-state {
         text-align: center;
         padding: 3rem;
-        color: var(--claro-text-light);
+        color: var(--claro-text-secondary);
     }
 
     .empty-state-icon {
