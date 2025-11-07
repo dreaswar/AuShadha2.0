@@ -13,21 +13,18 @@
         <td>
             <div class="action-buttons" onclick="event.stopPropagation();">
                 <a href="{% url 'patient_detail_modern' patient.id %}"
-                   class="btn-icon"
-                   title="View"
-                   style="font-size: 1rem;">
+                   class="btn-icon icon-sm"
+                   title="View">
                     👁️
                 </a>
                 <a href="{% url 'patient_edit_modern' patient.id %}"
-                   class="btn-icon"
-                   title="Edit"
-                   style="font-size: 1rem;">
+                   class="btn-icon icon-sm"
+                   title="Edit">
                     ✏️
                 </a>
                 {% if user.is_superuser %}
-                <button class="btn-icon delete"
+                <button class="btn-icon icon-sm delete"
                         title="Delete"
-                        style="font-size: 1rem;"
                         hx-post="{% url 'patient_delete_modern' patient.id %}"
                         hx-confirm="Are you sure you want to delete {{ patient.full_name }}?"
                         hx-target="closest tr"

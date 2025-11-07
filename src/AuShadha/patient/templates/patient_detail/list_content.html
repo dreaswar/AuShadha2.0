@@ -193,9 +193,14 @@
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Patients</h1>
-        <a href="{% url 'patient_add_modern_without_clinic' %}" class="btn btn-primary">
+        <button class="btn btn-primary"
+                @click="window.openDialog({
+                    title: 'Add New Patient',
+                    url: '{% url 'patient_add_modern_without_clinic' %}',
+                    width: '800px'
+                })">
             + Add New Patient
-        </a>
+        </button>
     </div>
 
     <!-- Search Bar -->
@@ -269,3 +274,23 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    // Listen for successful patient add and refresh the table
+    window.addEventListener('dialog:success', function(event) {
+        // Refresh the patient list
+        htmx.ajax('GET', '{% url 'patient_list_modern' %}', {
+            target: '#patient-table-body',
+            swap: 'innerHTML'
+        });
+    });
+
+    // Also listen for the HTMX patientAdded event
+    document.body.addEventListener('patientAdded', function(event) {
+        // Refresh the patient list
+        htmx.ajax('GET', '{% url 'patient_list_modern' %}', {
+            target: '#patient-table-body',
+            swap: 'innerHTML'
+        });
+    });
+</script>

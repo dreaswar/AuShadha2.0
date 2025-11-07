@@ -437,6 +437,11 @@ def patient_add_modern(request, clinic_id=None):
             "patient_detail_obj": patient_detail_obj,
             "patient_detail_form": patient_detail_form
         }
+
+        # Check if this is a dialog request (HTMX or AJAX)
+        if request.headers.get('HX-Request') or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return render(request, 'patient_detail/add_dialog.html', variable)
+
         return render(request, 'patient_detail/add_modern.html', variable)
 
     elif request.method == "POST":
@@ -468,6 +473,9 @@ def patient_add_modern(request, clinic_id=None):
                 "patient_detail_form": patient_detail_form,
                 "errors": patient_detail_form.errors
             }
+            # Return dialog template for HTMX requests
+            if request.headers.get('HX-Request'):
+                return render(request, 'patient_detail/add_dialog.html', variable)
             return render(request, 'patient_detail/add_modern.html', variable)
     else:
         raise Http404('Bad Request: Unsupported Request Method.')
