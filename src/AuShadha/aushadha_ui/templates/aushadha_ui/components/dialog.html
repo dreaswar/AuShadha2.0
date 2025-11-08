@@ -233,10 +233,35 @@
 
     // Global function to open dialog from anywhere
     window.openDialog = function(options) {
+        console.log('window.openDialog called with:', options);
+
         // Find the dialog component and call openDialog
         const dialogEl = document.querySelector('[x-data*="dialog()"]');
-        if (dialogEl && dialogEl.__x) {
+
+        if (!dialogEl) {
+            console.error('Dialog element not found! Looking for [x-data*="dialog()"]');
+            return;
+        }
+
+        console.log('Found dialog element:', dialogEl);
+        console.log('Dialog __x:', dialogEl.__x);
+
+        if (dialogEl.__x && dialogEl.__x.$data) {
+            console.log('Calling openDialog method on Alpine component');
             dialogEl.__x.$data.openDialog(options);
+        } else {
+            console.error('Alpine not initialized on dialog element yet. __x:', dialogEl.__x);
+            // Try waiting a bit for Alpine to initialize
+            setTimeout(() => {
+                if (dialogEl.__x && dialogEl.__x.$data) {
+                    console.log('Retry successful - calling openDialog');
+                    dialogEl.__x.$data.openDialog(options);
+                } else {
+                    console.error('Alpine still not initialized after retry');
+                }
+            }, 100);
         }
     };
+
+    console.log('window.openDialog function defined in dialog.html');
 </script>
