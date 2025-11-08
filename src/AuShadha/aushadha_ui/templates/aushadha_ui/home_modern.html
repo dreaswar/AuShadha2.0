@@ -407,16 +407,23 @@
         }
     </style>
 
+    <!-- Prevent Alpine from auto-starting - we'll start it manually after component registration -->
+    <script>
+        window.deferLoadingAlpine = function (callback) {
+            window.Alpine = callback;
+        };
+    </script>
+
     <!-- Modern JavaScript -->
     {% include 'aushadha_ui/script_links_modern.html' %}
 
     <!-- Define Alpine components BEFORE Alpine initializes -->
     <script>
-        // This must run before Alpine loads
-        document.addEventListener('alpine:init', () => {
-            console.log('Alpine initializing - registering dialog component');
+        // Register components and manually start Alpine
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Registering Alpine dialog component');
 
-            Alpine.data('dialog', () => ({
+            window.Alpine.data('dialog', () => ({
                 isOpen: false,
                 dialogTitle: '',
                 dialogContent: '',
@@ -524,6 +531,11 @@
                     }
                 }
             }));
+
+            // Now start Alpine after component registration
+            console.log('Starting Alpine.js');
+            window.Alpine.start();
+            console.log('Alpine.js started successfully');
         });
     </script>
 </head>
