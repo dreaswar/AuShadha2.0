@@ -940,12 +940,12 @@
         window.openDialog = function(options) {
             console.log('Opening dialog with options:', options);
 
-            // Try multiple selectors
-            let dialogEl = document.querySelector('[x-data*="dialog"]');
+            // Find the dialog component (registered as 'dialog' via Alpine.data)
+            let dialogEl = document.querySelector('[x-data="dialog"]');
 
             if (!dialogEl) {
-                console.error('Dialog component element not found with any selector');
-                console.log('Tried selectors: [x-data*="dialog"]');
+                console.error('Dialog component element not found');
+                console.log('Looking for element with x-data="dialog"');
                 return;
             }
 
