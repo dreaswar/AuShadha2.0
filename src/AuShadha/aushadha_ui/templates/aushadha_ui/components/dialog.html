@@ -1,5 +1,5 @@
 <!-- Reusable Dialog Component -->
-<div x-data="dialog" x-cloak>
+<div x-data="dialog()" x-cloak>
     <!-- Dialog Overlay -->
     <div x-show="isOpen"
          x-transition:enter="transition ease-out duration-200"
@@ -120,6 +120,123 @@
     }
 </style>
 
-<!-- Note: The dialog() component is registered using Alpine.data() in the main page script -->
-<!-- This ensures proper initialization before Alpine processes the DOM -->
+<script>
+    function dialog() {
+        return {
+            isOpen: false,
+            dialogTitle: '',
+            dialogContent: '',
+            dialogWidth: '600px',
+            showFooter: false,
+            primaryAction: null,
+            primaryActionLabel: 'Save',
 
+            openDialog(options) {
+                this.dialogTitle = options.title || 'Dialog';
+                this.dialogContent = options.content || '';
+                this.dialogWidth = options.width || '600px';
+                this.showFooter = options.showFooter !== undefined ? options.showFooter : false;
+                this.primaryAction = options.primaryAction || null;
+                this.primaryActionLabel = options.primaryActionLabel || 'Save';
+
+                this.isOpen = true;
+                document.body.classList.add('dialog-open');
+
+                // If content is a URL, fetch it
+                if (options.url) {
+                    this.loadContent(options.url);
+                }
+
+                // Set up HTMX event listeners for forms inside dialog
+                this.$nextTick(() => {
+                    this.setupFormHandlers();
+                });
+            },
+
+            closeDialog() {
+                this.isOpen = false;
+                document.body.classList.remove('dialog-open');
+
+                // Clear content after animation
+                setTimeout(() => {
+                    this.dialogContent = '';
+                }, 200);
+            },
+
+            async loadContent(url) {
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'HX-Request': 'true'
+                        }
+                    });
+
+                    if (response.ok) {
+                        this.dialogContent = await response.text();
+                        this.$nextTick(() => {
+                            this.setupFormHandlers();
+                            // Initialize HTMX on the new content
+                            if (window.htmx) {
+                                htmx.process(document.getElementById('dialog-content'));
+                            }
+                        });
+                    } else {
+                        this.dialogContent = '<div class="alert alert-error">Failed to load content</div>';
+                    }
+                } catch (error) {
+                    console.error('Dialog load error:', error);
+                    this.dialogContent = '<div class="alert alert-error">Error loading content</div>';
+                }
+            },
+
+            setupFormHandlers() {
+                const dialogBody = document.getElementById('dialog-content');
+                if (!dialogBody) return;
+
+                // Handle form submissions
+                const forms = dialogBody.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.addEventListener('htmx:afterRequest', (event) => {
+                        if (event.detail.successful) {
+                            // Check if it's a create/update operation (status 200 or 201)
+                            if (event.detail.xhr.status === 200 || event.detail.xhr.status === 201) {
+                                // Dispatch custom event that pages can listen to
+                                window.dispatchEvent(new CustomEvent('dialog:success', {
+                                    detail: {
+                                        form: form,
+                                        response: event.detail.xhr.responseText
+                                    }
+                                }));
+
+                                // Close dialog after successful submission
+                                this.closeDialog();
+                            }
+                        }
+                    });
+                });
+
+                // Handle cancel buttons
+                const cancelButtons = dialogBody.querySelectorAll('[data-dialog-close]');
+                cancelButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.closeDialog());
+                });
+            },
+
+            handlePrimaryAction() {
+                if (typeof this.primaryAction === 'function') {
+                    this.primaryAction();
+                }
+            }
+        };
+    }
+
+    // Global function to open dialog from anywhere
+    window.openDialog = function(options) {
+        // Find the dialog component and call openDialog
+        const dialogEl = document.querySelector('[x-data*="dialog()"]');
+        if (dialogEl && dialogEl.__x) {
+            dialogEl.__x.$data.openDialog(options);
+        }
+    };
+</script>
