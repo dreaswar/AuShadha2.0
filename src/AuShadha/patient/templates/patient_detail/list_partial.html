@@ -17,11 +17,15 @@
                    title="View">
                     👁️
                 </a>
-                <a href="{% url 'patient_edit_modern' patient.id %}"
-                   class="btn-icon icon-sm"
-                   title="Edit">
+                <button class="btn-icon icon-sm"
+                        title="Edit"
+                        onclick="window.openDialog({
+                            title: 'Edit Patient - {{ patient.full_name }}',
+                            url: '{% url 'patient_edit_modern' patient.id %}',
+                            width: '800px'
+                        })">
                     ✏️
-                </a>
+                </button>
                 {% if user.is_superuser %}
                 <button class="btn-icon icon-sm delete"
                         title="Delete"

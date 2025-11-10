@@ -513,6 +513,11 @@ def patient_edit_modern(request, id):
                 "patient_detail_obj": patient_detail_obj,
                 "patient_detail_form": patient_detail_form
             }
+
+            # For HTMX/dialog requests, return dialog template
+            if request.headers.get('HX-Request') or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return render(request, 'patient_detail/edit_dialog.html', variable)
+
             return render(request, 'patient_detail/edit_modern.html', variable)
 
         elif request.method == 'POST':
@@ -528,7 +533,7 @@ def patient_edit_modern(request, id):
                         'message': f'Patient {saved_patient.full_name} updated successfully!',
                         'patient': saved_patient
                     }
-                    response = render(request, 'patient_detail/form_success.html', variable)
+                    response = render(request, 'patient_detail/edit_success_dialog.html', variable)
                     response['HX-Trigger'] = 'patientUpdated'
                     return response
                 else:
@@ -541,6 +546,11 @@ def patient_edit_modern(request, id):
                     "patient_detail_form": patient_detail_form,
                     "errors": patient_detail_form.errors
                 }
+
+                # For HTMX/dialog requests, return dialog template with errors
+                if request.headers.get('HX-Request') or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return render(request, 'patient_detail/edit_dialog.html', variable)
+
                 return render(request, 'patient_detail/edit_modern.html', variable)
         else:
             raise Http404("Bad Request: Unsupported Request Method")
