@@ -712,3 +712,29 @@ def patient_complaints_placeholder(request, id):
         return render(request, 'patient_detail/complaints_placeholder.html', variable)
     except PatientDetail.DoesNotExist:
         raise Http404("Patient Does Not Exist")
+
+
+@login_required
+def patient_modules_api(request, id):
+    """
+    API endpoint to get available modules for a patient
+    Returns JSON with modules based on assignment rules
+    """
+    try:
+        from .models import get_patient_modules
+
+        patient = PatientDetail.objects.get(pk=id)
+        modules = get_patient_modules(patient, request.user)
+
+        return JsonResponse({
+            'success': True,
+            'patient_id': patient.id,
+            'patient_name': patient.full_name,
+            'modules': modules
+        })
+
+    except PatientDetail.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Patient not found'
+        }, status=404)

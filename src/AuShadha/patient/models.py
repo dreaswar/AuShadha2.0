@@ -248,3 +248,11 @@ from .medical_history_models import (
     SocialHistoryForm,
 )
 
+# Import module assignment models
+from .module_assignment_models import (
+    PatientModule,
+    ModuleAssignmentRule,
+    PatientTag,
+    get_patient_modules,
+)
+

@@ -1,10 +1,14 @@
 {% if patients %}
     {% for patient in patients %}
-    <tr onclick="window.openDialog({
-            title: '{{ patient.full_name }}',
-            url: '{% url 'patient_detail_modern' patient.id %}',
-            width: '700px'
-        })" style="cursor: pointer;">
+    <tr onclick="window.dispatchEvent(new CustomEvent('patient:selected', {
+            detail: {
+                id: {{ patient.id }},
+                full_name: '{{ patient.full_name|escapejs }}',
+                patient_hospital_id: '{{ patient.patient_hospital_id }}',
+                age: '{{ patient.age|default:""|escapejs }}',
+                sex: '{{ patient.sex }}'
+            }
+        }))" style="cursor: pointer;" title="Click to open patient tab">
         <td class="patient-id">{{ patient.patient_hospital_id }}</td>
         <td class="patient-name">{{ patient.full_name }}</td>
         <td>{{ patient.age|default:"—" }}</td>

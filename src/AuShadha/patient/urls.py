@@ -152,4 +152,11 @@ urlpatterns = [
        name='patient_complaints_add'
        ),
 
+############################ API ENDPOINTS ######################################
+
+   re_path(r'api/patient/(?P<id>\d+)/modules/$',
+       patient_modules_api,
+       name='patient_modules_api'
+       ),
+
 ]
