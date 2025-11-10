@@ -81,10 +81,14 @@
 <script>
     // Function to chain open another dialog
     function chainDialog(options) {
-        // Close current dialog first
-        const dialogEl = document.querySelector('[x-data*="dialog()"]');
-        if (dialogEl && dialogEl.__x) {
-            dialogEl.__x.$data.closeDialog();
+        // Get the vanilla JS dialog element
+        const dialogEl = document.getElementById('app-dialog');
+        if (dialogEl && dialogEl.style.display !== 'none') {
+            // Dialog is open, close it first
+            const closeBtn = document.getElementById('dialog-close-btn');
+            if (closeBtn) {
+                closeBtn.click();
+            }
         }
 
         // Small delay to allow close animation, then open new dialog
@@ -95,13 +99,13 @@
 
     // Function to close dialog and refresh patient list
     function closeAndRefresh() {
-        // Trigger table refresh
+        // Trigger table refresh event
         window.dispatchEvent(new CustomEvent('dialog:success'));
 
-        // Close dialog
-        const dialogEl = document.querySelector('[x-data*="dialog()"]');
-        if (dialogEl && dialogEl.__x) {
-            dialogEl.__x.$data.closeDialog();
+        // Close the vanilla JS dialog
+        const closeBtn = document.getElementById('dialog-close-btn');
+        if (closeBtn) {
+            closeBtn.click();
         }
     }
 </script>

@@ -290,18 +290,67 @@
                 forms.forEach(form => {
                     form.addEventListener('htmx:afterRequest', (event) => {
                         if (event.detail.successful) {
-                            if (event.detail.xhr.status === 200 || event.detail.xhr.status === 201) {
-                                // Dispatch custom event
+                            const responseHTML = event.detail.xhr.responseText;
+
+                            // Check if response contains validation errors
+                            const hasErrors = responseHTML.includes('errorlist') ||
+                                            responseHTML.includes('error-message') ||
+                                            responseHTML.includes('alert-error') ||
+                                            responseHTML.includes('form-error');
+
+                            // Check if response is a success screen (not a form)
+                            const isSuccessScreen = responseHTML.includes('success-dialog-content');
+
+                            if (hasErrors) {
+                                // Form has validation errors - update content and keep open
+                                console.log('Form has validation errors - keeping dialog open');
+                                this.contentEl.innerHTML = responseHTML;
+
+                                // Re-setup handlers for the new form
+                                this.setupFormHandlers();
+
+                                // Initialize HTMX on the new content
+                                if (window.htmx) {
+                                    htmx.process(this.contentEl);
+                                }
+
+                                // Scroll to top of dialog to show errors
+                                this.contentEl.scrollTop = 0;
+
+                            } else if (isSuccessScreen) {
+                                // Success screen with options - update content and keep open
+                                console.log('Form submitted successfully - showing success screen');
+                                this.contentEl.innerHTML = responseHTML;
+
+                                // Dispatch success event for list refresh
                                 window.dispatchEvent(new CustomEvent('dialog:success', {
                                     detail: {
                                         form: form,
-                                        response: event.detail.xhr.responseText
+                                        response: responseHTML
                                     }
                                 }));
 
-                                // Close dialog after successful submission
+                            } else {
+                                // Simple success without special screen - close dialog
+                                console.log('Form submitted successfully - closing dialog');
+
+                                // Dispatch success event
+                                window.dispatchEvent(new CustomEvent('dialog:success', {
+                                    detail: {
+                                        form: form,
+                                        response: responseHTML
+                                    }
+                                }));
+
                                 this.close();
                             }
+                        } else {
+                            // HTTP error (4xx, 5xx) - show error message
+                            console.error('Form submission failed with HTTP error');
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-error';
+                            errorDiv.textContent = 'An error occurred. Please try again.';
+                            this.contentEl.insertBefore(errorDiv, this.contentEl.firstChild);
                         }
                     });
                 });
