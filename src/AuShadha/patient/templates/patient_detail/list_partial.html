@@ -1,6 +1,10 @@
 {% if patients %}
     {% for patient in patients %}
-    <tr onclick="window.location='{% url 'patient_detail_modern' patient.id %}'">
+    <tr onclick="window.openDialog({
+            title: '{{ patient.full_name }}',
+            url: '{% url 'patient_detail_modern' patient.id %}',
+            width: '700px'
+        })" style="cursor: pointer;">
         <td class="patient-id">{{ patient.patient_hospital_id }}</td>
         <td class="patient-name">{{ patient.full_name }}</td>
         <td>{{ patient.age|default:"—" }}</td>
@@ -12,11 +16,15 @@
         <td>{{ patient.parent_clinic.name_of_clinic|default:"—" }}</td>
         <td>
             <div class="action-buttons" onclick="event.stopPropagation();">
-                <a href="{% url 'patient_detail_modern' patient.id %}"
-                   class="btn-icon icon-sm"
-                   title="View">
+                <button class="btn-icon icon-sm"
+                        title="View"
+                        onclick="window.openDialog({
+                            title: '{{ patient.full_name }}',
+                            url: '{% url 'patient_detail_modern' patient.id %}',
+                            width: '700px'
+                        })">
                     👁️
-                </a>
+                </button>
                 <button class="btn-icon icon-sm"
                         title="Edit"
                         onclick="window.openDialog({

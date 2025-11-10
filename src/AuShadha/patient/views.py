@@ -383,6 +383,10 @@ def patient_detail_modern(request, id):
                 'patient': patient
             }
 
+            # Return dialog template for AJAX dialog requests
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return render(request, 'patient_detail/view_dialog.html', variable)
+
             # Return partial template for HTMX requests
             if request.headers.get('HX-Request'):
                 return render(request, 'patient_detail/detail_partial.html', variable)

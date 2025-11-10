@@ -1,0 +1,336 @@
+<!-- View Patient Detail Dialog -->
+<div class="patient-detail-dialog">
+    <!-- Patient Header -->
+    <div class="patient-header">
+        <div class="patient-avatar">
+            <span class="avatar-initial">{{ patient.first_name.0 }}{{ patient.last_name.0|default:'' }}</span>
+        </div>
+        <div class="patient-info">
+            <h2 class="patient-name">{{ patient.full_name }}</h2>
+            <p class="patient-id">Hospital ID: <strong>{{ patient.patient_hospital_id }}</strong></p>
+        </div>
+        <div class="patient-badge">
+            <span class="badge-sex {{ patient.sex|lower }}">{{ patient.sex }}</span>
+        </div>
+    </div>
+
+    <!-- Patient Details Grid -->
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Age</span>
+            <span class="detail-value">{{ patient.age|default:"Not specified" }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Sex</span>
+            <span class="detail-value">{{ patient.sex }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Clinic</span>
+            <span class="detail-value">{{ patient.parent_clinic.name_of_clinic|default:"—" }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Registration Date</span>
+            <span class="detail-value">{{ patient.created_at|date:"M d, Y"|default:"—" }}</span>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="action-grid">
+            <!-- Edit Patient -->
+            <button class="action-card"
+                    onclick="window.openDialog({
+                        title: 'Edit Patient - {{ patient.full_name }}',
+                        url: '{% url 'patient_edit_modern' patient.id %}',
+                        width: '800px'
+                    })">
+                <span class="action-icon">✏️</span>
+                <div class="action-content">
+                    <div class="action-title">Edit Patient</div>
+                    <div class="action-desc">Update patient information</div>
+                </div>
+            </button>
+
+            <!-- Medical History -->
+            <button class="action-card"
+                    onclick="window.openDialog({
+                        title: 'Medical History - {{ patient.full_name }}',
+                        url: '{% url 'patient_history_add' patient.id %}',
+                        width: '900px'
+                    })">
+                <span class="action-icon">📋</span>
+                <div class="action-content">
+                    <div class="action-title">Medical History</div>
+                    <div class="action-desc">Past illnesses, medications, allergies</div>
+                </div>
+            </button>
+
+            <!-- Chief Complaints -->
+            <button class="action-card"
+                    onclick="window.openDialog({
+                        title: 'Chief Complaints - {{ patient.full_name }}',
+                        url: '{% url 'patient_complaints_add' patient.id %}',
+                        width: '900px'
+                    })">
+                <span class="action-icon">🩺</span>
+                <div class="action-content">
+                    <div class="action-title">Chief Complaints</div>
+                    <div class="action-desc">Current symptoms and complaints</div>
+                </div>
+            </button>
+
+            <!-- Prescriptions -->
+            <button class="action-card disabled" title="Coming soon">
+                <span class="action-icon">💊</span>
+                <div class="action-content">
+                    <div class="action-title">Prescriptions</div>
+                    <div class="action-desc">View and manage prescriptions</div>
+                </div>
+            </button>
+
+            <!-- Lab Results -->
+            <button class="action-card disabled" title="Coming soon">
+                <span class="action-icon">🔬</span>
+                <div class="action-content">
+                    <div class="action-title">Lab Results</div>
+                    <div class="action-desc">Test results and reports</div>
+                </div>
+            </button>
+
+            <!-- Appointments -->
+            <button class="action-card disabled" title="Coming soon">
+                <span class="action-icon">📅</span>
+                <div class="action-content">
+                    <div class="action-title">Appointments</div>
+                    <div class="action-desc">Schedule and view appointments</div>
+                </div>
+            </button>
+
+            {% if user.is_superuser %}
+            <!-- Delete Patient -->
+            <button class="action-card danger"
+                    onclick="deletePatientFromDialog({{ patient.id }}, '{{ patient.full_name }}')">
+                <span class="action-icon">🗑️</span>
+                <div class="action-content">
+                    <div class="action-title">Delete Patient</div>
+                    <div class="action-desc">Permanently remove patient</div>
+                </div>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Close Button -->
+    <div class="dialog-close-section">
+        <button type="button" class="btn btn-secondary" data-dialog-close style="width: 100%;">
+            Close
+        </button>
+    </div>
+</div>
+
+<script>
+    function deletePatientFromDialog(patientId, patientName) {
+        if (!confirm(`Are you sure you want to delete ${patientName}? This action cannot be undone.`)) {
+            return;
+        }
+
+        // Use HTMX to delete
+        fetch(`/AuShadha/patient/delete/${patientId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close dialog
+                document.getElementById('dialog-close-btn').click();
+
+                // Refresh patient list
+                window.dispatchEvent(new CustomEvent('dialog:success'));
+
+                // Show success message
+                alert(`${patientName} has been deleted successfully.`);
+            } else {
+                alert('Error deleting patient: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            alert('An error occurred while deleting the patient.');
+        });
+    }
+</script>
+
+<style>
+    .patient-detail-dialog {
+        padding: var(--claro-spacing-2);
+    }
+
+    .patient-header {
+        display: flex;
+        align-items: center;
+        gap: var(--claro-spacing-4);
+        padding: var(--claro-spacing-4);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: var(--claro-border-radius-lg);
+        color: white;
+        margin-bottom: var(--claro-spacing-5);
+    }
+
+    .patient-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 600;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .patient-info {
+        flex: 1;
+    }
+
+    .patient-name {
+        margin: 0 0 var(--claro-spacing-1) 0;
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    .patient-id {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .patient-badge .badge-sex {
+        padding: var(--claro-spacing-1) var(--claro-spacing-3);
+        border-radius: var(--claro-border-radius);
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--claro-spacing-4);
+        margin-bottom: var(--claro-spacing-5);
+        padding: var(--claro-spacing-4);
+        background: var(--claro-bg-panel);
+        border-radius: var(--claro-border-radius);
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: var(--claro-spacing-1);
+    }
+
+    .detail-label {
+        font-size: 12px;
+        color: var(--claro-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        font-size: 15px;
+        color: var(--claro-text-primary);
+        font-weight: 500;
+    }
+
+    .quick-actions-section {
+        margin-bottom: var(--claro-spacing-5);
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--claro-text-primary);
+        margin: 0 0 var(--claro-spacing-3) 0;
+        padding: 0 var(--claro-spacing-2);
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--claro-spacing-3);
+    }
+
+    .action-card {
+        display: flex;
+        align-items: center;
+        gap: var(--claro-spacing-3);
+        padding: var(--claro-spacing-3);
+        background: white;
+        border: var(--claro-border-width) solid var(--claro-border-color);
+        border-radius: var(--claro-border-radius);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+    }
+
+    .action-card:hover:not(.disabled) {
+        border-color: var(--claro-blue);
+        box-shadow: 0 2px 8px rgba(60, 141, 188, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .action-card.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--claro-bg-panel);
+    }
+
+    .action-card.danger:hover {
+        border-color: var(--claro-danger);
+        background: #fff5f5;
+    }
+
+    .action-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .action-content {
+        flex: 1;
+    }
+
+    .action-title {
+        font-weight: 600;
+        color: var(--claro-text-primary);
+        margin-bottom: var(--claro-spacing-1);
+        font-size: 14px;
+    }
+
+    .action-desc {
+        font-size: 12px;
+        color: var(--claro-text-secondary);
+        line-height: 1.3;
+    }
+
+    .dialog-close-section {
+        padding-top: var(--claro-spacing-4);
+        border-top: var(--claro-border-width) solid var(--claro-border-light);
+    }
+
+    @media (max-width: 768px) {
+        .action-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
