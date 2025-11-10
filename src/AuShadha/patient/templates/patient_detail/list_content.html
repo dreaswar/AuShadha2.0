@@ -278,19 +278,27 @@
 <script>
     // Listen for successful patient add and refresh the table
     window.addEventListener('dialog:success', function(event) {
+        console.log('Patient list received dialog:success event - refreshing table');
+
         // Refresh the patient list
         htmx.ajax('GET', '{% url 'patient_list_modern' %}', {
             target: '#patient-table-body',
-            swap: 'innerHTML'
+            swap: 'innerHTML',
+            select: '#patient-table-body'
         });
+
+        console.log('Patient table refresh triggered');
     });
 
     // Also listen for the HTMX patientAdded event
     document.body.addEventListener('patientAdded', function(event) {
+        console.log('Patient list received patientAdded event - refreshing table');
+
         // Refresh the patient list
         htmx.ajax('GET', '{% url 'patient_list_modern' %}', {
             target: '#patient-table-body',
-            swap: 'innerHTML'
+            swap: 'innerHTML',
+            select: '#patient-table-body'
         });
     });
 </script>
