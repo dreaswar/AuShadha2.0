@@ -1,0 +1,332 @@
+<!-- Reusable Dialog Component - Pure Vanilla JS (No Alpine) -->
+<div id="app-dialog" class="dialog-component" style="display: none;">
+    <!-- Dialog Overlay -->
+    <div class="dialog-overlay" id="dialog-overlay">
+        <!-- Dialog Container -->
+        <div class="dialog-container" id="dialog-container">
+            <!-- Dialog Header -->
+            <div class="dialog-header">
+                <h3 class="dialog-title" id="dialog-title"></h3>
+                <button class="btn-icon" type="button" aria-label="Close dialog" id="dialog-close-btn">
+                    <span style="font-size: 24px; line-height: 1;">&times;</span>
+                </button>
+            </div>
+
+            <!-- Dialog Body -->
+            <div class="dialog-body" id="dialog-content"></div>
+
+            <!-- Dialog Footer (optional) -->
+            <div class="dialog-footer" id="dialog-footer" style="display: none;">
+                <button class="btn btn-secondary" type="button" id="dialog-cancel-btn">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" type="button" id="dialog-primary-btn">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dialog-component {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+    }
+
+    .dialog-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--claro-spacing-4);
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .dialog-container {
+        background: var(--claro-bg-content);
+        border-radius: var(--claro-border-radius-lg);
+        box-shadow: var(--claro-shadow-lg);
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        border: var(--claro-border-width) solid var(--claro-border-color);
+        animation: scaleIn 0.2s ease-out;
+        width: 600px;
+        max-width: 95vw;
+    }
+
+    .dialog-header {
+        padding: var(--claro-spacing-4);
+        border-bottom: var(--claro-border-width) solid var(--claro-border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--claro-gradient-button);
+        border-top-left-radius: var(--claro-border-radius-lg);
+        border-top-right-radius: var(--claro-border-radius-lg);
+    }
+
+    .dialog-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--claro-text-primary);
+    }
+
+    .dialog-body {
+        padding: var(--claro-spacing-4);
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .dialog-footer {
+        padding: var(--claro-spacing-4);
+        border-top: var(--claro-border-width) solid var(--claro-border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--claro-spacing-2);
+        background: var(--claro-bg-panel);
+        border-bottom-left-radius: var(--claro-border-radius-lg);
+        border-bottom-right-radius: var(--claro-border-radius-lg);
+    }
+
+    /* Prevent body scroll when dialog is open */
+    body.dialog-open {
+        overflow: hidden;
+    }
+</style>
+
+<script>
+    (function() {
+        'use strict';
+
+        // Dialog state
+        const dialog = {
+            element: null,
+            overlay: null,
+            container: null,
+            titleEl: null,
+            contentEl: null,
+            footerEl: null,
+            closeBtn: null,
+            cancelBtn: null,
+            primaryBtn: null,
+            isOpen: false,
+            primaryAction: null,
+
+            init() {
+                console.log('Initializing vanilla JS dialog component');
+
+                // Get all elements
+                this.element = document.getElementById('app-dialog');
+                this.overlay = document.getElementById('dialog-overlay');
+                this.container = document.getElementById('dialog-container');
+                this.titleEl = document.getElementById('dialog-title');
+                this.contentEl = document.getElementById('dialog-content');
+                this.footerEl = document.getElementById('dialog-footer');
+                this.closeBtn = document.getElementById('dialog-close-btn');
+                this.cancelBtn = document.getElementById('dialog-cancel-btn');
+                this.primaryBtn = document.getElementById('dialog-primary-btn');
+
+                if (!this.element) {
+                    console.error('Dialog element not found!');
+                    return;
+                }
+
+                // Set up event listeners
+                this.closeBtn.addEventListener('click', () => this.close());
+                this.cancelBtn.addEventListener('click', () => this.close());
+                this.overlay.addEventListener('click', (e) => {
+                    if (e.target === this.overlay) {
+                        this.close();
+                    }
+                });
+                this.container.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isOpen) {
+                        this.close();
+                    }
+                });
+
+                this.primaryBtn.addEventListener('click', () => {
+                    if (typeof this.primaryAction === 'function') {
+                        this.primaryAction();
+                    }
+                });
+
+                console.log('Dialog component initialized successfully');
+            },
+
+            open(options) {
+                console.log('Opening dialog with options:', options);
+
+                // Set title
+                this.titleEl.textContent = options.title || 'Dialog';
+
+                // Set content
+                if (options.content) {
+                    this.contentEl.innerHTML = options.content;
+                } else if (options.url) {
+                    this.loadContent(options.url);
+                }
+
+                // Set width
+                if (options.width) {
+                    this.container.style.width = options.width;
+                }
+
+                // Set footer
+                if (options.showFooter) {
+                    this.footerEl.style.display = 'flex';
+                    if (options.primaryActionLabel) {
+                        this.primaryBtn.textContent = options.primaryActionLabel;
+                    }
+                    if (options.primaryAction) {
+                        this.primaryAction = options.primaryAction;
+                    }
+                } else {
+                    this.footerEl.style.display = 'none';
+                }
+
+                // Show dialog
+                this.element.style.display = 'block';
+                this.isOpen = true;
+                document.body.classList.add('dialog-open');
+
+                console.log('Dialog opened successfully');
+            },
+
+            close() {
+                console.log('Closing dialog');
+
+                // Add fade out animation
+                this.overlay.style.animation = 'fadeOut 0.15s ease-in';
+
+                setTimeout(() => {
+                    this.element.style.display = 'none';
+                    this.overlay.style.animation = '';
+                    this.isOpen = false;
+                    document.body.classList.remove('dialog-open');
+
+                    // Clear content
+                    this.contentEl.innerHTML = '';
+                    this.primaryAction = null;
+                }, 150);
+            },
+
+            async loadContent(url) {
+                console.log('Loading content from:', url);
+
+                this.contentEl.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading...</div>';
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'HX-Request': 'true'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const html = await response.text();
+                        this.contentEl.innerHTML = html;
+
+                        // Setup form handlers after content loads
+                        this.setupFormHandlers();
+
+                        // Initialize HTMX on the new content
+                        if (window.htmx) {
+                            htmx.process(this.contentEl);
+                        }
+
+                        console.log('Content loaded successfully');
+                    } else {
+                        this.contentEl.innerHTML = '<div class="alert alert-error">Failed to load content</div>';
+                    }
+                } catch (error) {
+                    console.error('Dialog load error:', error);
+                    this.contentEl.innerHTML = '<div class="alert alert-error">Error loading content</div>';
+                }
+            },
+
+            setupFormHandlers() {
+                const forms = this.contentEl.querySelectorAll('form');
+
+                forms.forEach(form => {
+                    form.addEventListener('htmx:afterRequest', (event) => {
+                        if (event.detail.successful) {
+                            if (event.detail.xhr.status === 200 || event.detail.xhr.status === 201) {
+                                // Dispatch custom event
+                                window.dispatchEvent(new CustomEvent('dialog:success', {
+                                    detail: {
+                                        form: form,
+                                        response: event.detail.xhr.responseText
+                                    }
+                                }));
+
+                                // Close dialog after successful submission
+                                this.close();
+                            }
+                        }
+                    });
+                });
+
+                // Handle cancel buttons
+                const cancelButtons = this.contentEl.querySelectorAll('[data-dialog-close]');
+                cancelButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.close());
+                });
+            }
+        };
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => dialog.init());
+        } else {
+            dialog.init();
+        }
+
+        // Global function to open dialog
+        window.openDialog = function(options) {
+            console.log('window.openDialog called (vanilla JS version)');
+            dialog.open(options);
+        };
+
+        console.log('window.openDialog function defined (vanilla JS)');
+    })();
+</script>

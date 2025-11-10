@@ -36,8 +36,8 @@
         {% endblock content %}
     </div>
 
-    <!-- Reusable Dialog Component -->
-    {% include 'aushadha_ui/components/dialog.html' %}
+    <!-- Reusable Dialog Component - Vanilla JS (No Alpine) -->
+    {% include 'aushadha_ui/components/dialog_vanilla.html' %}
 
     <!-- Alpine.js App Initialization -->
     <script>
@@ -60,34 +60,7 @@
             }
         });
 
-        // Global dialog opener function - available everywhere
-        window.openDialog = function(options) {
-            console.log('Opening dialog with options:', options);
-
-            // Find the dialog component
-            const dialogEl = document.querySelector('[x-data*="dialog()"]');
-            if (!dialogEl) {
-                console.error('Dialog component element not found');
-                return;
-            }
-
-            // Wait for Alpine to initialize the component
-            if (dialogEl.__x && dialogEl.__x.$data) {
-                dialogEl.__x.$data.openDialog(options);
-            } else {
-                // Alpine not ready yet, wait a bit
-                console.log('Waiting for Alpine to initialize dialog...');
-                setTimeout(() => {
-                    if (dialogEl.__x && dialogEl.__x.$data) {
-                        dialogEl.__x.$data.openDialog(options);
-                    } else {
-                        console.error('Dialog component not initialized by Alpine');
-                    }
-                }, 100);
-            }
-        };
-
-        console.log('window.openDialog function defined');
+        // Note: window.openDialog is now defined by the vanilla JS dialog component
     </script>
 </body>
 </html>
