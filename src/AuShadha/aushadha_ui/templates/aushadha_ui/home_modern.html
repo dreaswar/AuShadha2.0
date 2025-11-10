@@ -607,6 +607,14 @@
                     pendingTasks: 0
                 },
 
+                // Tab Management
+                tabs: [],
+                activeTabId: null,
+                tabIdCounter: 0,
+
+                // Patient Context
+                selectedPatient: null,
+
                 init() {
                     // Simulate loading
                     setTimeout(() => {
@@ -629,10 +637,214 @@
                         this.showNotification('error', 'Error', 'Failed to load content');
                         this.loading = false;
                     });
+
+                    // Listen for patient selection from list
+                    window.addEventListener('patient:selected', (event) => {
+                        this.selectPatient(event.detail);
+                    });
+
+                    // Listen for dialog success to refresh current tab
+                    window.addEventListener('dialog:success', () => {
+                        this.refreshActiveTab();
+                    });
+                },
+
+                // Tab Methods
+                openTab(title, url, id = null, data = null) {
+                    // Check if tab already exists
+                    const existingTab = id ? this.tabs.find(t => t.id === id) : null;
+
+                    if (existingTab) {
+                        // Switch to existing tab
+                        this.activeTabId = existingTab.tabId;
+                        return;
+                    }
+
+                    // Create new tab
+                    const tabId = `tab-${++this.tabIdCounter}`;
+                    const newTab = {
+                        tabId,
+                        id,
+                        title,
+                        url,
+                        content: '',
+                        data,
+                        loading: true
+                    };
+
+                    this.tabs.push(newTab);
+                    this.activeTabId = tabId;
+
+                    // Load content
+                    this.loadTabContent(tabId, url);
+                },
+
+                closeTab(tabId) {
+                    const index = this.tabs.findIndex(t => t.tabId === tabId);
+                    if (index === -1) return;
+
+                    // If closing active tab, switch to previous tab
+                    if (this.activeTabId === tabId) {
+                        if (index > 0) {
+                            this.activeTabId = this.tabs[index - 1].tabId;
+                        } else if (this.tabs.length > 1) {
+                            this.activeTabId = this.tabs[index + 1].tabId;
+                        } else {
+                            this.activeTabId = null;
+                        }
+                    }
+
+                    // If closing patient tab, clear selected patient
+                    const tab = this.tabs[index];
+                    if (tab.id && tab.id.startsWith('patient-')) {
+                        this.selectedPatient = null;
+                    }
+
+                    this.tabs.splice(index, 1);
+                },
+
+                switchTab(tabId) {
+                    this.activeTabId = tabId;
+                    const tab = this.tabs.find(t => t.tabId === tabId);
+
+                    // Update selected patient if switching to patient tab
+                    if (tab && tab.data && tab.data.patient) {
+                        this.selectedPatient = tab.data.patient;
+                    } else if (tab && tab.id === 'patient-list') {
+                        this.selectedPatient = null;
+                    }
+                },
+
+                async loadTabContent(tabId, url) {
+                    const tab = this.tabs.find(t => t.tabId === tabId);
+                    if (!tab) return;
+
+                    tab.loading = true;
+
+                    try {
+                        const response = await fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (response.ok) {
+                            tab.content = await response.text();
+
+                            // Process HTMX in the loaded content
+                            this.$nextTick(() => {
+                                const tabContent = document.getElementById(tabId);
+                                if (tabContent && window.htmx) {
+                                    htmx.process(tabContent);
+                                }
+                            });
+                        } else {
+                            tab.content = '<div class="alert alert-error">Failed to load content</div>';
+                        }
+                    } catch (error) {
+                        console.error('Tab load error:', error);
+                        tab.content = '<div class="alert alert-error">Error loading content</div>';
+                    } finally {
+                        tab.loading = false;
+                    }
+                },
+
+                refreshActiveTab() {
+                    if (!this.activeTabId) return;
+
+                    const tab = this.tabs.find(t => t.tabId === this.activeTabId);
+                    if (tab) {
+                        this.loadTabContent(tab.tabId, tab.url);
+                    }
+
+                    // Also refresh patient list tab if it exists
+                    const listTab = this.tabs.find(t => t.id === 'patient-list');
+                    if (listTab && listTab.tabId !== this.activeTabId) {
+                        this.loadTabContent(listTab.tabId, listTab.url);
+                    }
+                },
+
+                // Patient Selection
+                selectPatient(patient) {
+                    this.selectedPatient = patient;
+
+                    // Open/update patient tab
+                    this.openTab(
+                        patient.full_name,
+                        `/AuShadha/patient/${patient.id}/`,
+                        `patient-${patient.id}`,
+                        { patient }
+                    );
+                },
+
+                // Patient-specific sidebar modules
+                getPatientModules() {
+                    if (!this.selectedPatient) return [];
+
+                    const modules = [
+                        { icon: '📋', name: 'Medical History', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/history/add/` },
+                        { icon: '🩺', name: 'Chief Complaints', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/complaints/add/` },
+                        { icon: '💊', name: 'Prescriptions', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/prescriptions/`, disabled: true },
+                        { icon: '🔬', name: 'Lab Results', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/labs/`, disabled: true },
+                    ];
+
+                    // Age-based modules
+                    const age = this.selectedPatient.age ? parseInt(this.selectedPatient.age) : null;
+
+                    if (age && age < 18) {
+                        // Pediatric modules
+                        modules.push({ icon: '💉', name: 'Immunizations', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/immunizations/`, disabled: true });
+                        modules.push({ icon: '📏', name: 'Growth Charts', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/growth/`, disabled: true });
+                    } else if (age && age >= 65) {
+                        // Geriatric modules
+                        modules.push({ icon: '🏥', name: 'Screenings', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/screenings/`, disabled: true });
+                        modules.push({ icon: '🧠', name: 'Cognitive Assessment', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/cognitive/`, disabled: true });
+                    }
+
+                    // Sex-specific modules
+                    if (this.selectedPatient.sex === 'Female') {
+                        if (age && age >= 40) {
+                            modules.push({ icon: '🎗️', name: 'Breast Screening', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/breast-screening/`, disabled: true });
+                        }
+                        if (age && age >= 21 && age <= 65) {
+                            modules.push({ icon: '🔬', name: 'Pap Smear', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/pap-smear/`, disabled: true });
+                        }
+                    } else if (this.selectedPatient.sex === 'Male') {
+                        if (age && age >= 50) {
+                            modules.push({ icon: '🩺', name: 'Prostate Screening', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/prostate/`, disabled: true });
+                        }
+                    }
+
+                    // Colonoscopy for both sexes over 50
+                    if (age && age >= 50) {
+                        modules.push({ icon: '🏥', name: 'Colonoscopy', url: `/AuShadha/pat/patient/${this.selectedPatient.id}/colonoscopy/`, disabled: true });
+                    }
+
+                    return modules;
+                },
+
+                openPatientModule(module) {
+                    if (module.disabled) {
+                        this.showNotification('info', 'Coming Soon', `${module.name} module is under development`);
+                        return;
+                    }
+
+                    window.openDialog({
+                        title: `${module.name} - ${this.selectedPatient.full_name}`,
+                        url: module.url,
+                        width: '900px'
+                    });
                 },
 
                 loadContent(url, section) {
                     this.activeSection = section;
+
+                    // For patient list, open as tab
+                    if (section === 'Patients') {
+                        this.openTab('Patient List', url, 'patient-list');
+                        return;
+                    }
+
                     this.loading = true;
                     this.loadingMessage = `Loading ${section}...`;
 
