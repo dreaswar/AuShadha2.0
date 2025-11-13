@@ -194,7 +194,7 @@
     <div class="page-header">
         <h1 class="page-title">Patients</h1>
         <button class="btn btn-primary"
-                @click="window.openDialog({
+                onclick="window.openDialog({
                     title: 'Add New Patient',
                     url: '{% url 'patient_add_modern_without_clinic' %}',
                     width: '800px'
