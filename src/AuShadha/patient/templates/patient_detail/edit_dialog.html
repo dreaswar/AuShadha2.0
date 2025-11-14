@@ -32,7 +32,7 @@
 
         <div class="form-group">
             <label for="id_last_name" class="form-label">Last Name</label>
-            <input type="text" name="id_last_name" id="id_last_name"
+            <input type="text" name="last_name" id="id_last_name"
                    class="form-control {% if patient_detail_form.last_name.errors %}is-invalid{% endif %}"
                    value="{{ patient_detail_form.last_name.value|default:'' }}" maxlength="30">
             {% if patient_detail_form.last_name.errors %}
