@@ -101,6 +101,14 @@
             padding: var(--claro-spacing-4);
             height: 100%;
             max-width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* When tabs are present, remove padding and let tabs control layout */
+        .app-main:has(.tab-bar) {
+            padding: 0;
+            overflow: hidden;
         }
 
         .app-footer {
@@ -206,6 +214,12 @@
         }
 
         /* Welcome section */
+        /* Welcome screen wrapper */
+        .app-main > div {
+            flex: 1;
+            overflow-y: auto;
+        }
+
         .welcome-section {
             background: var(--claro-gradient-primary);
             color: var(--claro-text-inverse);
@@ -415,6 +429,7 @@
             padding: 8px 12px 0;
             overflow-x: auto;
             scrollbar-width: thin;
+            flex-shrink: 0;
         }
 
         .tab-item {
@@ -477,17 +492,15 @@
         /* Tab Content Styles */
         .tab-content-area {
             flex: 1;
-            overflow: auto;
-            padding: var(--claro-spacing-4);
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: var(--claro-bg-body);
+            min-height: 0;
         }
 
         .tab-content {
             height: 100%;
-            overflow: auto;
-        }
-
-        .tab-content > div {
-            padding: 0;
+            padding: var(--claro-spacing-4);
         }
 
         .tab-loading {
