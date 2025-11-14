@@ -738,3 +738,10 @@ def patient_modules_api(request, id):
             'success': False,
             'error': 'Patient not found'
         }, status=404)
+    except Exception as e:
+        import traceback
+        return JsonResponse({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }, status=500)
