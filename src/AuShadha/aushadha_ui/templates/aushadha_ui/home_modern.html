@@ -214,12 +214,6 @@
         }
 
         /* Welcome section */
-        /* Welcome screen wrapper */
-        .app-main > div {
-            flex: 1;
-            overflow-y: auto;
-        }
-
         .welcome-section {
             background: var(--claro-gradient-primary);
             color: var(--claro-text-inverse);
@@ -499,8 +493,13 @@
         }
 
         .tab-content {
-            height: 100%;
             padding: var(--claro-spacing-4);
+            min-height: 100%;
+        }
+
+        .tab-content .patient-list-container {
+            max-width: none;
+            width: 100%;
         }
 
         .tab-loading {
