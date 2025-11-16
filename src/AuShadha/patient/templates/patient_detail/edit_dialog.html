@@ -79,11 +79,96 @@
         </div>
     </div>
 
+    <!-- Form Status Message Area -->
+    <div id="form-status" style="display: none; padding: var(--claro-spacing-3); margin-top: var(--claro-spacing-3); border-radius: var(--claro-border-radius); text-align: center;"></div>
+
     <div style="display: flex; gap: var(--claro-spacing-2); justify-content: flex-end; margin-top: var(--claro-spacing-4); padding-top: var(--claro-spacing-4); border-top: var(--claro-border-width) solid var(--claro-border-light);">
         <button type="button" class="btn btn-secondary" data-dialog-close>Cancel</button>
-        <button type="submit" class="btn btn-primary">Update Patient</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+            <span class="btn-text">Update Patient</span>
+            <span class="btn-spinner" style="display: none;">Updating...</span>
+        </button>
     </div>
 </form>
+
+<script>
+    // Debug logging for form submission - runs immediately when template loads
+    (function() {
+        console.log('Edit dialog template loaded');
+
+        // Use setTimeout to ensure form is in DOM
+        setTimeout(function() {
+            const form = document.getElementById('patient-edit-form');
+            if (form) {
+                console.log('✓ Edit form found, adding debug listeners');
+
+                form.addEventListener('submit', function(e) {
+                    console.log('→ Form submit event triggered');
+                    console.log('  Form data:', new FormData(form));
+                });
+
+                form.addEventListener('htmx:configRequest', function(e) {
+                    console.log('→ HTMX config request:', e.detail);
+                });
+
+                form.addEventListener('htmx:beforeRequest', function(e) {
+                    console.log('→ HTMX before request - sending to:', e.detail.pathInfo.requestPath);
+
+                    // Show loading state
+                    const submitBtn = document.getElementById('submit-btn');
+                    const statusDiv = document.getElementById('form-status');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.querySelector('.btn-text').style.display = 'none';
+                        submitBtn.querySelector('.btn-spinner').style.display = 'inline';
+                    }
+                    if (statusDiv) {
+                        statusDiv.style.display = 'block';
+                        statusDiv.style.background = '#e3f2fd';
+                        statusDiv.style.color = '#1976d2';
+                        statusDiv.textContent = 'Submitting...';
+                    }
+                });
+
+                form.addEventListener('htmx:afterRequest', function(e) {
+                    console.log('→ HTMX after request:', {
+                        successful: e.detail.successful,
+                        status: e.detail.xhr.status,
+                        responseLength: e.detail.xhr.responseText.length,
+                        responsePreview: e.detail.xhr.responseText.substring(0, 200)
+                    });
+
+                    // Reset button state
+                    const submitBtn = document.getElementById('submit-btn');
+                    const statusDiv = document.getElementById('form-status');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector('.btn-text').style.display = 'inline';
+                        submitBtn.querySelector('.btn-spinner').style.display = 'none';
+                    }
+
+                    // Show status
+                    if (statusDiv && !e.detail.successful) {
+                        statusDiv.style.display = 'block';
+                        statusDiv.style.background = '#ffebee';
+                        statusDiv.style.color = '#c62828';
+                        statusDiv.textContent = 'Error: ' + e.detail.xhr.status + ' - Please check console';
+                    }
+                });
+
+                form.addEventListener('htmx:beforeSwap', function(e) {
+                    console.log('→ HTMX before swap');
+                });
+
+                form.addEventListener('htmx:afterSwap', function(e) {
+                    console.log('→ HTMX after swap');
+                });
+            } else {
+                console.error('✗ Edit form NOT found!');
+            }
+        }, 100);
+    })();
+</script>
 
 <style>
     .form-row {
